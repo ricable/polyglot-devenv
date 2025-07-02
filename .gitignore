@@ -261,9 +261,9 @@ config/development.json
 config/production.json
 
 # Claude Code configuration
-#.claude/settings.json.backup*
-#.claude/backups/
-#.claude/notifications.log
+.claude/settings.json.backup*
+.claude/backups/
+.claude/notifications.log
 
 # Personal development configuration (local only)
 CLAUDE.local.md

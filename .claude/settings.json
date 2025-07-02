@@ -61,6 +61,15 @@
             "command": "bash -c 'file_path=$(echo \"$0\" | jq -r \".tool_input.file_path // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$file_path\" =~ (devbox\\.json|package\\.json|pyproject\\.toml|Cargo\\.toml|go\\.mod|tsconfig\\.json)$ ]]; then echo \"⚙️  Configuration file changed, detecting drift...\"; nu nushell-env/scripts/environment-drift.nu snapshot --quiet 2>/dev/null || echo \"Drift snapshot completed\"; fi'"
           }
         ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'file_path=$(echo \"$0\" | jq -r \".tool_input.file_path // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$file_path\" =~ (api|route|endpoint|app\\.py|main\\.py|\\.ts|\\.js).*$ ]] || [[ \"$file_path\" =~ (devbox\\.json|package\\.json|pyproject\\.toml|Cargo\\.toml|go\\.mod)$ ]]; then echo \"📚 API or config change detected, checking documentation...\" && nu nushell-env/scripts/docs-automation.nu check --quiet 2>/dev/null || echo \"Documentation check completed\"; fi'"
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -73,7 +82,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'command=$(echo \"$0\" | jq -r \".tool_input.command // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$command\" =~ git.*commit ]]; then echo \"🔍 Running pre-commit validation...\" && nu nushell-env/scripts/resource-monitor.nu record \"pre_commit\" 2>/dev/null || true && if [[ \"$PWD\" =~ python-env ]]; then cd python-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"lint\" \"python-env\" \"devbox run lint --quiet\" --quiet || devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ typescript-env ]]; then cd typescript-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"lint\" \"typescript-env\" \"devbox run lint --quiet\" --quiet || devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ rust-env ]]; then cd rust-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"lint\" \"rust-env\" \"devbox run lint --quiet\" --quiet || devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ go-env ]]; then cd go-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"lint\" \"go-env\" \"devbox run lint --quiet\" --quiet || devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ nushell-env ]]; then cd nushell-env && nu scripts/performance-analytics.nu measure \"check\" \"nushell-env\" \"devbox run check --quiet\" --quiet || devbox run check --quiet 2>/dev/null || true; else echo \"Running cross-language validation...\" && nu nushell-env/scripts/performance-analytics.nu measure \"validate_all\" \"cross_language\" \"nu nushell-env/scripts/validate-all.nu\" --quiet || nu nushell-env/scripts/validate-all.nu 2>/dev/null || true; fi; fi'"
+            "command": "bash -c 'command=$(echo \"$0\" | jq -r \".tool_input.command // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$command\" =~ git.*commit ]]; then echo \"🔍 Running pre-commit validation...\" && nu nushell-env/scripts/resource-monitor.nu record \"pre_commit\" 2>/dev/null || true && if [[ \"$PWD\" =~ python-env ]]; then cd python-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"lint\" \"python-env\" \"devbox run lint --quiet\" --quiet || devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ typescript-env ]]; then cd typescript-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"lint\" \"typescript-env\" \"devbox run lint --quiet\" --quiet || devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ rust-env ]]; then cd rust-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"lint\" \"rust-env\" \"devbox run lint --quiet\" --quiet || devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ go-env ]]; then cd go-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"lint\" \"go-env\" \"devbox run lint --quiet\" --quiet || devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ nushell-env ]]; then cd nushell-env && nu scripts/performance-analytics.nu measure \"check\" \"nushell-env\" \"devbox run check --quiet\" --quiet || devbox run check --quiet 2>/dev/null || true; else echo \"Running cross-language validation...\" && nu nushell-env/scripts/performance-analytics.nu measure \"validate_all\" \"cross_language\" \"nu nushell-env/scripts/validate-all.nu\" --quiet || nu nushell-env/scripts/validate-all.nu 2>/dev/null || true; fi; echo \"\\n💡 For intelligent commit messages, run: nu nushell-env/scripts/intelligent-commit.nu suggest\"; fi'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'command=$(echo \"$0\" | jq -r \".tool_input.command // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$command\" =~ git.*(add|stage) ]]; then echo \"📝 Files staged for commit. For intelligent commit message suggestions:\"; echo \"   nu nushell-env/scripts/intelligent-commit.nu suggest\"; echo \"   nu nushell-env/scripts/intelligent-commit.nu analyze\"; fi'"
           }
         ]
       },
@@ -124,6 +142,14 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash -c 'echo \"\\n🎯 NEXT STEPS & TODO SUGGESTIONS:\"; nu nushell-env/scripts/enhanced-todo.nu suggest 2>/dev/null || echo \"Enhanced todo analysis completed\"; echo \"\\n💡 For detailed analysis: nu nushell-env/scripts/enhanced-todo.nu analyze\"'"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
             "command": "bash -c 'echo \"🚀 Performance Analysis:\"; nu nushell-env/scripts/performance-analytics.nu report --days 1 --format table 2>/dev/null || echo \"Performance data unavailable\"; echo \"\\n💾 Resource Optimization:\"; nu nushell-env/scripts/resource-monitor.nu optimize 2>/dev/null || echo \"Resource analysis unavailable\"; echo \"\\n📦 Dependency Health:\"; nu nushell-env/scripts/dependency-monitor.nu report --days 1 --format summary 2>/dev/null || echo \"Dependency data unavailable\"; echo \"\\n🛡️  Security Status:\"; nu nushell-env/scripts/security-scanner.nu report --days 1 --format summary 2>/dev/null || echo \"Security data unavailable\"; echo \"\\n⚙️  Environment Consistency:\"; nu nushell-env/scripts/environment-drift.nu report --format summary 2>/dev/null || echo \"Drift analysis unavailable\"'"
           }
         ]
@@ -150,6 +176,14 @@
           {
             "type": "command",
             "command": "bash -c 'echo \"🔔 Claude Code notification: $(echo \"$0\" | jq -r \".message // \\\"Unknown notification\\\"\" 2>/dev/null || echo \"Unknown notification\")\" >> ~/.claude/notifications.log'"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'message=$(echo \"$0\" | jq -r \".message // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$message\" =~ (started|begin|initialized) ]]; then echo \"🧠 Loading polyglot environment context...\"; nu nushell-env/scripts/context-primer.nu summary 2>/dev/null || echo \"Context primer completed\"; fi'"
           }
         ]
       }
