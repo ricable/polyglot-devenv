@@ -1,159 +1,41 @@
 {
-  "name": "Polyglot Vibe Coding Environment",
-  "description": "Top-rated MCP servers for vibe coding with Claude Code in a polyglot development environment",
-  "version": "1.0.0",
-  
   "mcpServers": {
-    "serena": {
-      "command": "npx",
-      "args": ["-y", "@oraios/serena"],
-      "description": "<� TOP TIER: Semantic code retrieval and editing capabilities. Supports Python, TypeScript, Rust, Go, C#, Java, PHP, C/C++. Perfect for polyglot environments.",
-      "env": {
-        "SERENA_LOG_LEVEL": "info"
-      }
-    },
-    
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@context7/mcp-server"],
-      "description": "<� TOP TIER: Up-to-date documentation retrieval and custom workflow integration. Essential for staying current with docs.",
-      "env": {
-        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
-      }
-    },
-    
     "sequential-thinking": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
-      "description": "<� TOP TIER: Structured problem-solving through reflective thinking. Dynamic reasoning capabilities for complex coding tasks.",
+      "description": "⭐ TOP TIER: Structured problem-solving through reflective thinking. Dynamic reasoning capabilities for complex coding tasks.",
       "disabled": false
     },
     
     "github": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
-      "description": ">H SECOND TIER: Official GitHub integration for repository management, PRs, and issues.",
+      "description": "⭐ TOP TIER: Official GitHub integration for repository management, PRs, and issues.",
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
-      }
+      },
+      "disabled": false
     },
     
     "knowledge-graph-memory": {
       "command": "npx", 
       "args": ["-y", "@modelcontextprotocol/server-memory"],
-      "description": ">H SECOND TIER: Retains complex relationship information across sessions. Maintains project context for long-term projects.",
+      "description": "⭐ TOP TIER: Retains complex relationship information across sessions. Maintains project context for long-term projects.",
       "disabled": false
     },
     
     "desktop-commander": {
       "command": "npx",
       "args": ["-y", "@wonderwhy-er/desktop-commander"],
-      "description": ">H SECOND TIER: Execute terminal commands and search/replace file editing. Direct system integration for vibe coding.",
+      "description": "🔧 SECOND TIER: Execute terminal commands and search/replace file editing. Direct system integration.",
       "disabled": false
     },
     
     "puppeteer": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
-      "description": ">I THIRD TIER: Browser automation for testing and web scraping capabilities.",
-      "disabled": true
-    },
-    
-    "exa-search": {
-      "command": "npx",
-      "args": ["-y", "@exa-ai/mcp-server"],
-      "description": ">I THIRD TIER: AI-powered research tool for finding current data and bug fixes.",
-      "env": {
-        "EXA_API_KEY": "${EXA_API_KEY}"
-      },
-      "disabled": true
-    },
-    
-    "claude-taskmaster": {
-      "command": "npx",
-      "args": ["-y", "@claude/taskmaster-mcp"],
-      "description": ">I THIRD TIER: Virtual AI project manager that breaks complex projects into manageable tasks.",
-      "disabled": true
-    },
-    
-    "vibe-check": {
-      "command": "npx",
-      "args": ["-y", "@vibe/check-mcp"],
-      "description": ">I THIRD TIER: Sanity check for vibe coders. Prevents scope creep and cascading errors.",
+      "description": "🌐 THIRD TIER: Browser automation for testing and web scraping capabilities.",
       "disabled": true
     }
-  },
-  
-  "environment": {
-    "POLYGLOT_PROJECT_ROOT": "/Users/cedric/dev/claude/rules",
-    "MCP_LOG_LEVEL": "info",
-    "NODE_ENV": "development"
-  },
-  
-  "setup": {
-    "instructions": [
-      "# Setup Instructions for Vibe Coding MCP Servers",
-      "",
-      "## 1. Prerequisites",
-      "npm install -g npm@latest",
-      "# Ensure Node.js 18+ is installed",
-      "",
-      "## 2. Environment Variables (create .env file)",
-      "GITHUB_PERSONAL_ACCESS_TOKEN=your_github_token_here",
-      "CONTEXT7_API_KEY=your_context7_api_key_here", 
-      "EXA_API_KEY=your_exa_api_key_here",
-      "",
-      "## 3. Enable/Disable Servers",
-      "# Set 'disabled': false to enable a server",
-      "# Set 'disabled': true to disable a server",
-      "",
-      "## 4. Testing Configuration",
-      "# Test each server individually:",
-      "npx @oraios/serena --help",
-      "npx @modelcontextprotocol/server-sequential-thinking --help",
-      "",
-      "## 5. Integration with Polyglot Environment", 
-      "# This configuration works with:",
-      "# - Python environments (via Serena)",
-      "# - TypeScript environments (via Serena)", 
-      "# - Rust environments (via Serena)",
-      "# - Go environments (via Serena)",
-      "# - Nushell scripts (via Desktop Commander)",
-      "",
-      "## 6. Vibe Coding Workflow",
-      "# 1. Start with Serena for semantic code understanding",
-      "# 2. Use Context7 for up-to-date documentation",
-      "# 3. Leverage Sequential Thinking for complex problems",
-      "# 4. Use GitHub integration for repository management",
-      "# 5. Enable additional servers as needed for specific tasks"
-    ]
-  },
-  
-  "vibeWorkflows": {
-    "quickStart": {
-      "description": "Essential servers for immediate vibe coding",
-      "servers": ["serena", "sequential-thinking", "desktop-commander"]
-    },
-    "fullStack": {
-      "description": "Complete setup for polyglot development",
-      "servers": ["serena", "context7", "sequential-thinking", "github", "knowledge-graph-memory", "desktop-commander"]
-    },
-    "research": {
-      "description": "Research-heavy coding sessions",
-      "servers": ["serena", "context7", "exa-search", "sequential-thinking"]
-    },
-    "projectManagement": {
-      "description": "Managing complex projects",
-      "servers": ["claude-taskmaster", "github", "vibe-check", "knowledge-graph-memory"]
-    }
-  },
-  
-  "notes": [
-    "<� Top 3 servers (Serena + Context7 + Sequential Thinking) form the perfect trinity for vibe coding",
-    "=' Serena is specifically optimized for polyglot environments matching this project",
-    "=� Start with 'quickStart' workflow, then gradually enable more servers as needed",
-    "� Desktop Commander enables direct terminal integration for seamless development",
-    "=� Context7 ensures you always have current documentation at your fingertips",
-    ">� Sequential Thinking provides structured problem-solving for complex coding challenges"
-  ]
+  }
 }
