@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'command=$(echo \"$0\" | jq -r \".tool_input.command // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$command\" =~ git.*commit ]]; then echo \"🔍 Running pre-commit validation...\" && if [[ \"$PWD\" =~ python-env ]]; then cd python-env && devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ typescript-env ]]; then cd typescript-env && devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ rust-env ]]; then cd rust-env && devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ go-env ]]; then cd go-env && devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ nushell-env ]]; then cd nushell-env && devbox run check --quiet 2>/dev/null || true; else echo \"Running cross-language validation...\" && nu nushell-env/scripts/validate-all.nu 2>/dev/null || true; fi; fi'"
+            "command": "bash -c 'command=$(echo \"$0\" | jq -r \".tool_input.command // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$command\" =~ git.*commit ]]; then echo \"🔍 Running pre-commit validation...\" && if [[ \"$PWD\" =~ python-env ]]; then cd python-env && devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ typescript-env ]]; then cd typescript-env && devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ rust-env ]]; then cd rust-env && devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ go-env ]]; then cd go-env && devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ nushell-env ]]; then cd nushell-env && devbox run check --quiet 2>/dev/null || true; else echo \"Running cross-language validation...\" && nu nushell-env/scripts/validate.nu 2>/dev/null || true; fi; fi'"
           }
         ]
       },
@@ -45,7 +45,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'echo \"🎯 Task completed! Running status check...\"; git status 2>/dev/null || echo \"Not in a git repository\"; echo \"📊 Running cross-language validation summary...\"; nu nushell-env/scripts/validate-all.nu parallel 2>/dev/null || echo \"Cross-language validation completed with some issues\"'"
+            "command": "bash -c 'echo \"🎯 Task completed! Running status check...\"; git status 2>/dev/null || echo \"Not in a git repository\"; echo \"📊 Running cross-language validation summary...\"; nu nushell-env/scripts/validate.nu --parallel 2>/dev/null || echo \"Cross-language validation completed with some issues\"'"
           }
         ]
       }
