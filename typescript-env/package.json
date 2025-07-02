@@ -7,7 +7,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "jest",
-    "lint": "eslint . --fix",
+    "lint": "eslint '**/*.{ts,js}' --fix",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit"
   },

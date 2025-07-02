@@ -1,5 +1,5 @@
 {
-  "packages": ["nodejs@20", "typescript", "eslint", "prettier", "jest"],
+  "packages": ["nodejs@20", "typescript@latest"],
   "shell": {
     "init_hook": [
       "echo 'TypeScript Development Environment'",
@@ -8,15 +8,15 @@
       "tsc --version"
     ],
     "scripts": {
-      "install": "npm install",
-      "build": "tsc",
-      "dev": "tsc --watch",
-      "format": "prettier --write .",
-      "lint": "eslint . --fix",
-      "test": "jest",
-      "test-watch": "jest --watch",
-      "clean": "rm -rf dist node_modules/.cache",
-      "type-check": "tsc --noEmit"
+      "install":    "npm install",
+      "build":      "npm run build",
+      "dev":        "npm run dev",
+      "format":     "npm run format",
+      "lint":       "npm run lint",
+      "test":       "npm run test",
+      "test-watch": "npm run test -- --watch",
+      "clean":      "rm -rf dist node_modules/.cache",
+      "type-check": "npm run type-check"
     }
   },
   "env": {
