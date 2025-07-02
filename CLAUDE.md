@@ -61,20 +61,19 @@ git push origin feature/your-feature-name
 
 ### CI/CD Setup
 ```bash
-# Set up GitHub Actions workflows for all environments
+# Set up development environment
 cd nushell-env && devbox shell
-devbox run create-workflow
+devbox run setup
 
-# Or create workflows for specific languages
-nu scripts/github.nu create-workflow --language python
-nu scripts/github.nu create-workflow --language typescript
-
-# Additional automation capabilities
+# Available automation scripts
 nu scripts/github.nu setup                    # Configure GitHub CLI
 nu scripts/github.nu status                   # Check repo status
 nu scripts/github.nu release --version v1.0.0 # Create releases
 nu scripts/kubernetes.nu setup                # Set up K8s dev environment
 nu scripts/containers.nu build --env all      # Build all container images
+nu scripts/deploy.nu                          # Deployment automation
+nu scripts/validate.nu                        # Cross-language validation
+nu scripts/env-sync.nu                        # Environment synchronization
 ```
 
 ### Repository Structure
@@ -263,6 +262,13 @@ This environment includes intelligent automation through Claude Code hooks that 
 
 # Test environment setup
 ./.claude/install-hooks.sh --test
+
+# Validate hook configuration
+bash -c "cd python-env && devbox run format --quiet"      # Test Python hooks
+bash -c "cd typescript-env && devbox run lint --quiet"    # Test TypeScript hooks
+bash -c "cd rust-env && devbox run test --quiet"          # Test Rust hooks
+bash -c "cd go-env && devbox run format --quiet"          # Test Go hooks
+nu nushell-env/scripts/validate.nu --parallel             # Test cross-language validation
 ```
 
 ## Intelligent Development Analytics
@@ -681,14 +687,29 @@ devbox lock                          # Lock current package versions
 ### Sample Devbox Configurations
 
 **Python Environment**:
-- Packages: `python@3.12`, `uv`, `ruff`, `mypy`, `pytest`
-- Scripts: `setup`, `format`, `lint`, `test`, `build`
-- Environment: `PYTHONPATH`, `UV_CACHE_DIR`
+- Packages: `python@3.12`, `uv`, `ruff`, `mypy`
+- Scripts: `setup`, `install`, `format`, `lint`, `type-check`, `test`, `build`, `clean`, `watch`
+- Environment: `PYTHONPATH`, `UV_CACHE_DIR`, `UV_PYTHON_PREFERENCE`
+
+**TypeScript Environment**:
+- Packages: `nodejs@20`, `typescript@latest`
+- Scripts: `install`, `build`, `dev`, `format`, `lint`, `test`, `test-watch`, `clean`, `type-check`
+- Environment: `NODE_ENV`
+
+**Rust Environment**:
+- Packages: `rustc`, `cargo`, `rust-analyzer`, `clippy`, `rustfmt`
+- Scripts: `build`, `build-release`, `run`, `test`, `test-watch`, `format`, `lint`, `clean`, `check`, `doc`, `watch`
+- Environment: `RUST_BACKTRACE`
+
+**Go Environment**:
+- Packages: `go@1.22`, `golangci-lint@latest`
+- Scripts: `build`, `run`, `test`, `test-watch`, `format`, `lint`, `clean`, `mod-tidy`, `mod-download`, `vet`, `watch`
+- Environment: `CGO_ENABLED`
 
 **Nushell Environment**:
-- Packages: `nushell@0.103.0`, `teller`, `git`
-- Scripts: `format`, `check`, `test`, `validate`, `deploy`
-- Environment: `NU_LIB_DIRS`, `NUSHELL_CONFIG_DIR`
+- Packages: `nushell@0.103.0`, `teller@2.0.7`, `git@2.49.0`
+- Scripts: `setup`, `format`, `check`, `test`, `clean`, `watch`, `list`, `validate`, `deploy`, `secrets`, `env-sync`
+- Environment: `NU_LIB_DIRS`, `NU_PLUGIN_DIRS`, `NUSHELL_CONFIG_DIR`, `TELLER_CONFIG`
 
 ## Testing Standards
 - 80% code coverage minimum

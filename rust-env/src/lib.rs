@@ -1,5 +1,5 @@
 //! Polyglot Rust Environment
-//! 
+//!
 //! This is a library crate for the Rust component of the polyglot development environment.
 
 /// A simple greeting function
