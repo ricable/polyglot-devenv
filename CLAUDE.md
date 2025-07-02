@@ -7,10 +7,17 @@ Polyglot development environment for Python, TypeScript, Rust, Go, and Nushell w
 This environment includes intelligent Claude Code hooks that automate quality gates, formatting, testing, and validation across all languages. The hooks system provides:
 
 - **Auto-formatting**: Automatically formats code after editing (ruff, prettier, rustfmt, goimports)
-- **Auto-testing**: Runs tests when test files are modified
+- **Auto-testing**: Runs tests when test files are modified with performance tracking
+- **Smart commits**: Intelligent commit message generation with conventional format
+- **Security scanning**: Real-time vulnerability detection and pattern analysis
+- **Performance monitoring**: Build time tracking with optimization recommendations
+- **Documentation automation**: API change detection and drift analysis
 - **Pre-commit validation**: Lints code and scans for secrets before commits
 - **Cross-language validation**: Comprehensive quality checks across all environments
 - **Task completion automation**: Shows status and runs validation when tasks finish
+- **Task intelligence**: Context-aware todo suggestions and project insights
+
+**16 hook groups** provide intelligent automation across PostToolUse, PreToolUse, Stop, and Notification events.
 
 **Quick Setup**: Run `./.claude/install-hooks.sh` to enable automated workflows, or use `/project:polyglot-rule2hook` in Claude Code to convert natural language rules to hooks.
 
@@ -375,6 +382,101 @@ nu nushell-env/scripts/github-integration.nu report --days 7
 # Test integration (dry run)
 nu nushell-env/scripts/github-integration.nu test --dry-run
 ```
+
+## New Automation Commands
+
+The enhanced environment includes 4 additional intelligent automation scripts that extend the existing monitoring capabilities:
+
+### 🎯 Intelligent Commit Management
+```bash
+# Generate smart commit messages with conventional format
+nu nushell-env/scripts/intelligent-commit.nu suggest
+
+# Analyze staging area for commit insights
+nu nushell-env/scripts/intelligent-commit.nu analyze
+
+# Validate commit message format
+nu nushell-env/scripts/intelligent-commit.nu validate
+```
+
+### 📋 Enhanced Task Management
+```bash
+# Analyze development context for task suggestions
+nu nushell-env/scripts/enhanced-todo.nu analyze
+
+# Get intelligent task suggestions
+nu nushell-env/scripts/enhanced-todo.nu suggest
+
+# Track task progress across environments
+nu nushell-env/scripts/enhanced-todo.nu track
+
+# Generate task completion reports
+nu nushell-env/scripts/enhanced-todo.nu report
+
+# Sync tasks with GitHub issues
+nu nushell-env/scripts/enhanced-todo.nu sync
+```
+
+### 📚 Documentation Automation
+```bash
+# Check for documentation drift
+nu nushell-env/scripts/docs-automation.nu check
+
+# Update documentation based on code changes
+nu nushell-env/scripts/docs-automation.nu update
+
+# Generate specific documentation types
+nu nushell-env/scripts/docs-automation.nu generate api
+nu nushell-env/scripts/docs-automation.nu generate architecture
+nu nushell-env/scripts/docs-automation.nu generate setup
+nu nushell-env/scripts/docs-automation.nu generate changelog
+
+# Analyze documentation completeness
+nu nushell-env/scripts/docs-automation.nu analyze
+```
+
+### 🧠 Context Priming
+```bash
+# Load comprehensive environment context for Claude
+nu nushell-env/scripts/context-primer.nu load
+
+# Analyze current project context
+nu nushell-env/scripts/context-primer.nu analyze
+
+# Generate comprehensive context report
+nu nushell-env/scripts/context-primer.nu report
+
+# Get quick environment summary
+nu nushell-env/scripts/context-primer.nu summary
+```
+
+## Hook Configuration Overview
+
+The automated system includes **16 intelligent hook groups** across 4 event types:
+
+### PostToolUse Hooks (6 groups)
+- **Auto-formatting**: Environment-aware code formatting after file edits
+- **Test automation**: Automatic test execution when test files are modified
+- **Resource monitoring**: Real-time performance and resource tracking
+- **Dependency scanning**: Package file change detection and security scanning
+- **Environment drift**: Configuration change tracking and consistency monitoring
+- **Documentation checks**: API/config change documentation analysis
+
+### PreToolUse Hooks (4 groups)
+- **Pre-commit validation**: Enhanced linting with intelligent commit suggestions
+- **Git staging guidance**: Smart recommendations when files are staged for commit
+- **Security scanning**: Advanced security analysis before file writes
+- **Command monitoring**: Resource tracking for devbox and build operations
+
+### Stop Hooks (4 groups)
+- **Task completion analysis**: Cross-language validation summary after tasks
+- **Next steps suggestions**: Enhanced todo analysis and intelligent recommendations
+- **Performance reporting**: Comprehensive analytics and optimization suggestions
+- **GitHub integration**: Automated issue monitoring and creation for critical failures
+
+### Notification Hooks (2 groups)
+- **Notification logging**: Enhanced Claude Code notification tracking
+- **Context priming**: Automatic environment context loading when Claude starts working
 
 ### Intelligent Environment Detection
 
