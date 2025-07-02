@@ -2,40 +2,50 @@
   "mcpServers": {
     "sequential-thinking": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
-      "description": "⭐ TOP TIER: Structured problem-solving through reflective thinking. Dynamic reasoning capabilities for complex coding tasks.",
-      "disabled": false
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
     },
-    
     "github": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "description": "⭐ TOP TIER: Official GitHub integration for repository management, PRs, and issues.",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
-      },
-      "disabled": false
+      }
     },
-    
     "knowledge-graph-memory": {
-      "command": "npx", 
-      "args": ["-y", "@modelcontextprotocol/server-memory"],
-      "description": "⭐ TOP TIER: Retains complex relationship information across sessions. Maintains project context for long-term projects.",
-      "disabled": false
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
     },
-    
     "desktop-commander": {
       "command": "npx",
-      "args": ["-y", "@wonderwhy-er/desktop-commander"],
-      "description": "🔧 SECOND TIER: Execute terminal commands and search/replace file editing. Direct system integration.",
-      "disabled": false
+      "args": [
+        "-y",
+        "@wonderwhy-er/desktop-commander"
+      ]
     },
-    
     "puppeteer": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
-      "description": "🌐 THIRD TIER: Browser automation for testing and web scraping capabilities.",
-      "disabled": true
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-puppeteer"
+      ]
+    },
+    "ruv-swarm": {
+      "type": "stdio",
+      "command": "../ruv-FANN/ruv-swarm/npm/bin/ruv-swarm-clean.js",
+      "args": [
+        "mcp",
+        "start"
+      ],
+      "env": {}
     }
   }
 }
