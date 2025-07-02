@@ -4,7 +4,11 @@
 
 # Initialize security scanning
 def "security init" [] {
-    mkdir -p .security
+    mkdir .security
+    
+    if not (".security" | path exists) {
+        mkdir .security
+    }
     
     if not (".security/scan_results.jsonl" | path exists) {
         [] | save .security/scan_results.jsonl
@@ -194,7 +198,7 @@ def "security scan-file" [file_path: string] {
         return []
     }
     
-    let file_extension = ($file_path | path extension)
+    let file_extension = ($file_path | path parse | get extension)
     let language = match $file_extension {
         "py" => "python",
         "js" | "ts" | "jsx" | "tsx" => "typescript",
@@ -217,7 +221,7 @@ def "security scan-file" [file_path: string] {
                     if ($pattern in $whitelist.patterns) { continue }
                     
                     let matches = ($file_content | lines | enumerate | each { |line|
-                        if ($line.item | str contains --regex $pattern) {
+                        if ($line.item =~ $pattern) {
                             {
                                 file: $file_path,
                                 line: ($line.index + 1),
@@ -242,7 +246,7 @@ def "security scan-file" [file_path: string] {
         if ($secret_pattern in $whitelist.patterns) { continue }
         
         let matches = ($file_content | lines | enumerate | each { |line|
-            if ($line.item | str contains --regex $secret_pattern) {
+            if ($line.item =~ $secret_pattern) {
                 {
                     file: $file_path,
                     line: ($line.index + 1),
@@ -250,7 +254,7 @@ def "security scan-file" [file_path: string] {
                     type: "secret",
                     message: "Potential secret or credential detected",
                     pattern: $secret_pattern,
-                    content: ($line.item | str replace --regex $secret_pattern "***REDACTED***"),
+                    content: ($line.item | str replace $secret_pattern "***REDACTED***"),
                     recommendation: "Remove hardcoded secrets, use environment variables or secret management"
                 }
             }
@@ -264,7 +268,7 @@ def "security scan-file" [file_path: string] {
         let file_patterns = ($config.file_patterns | get $pattern_type)
         
         for pattern in $file_patterns {
-            if ($file_path | str contains --regex $pattern) {
+            if ($file_path =~ $pattern) {
                 let severity = if $pattern_type == "critical" { "high" } else { "medium" }
                 $findings = ($findings | append [{
                     file: $file_path,
@@ -298,7 +302,7 @@ def "security get-recommendation" [pattern: string, language: string] {
         "fmt\\.Print.*password": "Don't log passwords. Use structured logging and sanitize sensitive data"
     }
     
-    $recommendations | get $pattern? | default "Review this pattern for security implications"
+    $recommendations | get -i $pattern | default "Review this pattern for security implications"
 }
 
 # Scan directory recursively
@@ -311,9 +315,9 @@ def "security scan-directory" [
     
     let files = (
         glob ($directory + "/**/*")
-        | where { |file| $file | path type | str contains "file" }
+        | where { |file| ($file | path type) == "file" }
         | where { |file| 
-            let ext = ($file | path extension)
+            let ext = ($file | path parse | get extension)
             $ext in $include_extensions
         }
         | where { |file|
@@ -328,7 +332,7 @@ def "security scan-directory" [
     let total_files = ($files | length)
     
     for file in ($files | enumerate) {
-        if ($file.index % 10) == 0 {
+        if ($file.index mod 10) == 0 {
             print $"  Progress: ($file.index)/($total_files) files"
         }
         
@@ -373,7 +377,7 @@ def "security scan-all" [] {
         let result = {
             environment: $env,
             timestamp: (date now),
-            total_files_scanned: (glob ($env + "/**/*") | where { |f| $f | path type | str contains "file" } | length),
+            total_files_scanned: (glob ($env + "/**/*") | where { |f| ($f | path type) == "file" } | length),
             findings: $findings,
             summary: (security summarize-findings $findings)
         }
@@ -421,7 +425,7 @@ def "security summarize-findings" [findings: list] {
     })
     
     let total_weight = ($summary | get weight | math sum)
-    let security_score = (100 - ($total_weight | math min 100))
+    let security_score = (100 - ([$total_weight, 100] | math min))
     
     {
         by_severity: $summary,
@@ -581,8 +585,8 @@ def "security report" [
 def "security fix" [
     --environment: string = "all",
     --severity: string = "critical",
-    --auto: bool = false,
-    --dry-run: bool = false
+    --auto = false,
+    --dry-run = false
 ] {
     print $"🔧 Security Auto-Fix (Severity: ($severity))"
     
@@ -711,40 +715,22 @@ def "security cleanup" [--days: int = 90] {
     print $"🧹 Cleaned security data older than ($days) days"
 }
 
-# Main command dispatcher
-def main [command: string, ...args] {
-    match $command {
-        "init" => { security init },
-        "scan-file" => {
-            if ($args | length) >= 1 {
-                security scan-file $args.0
-            } else {
-                print "Usage: security scan-file <file_path>"
-            }
-        },
-        "scan-directory" => {
-            if ($args | length) >= 1 {
-                security scan-directory $args.0 ...(($args | skip 1))
-            } else {
-                print "Usage: security scan-directory <directory>"
-            }
-        },
-        "scan-all" => { security scan-all },
-        "report" => { security report ...$args },
-        "fix" => { security fix ...$args },
-        "whitelist" => { security whitelist ...$args },
-        "cleanup" => { security cleanup ...$args },
-        _ => {
-            print "Advanced Security Pattern Detection System"
-            print "Usage:"
-            print "  security init                     - Initialize security scanning"
-            print "  security scan-file <file>         - Scan single file for security issues"
-            print "  security scan-directory <dir>     - Scan directory recursively"
-            print "  security scan-all                 - Scan all environments for security issues"
-            print "  security report [--days N]        - Generate security report"
-            print "  security fix [--severity level]   - Auto-fix security issues where possible"
-            print "  security whitelist [--file|--pattern] - Add items to whitelist"
-            print "  security cleanup [--days N]       - Clean old security data"
+# Main command
+def main [file_path?: string] {
+    if $file_path == null {
+        print "Usage: security scan-file <file_path>"
+        return
+    }
+    
+    security init
+    let findings = (security scan-file $file_path)
+    
+    if ($findings | length) == 0 {
+        print "✅ No security issues found!"
+    } else {
+        print $"⚠️ Found ($findings | length) security issues:"
+        $findings | each { |finding|
+            print $"  Line ($finding.line): ($finding.severity) - ($finding.message)"
         }
     }
 }

@@ -1,0 +1,372 @@
+# CLAUDE.local.md - Personal Development Configuration
+
+> **Setup Instructions**: Copy this template to create your personal configuration
+> ```bash
+> cp CLAUDE.local.md.template CLAUDE.local.md
+> ```
+> 
+> **Important**: CLAUDE.local.md is gitignored and contains your personal development preferences.
+> It extends and customizes the project standards defined in CLAUDE.md.
+
+## Personal Workflow & Productivity
+
+### My Development Aliases
+```bash
+# Add your personal shortcuts here
+# Examples:
+# alias pydev="cd python-env && devbox shell"
+# alias tsdev="cd typescript-env && devbox shell"
+# alias rustdev="cd rust-env && devbox shell"
+# alias godev="cd go-env && devbox shell"
+# alias nudev="cd nushell-env && devbox shell"
+
+# Your custom aliases:
+```
+
+### Custom Commands & Scripts
+```bash
+# Personal automation scripts
+# Examples:
+# alias quick-test="devbox run test --verbose"
+# alias full-check="nu nushell-env/scripts/validate-all.nu parallel"
+# alias perf-check="nu nushell-env/scripts/performance-analytics.nu dashboard"
+
+# Your custom commands:
+```
+
+### Personal Productivity Shortcuts
+```bash
+# IDE/Editor shortcuts
+# Examples:
+# alias code-py="code python-env/src"
+# alias code-ts="code typescript-env/src"
+# alias vim-config="vim ~/.config/nvim/init.vim"
+
+# Your productivity shortcuts:
+```
+
+## Environment Customizations
+
+### Personal Devbox Packages
+```toml
+# Additional packages for your workflow
+# Add to your environment's devbox.json as needed
+# Examples:
+# - ripgrep (for faster searching)
+# - fd (for faster file finding)
+# - bat (for syntax-highlighted cat)
+# - delta (for better git diffs)
+
+# Your preferred packages:
+```
+
+### Local Environment Variables
+```bash
+# Personal environment variables (use .env files or shell config)
+# Examples:
+# export EDITOR="nvim"
+# export BROWSER="firefox"
+# export TERM="xterm-256color"
+
+# Your environment variables:
+```
+
+### Custom Shell Configuration
+```bash
+# Personal shell settings (zsh, bash, fish, nu)
+# Examples for Nushell config.nu:
+# $env.config.table.mode = "compact"
+# $env.config.completions.quick = false
+
+# Your shell customizations:
+```
+
+## Learning & Development Resources
+
+### Personal Bookmarks
+```markdown
+<!-- Add your learning resources and references -->
+
+### Programming Resources
+- [Your favorite Python resources]
+- [Your TypeScript/JavaScript resources]
+- [Your Rust resources]
+- [Your Go resources]
+- [Your Nushell resources]
+
+### Tools & Utilities
+- [Your preferred development tools]
+- [Useful CLI utilities]
+- [Productivity applications]
+
+### Documentation & References
+- [Project-specific documentation]
+- [External API references]
+- [Personal code snippets repositories]
+```
+
+### Personal Notes & Insights
+```markdown
+<!-- Your personal learning notes -->
+
+### Project-Specific Notes
+- Key insights about this project
+- Common gotchas and solutions
+- Performance optimization notes
+
+### Language-Specific Tips
+- Python best practices I've learned
+- TypeScript patterns that work well
+- Rust ownership insights
+- Go concurrency patterns
+- Nushell data manipulation tricks
+
+### Debugging Insights
+- Common issues and their solutions
+- Debugging techniques that work for me
+- Performance profiling approaches
+```
+
+## Local Tools & Automation
+
+### Personal Development Scripts
+```bash
+# Location: ~/scripts/ or ./local-scripts/
+# Examples:
+# - quick-backup.sh: Backup important work
+# - env-health-check.nu: Validate all environments
+# - performance-monitor.py: Track build performance
+
+# Your personal scripts:
+```
+
+### Custom Hooks & Automation
+```json
+// Additional hooks for .claude/settings.json (if needed)
+// Examples:
+// - Personal notification preferences
+// - Custom validation steps
+// - Individual performance tracking
+
+// Your custom hooks configuration:
+```
+
+### Local Testing & Quality Scripts
+```bash
+# Personal quality assurance automation
+# Examples:
+# alias my-lint="devbox run lint && echo 'Custom lint checks passed'"
+# alias my-test="devbox run test && my-integration-tests"
+
+# Your custom quality scripts:
+```
+
+## IDE & Editor Configuration
+
+### Editor Preferences
+```markdown
+<!-- Your IDE/editor setup -->
+
+### VS Code Extensions
+- Personal extension recommendations
+- Workspace-specific settings
+- Custom snippets and shortcuts
+
+### Vim/Neovim Configuration
+- Personal .vimrc/.init.vim preferences
+- Plugin configurations
+- Custom key mappings
+
+### Other Editors
+- IntelliJ IDEA settings
+- Sublime Text preferences
+- Emacs configuration
+```
+
+### Local Development Tools
+```markdown
+<!-- Personal development environment setup -->
+
+### Terminal Configuration
+- Terminal emulator preferences
+- Shell theme and customizations
+- Font and color scheme choices
+
+### Git Configuration
+- Personal git aliases
+- Custom git hooks
+- Local git configuration preferences
+
+### Database Tools
+- Local database setup
+- GUI tools preferences
+- Connection configurations
+```
+
+## Secrets & Local Configuration
+
+### Environment-Specific Settings
+```bash
+# Local development configuration (use .env files)
+# Store in environment-specific .env files, never commit secrets
+
+# Examples for .env files:
+# API_KEY=your_local_api_key
+# DATABASE_URL=your_local_db_url
+# DEBUG_MODE=true
+
+# Your local configuration patterns:
+```
+
+### Personal API Keys & Credentials
+```bash
+# Use environment variables or secret management tools
+# Examples:
+# - GitHub personal access tokens
+# - Local database credentials
+# - Development API keys
+# - Testing service credentials
+
+# Your secret management approach:
+```
+
+### Local Service Configuration
+```markdown
+<!-- Local development services -->
+
+### Local Databases
+- PostgreSQL/MySQL local setup
+- Redis configuration
+- Local testing data
+
+### External Services
+- Local API testing endpoints
+- Development service configurations
+- Testing webhook URLs
+```
+
+## Performance & Optimization
+
+### Personal Performance Tuning
+```bash
+# Individual performance optimizations
+# Examples:
+# - Custom compiler flags
+# - Build optimization settings
+# - Local caching strategies
+
+# Your performance optimizations:
+```
+
+### Local Monitoring & Metrics
+```bash
+# Personal development metrics
+# Examples:
+# - Build time tracking
+# - Test execution monitoring
+# - Resource usage analysis
+
+# Your monitoring setup:
+```
+
+## Troubleshooting & Debugging
+
+### Personal Debugging Techniques
+```markdown
+<!-- Your debugging approaches -->
+
+### Common Issues & Solutions
+- Issues you've encountered and solved
+- Environment-specific problems
+- Performance bottlenecks and fixes
+
+### Debugging Tools & Commands
+- Your preferred debugging tools
+- Useful diagnostic commands
+- Log analysis techniques
+
+### Emergency Recovery
+- Backup and restore procedures
+- Environment reset commands
+- Quick fix scripts
+```
+
+### Personal Support Resources
+```markdown
+<!-- Your go-to resources when stuck -->
+
+### Team Contacts
+- Who to ask for specific language help
+- Code review preferences
+- Collaboration patterns
+
+### External Support
+- Community forums you use
+- Stack Overflow searches
+- Documentation bookmarks
+```
+
+---
+
+## Template Customization Guide
+
+### Getting Started
+1. Copy this template: `cp CLAUDE.local.md.template CLAUDE.local.md`
+2. Remove sections you don't need
+3. Add your personal configurations
+4. Keep your CLAUDE.local.md updated as you learn and grow
+
+### Best Practices
+- **Keep it Personal**: This file is for YOUR preferences and workflows
+- **Don't Duplicate**: Avoid repeating information from CLAUDE.md
+- **Stay Organized**: Use the provided structure but adapt to your needs
+- **Regular Updates**: Update as your workflow evolves
+- **Security First**: Never commit secrets or credentials
+
+### Integration with CLAUDE.md
+
+**Inheritance Model**:
+- CLAUDE.md provides the foundation and team standards
+- CLAUDE.local.md extends and personalizes those standards
+- When in conflict, team standards (CLAUDE.md) take precedence
+- Use this file to enhance, not replace, project standards
+
+**Cross-Reference Guide**:
+- **Project Setup** → Defined in CLAUDE.md, customize your personal workflow here
+- **Style Guidelines** → Team standards in CLAUDE.md, add personal preferences here
+- **Core Commands** → Essential commands in CLAUDE.md, add personal aliases here
+- **Environment Setup** → Standard setup in CLAUDE.md, add personal packages here
+- **Testing Standards** → Requirements in CLAUDE.md, add personal testing tools here
+- **Hooks & Automation** → Core system in CLAUDE.md, add personal automation here
+
+**Override Patterns**:
+```bash
+# Example: Extending project aliases
+# CLAUDE.md defines: Essential Commands by Environment
+# CLAUDE.local.md adds: Personal shortcuts like "pydev", "quick-test"
+
+# Example: Personal environment variables
+# CLAUDE.md defines: Environment structure and standards
+# CLAUDE.local.md adds: Personal EDITOR, BROWSER, custom paths
+
+# Example: Custom hooks
+# CLAUDE.md defines: Core hooks system and team automation
+# CLAUDE.local.md adds: Personal notification preferences, custom validations
+```
+
+### Example Workflows
+```bash
+# Example: Personal development session startup
+personal-dev-setup() {
+    source ~/.claude-local-env
+    cd $PROJECT_ROOT
+    devbox shell
+}
+
+# Example: Personal quality check before commit
+personal-pre-commit() {
+    devbox run lint
+    devbox run test
+    my-custom-checks
+}
+```

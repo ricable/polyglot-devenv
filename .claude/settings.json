@@ -1,7 +1,12 @@
 {
+  "// Claude Code Hooks Configuration": "Intelligent automation for polyglot development environment",
+  "// Documentation": "Each hook provides specific automation for code quality, security, and performance",
   "hooks": {
     "PostToolUse": [
       {
+        "// Auto-formatting Hook": "Automatically formats code after editing files based on extension/directory",
+        "// Supported Languages": "Python (.py), TypeScript/JS (.ts/.js/.tsx/.jsx), Rust (.rs), Go (.go), Nushell (.nu)",
+        "// Performance Tracking": "Uses performance-analytics.nu to measure format times and detect slow operations",
         "matcher": "Edit|MultiEdit|Write",
         "hooks": [
           {
@@ -11,6 +16,9 @@
         ]
       },
       {
+        "// Test Runner Hook": "Automatically runs tests when test files are modified",
+        "// Test Patterns": "Python: test*.py, *_test.py, *.test.py | TS/JS: *.test.ts, *.spec.js | Rust: *_test.rs, tests/*.rs | Go: *_test.go, *.test.go | Nushell: test*.nu, *_test.nu",
+        "// Performance Analysis": "Tracks test execution time and detects flaky tests",
         "matcher": "Edit|MultiEdit|Write",
         "hooks": [
           {
@@ -20,6 +28,8 @@
         ]
       },
       {
+        "// Resource Monitoring Hook": "Records file edit events for resource usage tracking and performance analysis",
+        "// Purpose": "Monitors memory, CPU, and disk usage patterns during development activities",
         "matcher": "Edit|MultiEdit|Write",
         "hooks": [
           {
@@ -29,6 +39,9 @@
         ]
       },
       {
+        "// Dependency Scanner Hook": "Monitors changes to dependency files and triggers security/health scans",
+        "// Monitored Files": "package.json, pyproject.toml, Cargo.toml, go.mod, uv.lock, package-lock.json, Cargo.lock, go.sum",
+        "// Security Features": "Scans for outdated packages, security vulnerabilities, and dependency conflicts",
         "matcher": "Edit|MultiEdit|Write",
         "hooks": [
           {
@@ -38,6 +51,9 @@
         ]
       },
       {
+        "// Environment Drift Detection Hook": "Takes snapshots when configuration files change to detect environment inconsistencies",
+        "// Monitored Configs": "devbox.json, package.json, pyproject.toml, Cargo.toml, go.mod, tsconfig.json",
+        "// Drift Analysis": "Compares current state with baseline to detect configuration drift and inconsistencies",
         "matcher": "Edit|MultiEdit|Write",
         "hooks": [
           {
@@ -49,6 +65,10 @@
     ],
     "PreToolUse": [
       {
+        "// Pre-commit Validation Hook": "Runs linting and validation before git commits with cross-language support",
+        "// Environment Detection": "Automatically detects current environment (python-env, typescript-env, rust-env, go-env, nushell-env)",
+        "// Cross-language Support": "Falls back to cross-language validation if not in specific environment",
+        "// Performance Tracking": "Measures lint times and provides resource monitoring for pre-commit operations",
         "matcher": "Bash",
         "hooks": [
           {
@@ -58,6 +78,10 @@
         ]
       },
       {
+        "// Security Scanner Hook": "Scans files for security issues before edits, covering config files and source code",
+        "// Scanned Extensions": ".env, .config, .json, .yaml, .yml, .py, .js, .ts, .jsx, .tsx, .rs, .go",
+        "// Security Features": "Detects secrets, security anti-patterns, vulnerabilities, and configuration issues",
+        "// Output Limiting": "Limits output to first 5 lines to prevent spam while showing critical issues",
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
           {
@@ -67,6 +91,9 @@
         ]
       },
       {
+        "// Devbox Operation Monitor Hook": "Records resource usage for devbox operations like build, test, and lint",
+        "// Monitored Operations": "devbox run build, devbox run test, devbox run lint",
+        "// Resource Tracking": "Monitors CPU, memory, and execution time for performance optimization",
         "matcher": "Bash",
         "hooks": [
           {
@@ -78,6 +105,10 @@
     ],
     "Stop": [
       {
+        "// Task Completion Analysis Hook": "Runs comprehensive validation across all environments when tasks finish",
+        "// Git Integration": "Shows git status and checks repository state",
+        "// Cross-language Validation": "Runs parallel validation across Python, TypeScript, Rust, Go, and Nushell environments",
+        "// Performance Measurement": "Tracks validation performance and identifies bottlenecks",
         "hooks": [
           {
             "type": "command",
@@ -86,6 +117,10 @@
         ]
       },
       {
+        "// Intelligence Report Hook": "Generates comprehensive reports on performance, resources, dependencies, security, and environment consistency",
+        "// Report Categories": "Performance analysis, Resource optimization, Dependency health, Security status, Environment consistency",
+        "// Timeframe": "Analyzes data from the last 24 hours for actionable insights",
+        "// Graceful Degradation": "Shows helpful messages when data is unavailable rather than failing",
         "hooks": [
           {
             "type": "command",
@@ -94,6 +129,9 @@
         ]
       },
       {
+        "// GitHub Integration Hook": "Monitors for automated issue creation based on hook results and critical failures",
+        "// Automation Features": "Creates GitHub issues for critical failures, security alerts, and performance regressions",
+        "// Integration Benefits": "Enhances development workflow with automated tracking and team notifications",
         "hooks": [
           {
             "type": "command",
@@ -104,6 +142,10 @@
     ],
     "Notification": [
       {
+        "// Notification Logging Hook": "Logs Claude Code notifications to a file for tracking and analysis",
+        "// Log Location": "~/.claude/notifications.log",
+        "// Message Extraction": "Safely extracts notification messages with fallback for unknown notifications",
+        "// Purpose": "Provides structured logging and tracking of all Claude Code system notifications",
         "hooks": [
           {
             "type": "command",
@@ -114,6 +156,11 @@
     ],
     "PostToolUse_FailureHandling": [
       {
+        "// Failure Pattern Learning Hook": "Analyzes command failures to learn patterns and improve future error handling",
+        "// Environment Detection": "Automatically detects environment context (python, typescript, rust, go, nushell)",
+        "// Data Collection": "Records command, exit code, output, and environment for pattern analysis",
+        "// AI Learning": "Uses collected data to provide intelligent failure analysis and solution suggestions",
+        "// Trigger Condition": "Only activates when command exit code is non-zero (failure detected)",
         "matcher": "Bash",
         "hooks": [
           {

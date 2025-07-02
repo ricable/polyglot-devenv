@@ -4,7 +4,9 @@
 
 # Initialize dependency monitoring
 def "deps init" [] {
-    mkdir -p .dependencies
+    if not (".dependencies" | path exists) {
+        mkdir .dependencies
+    }
     
     if not (".dependencies/scan_results.jsonl" | path exists) {
         [] | save .dependencies/scan_results.jsonl
@@ -371,16 +373,16 @@ def "deps check-alerts" [scan_results: list] {
     for result in $scan_results {
         if $result.status != "success" { continue }
         
-        let env = $result.environment
+        let env_name = $result.environment
         
         # Critical vulnerabilities alert
         if $result.security_issues > $config.alert_thresholds.critical_vulnerabilities {
             let alert = {
                 type: "critical_vulnerabilities",
-                environment: $env,
+                environment: $env_name,
                 severity: "critical",
                 count: $result.security_issues,
-                message: $"($env): ($result.security_issues) security vulnerabilities found",
+                message: $"($env_name): ($result.security_issues) security vulnerabilities found",
                 timestamp: (date now),
                 recommendations: [
                     "Review and update vulnerable packages immediately",
@@ -396,11 +398,11 @@ def "deps check-alerts" [scan_results: list] {
         if $result.outdated_percentage > $config.alert_thresholds.outdated_packages_percentage {
             let alert = {
                 type: "outdated_packages",
-                environment: $env,
+                environment: $env_name,
                 severity: "warning",
                 percentage: $result.outdated_percentage,
                 count: $result.outdated_packages,
-                message: $"($env): ($result.outdated_percentage)% of packages are outdated (($result.outdated_packages)/($result.total_packages))",
+                message: $"($env_name): ($result.outdated_percentage)% of packages are outdated (($result.outdated_packages)/($result.total_packages))",
                 timestamp: (date now),
                 recommendations: [
                     "Review and update outdated packages",
@@ -553,8 +555,8 @@ def "deps report" [
 # Update dependencies interactively
 def "deps update" [
     environment?: string,
-    --auto: bool = false,  # Automatically update without prompts
-    --security-only: bool = false  # Only update packages with security issues
+    --auto = false,  # Automatically update without prompts
+    --security-only = false  # Only update packages with security issues
 ] {
     let environments_to_update = if $environment != null {
         [$environment]

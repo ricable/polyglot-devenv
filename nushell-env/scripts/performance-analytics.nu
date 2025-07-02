@@ -4,7 +4,9 @@
 
 # Initialize performance metrics database
 def "perf init" [] {
-    mkdir -p .performance
+    if not (".performance" | path exists) {
+        mkdir .performance
+    }
     
     if not (".performance/metrics.jsonl" | path exists) {
         [] | save .performance/metrics.jsonl
@@ -38,7 +40,7 @@ def "perf record" [
         timestamp: (date now),
         event_type: $event_type,
         environment: $environment,
-        duration_ms: ($duration | into int) / 1000000,  # Convert to milliseconds
+        duration_ms: (($duration | into int) / 1000000),  # Convert to milliseconds
         status: $status,
         details: $details,
         resource_usage: (sys | select host.memory host.cpu)
@@ -55,7 +57,7 @@ def "perf measure" [
     event_type: string,
     environment: string,
     command: string,
-    --quiet: bool = false
+    --quiet = false
 ] {
     if not $quiet {
         print $"🔍 Measuring ($event_type) in ($environment)..."
