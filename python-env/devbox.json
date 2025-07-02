@@ -1,0 +1,33 @@
+{
+  "packages": ["python@3.12", "uv", "ruff", "mypy"],
+  "shell": {
+    "init_hook": [
+      "echo 'Python Development Environment'",
+      "uv --version",
+      "python --version"
+    ],
+    "scripts": {
+      "setup": "uv sync --dev",
+      "install": "uv sync --dev",
+      "add": "uv add",
+      "remove": "uv remove", 
+      "format": "uv run ruff format .",
+      "lint": "uv run ruff check . --fix",
+      "type-check": "uv run mypy .",
+      "test": "uv run pytest --cov=src",
+      "test-watch": "uv run pytest --cov=src -f",
+      "clean": "find . -type d -name '__pycache__' -exec rm -rf {} + && find . -name '*.pyc' -delete",
+      "build": "uv build",
+      "deps": "uv tree",
+      "lock": "uv lock",
+      "sync": "uv sync --dev",
+      "run": "uv run",
+      "watch": "uv run pytest --cov=src -f"
+    }
+  },
+  "env": {
+    "PYTHONPATH": "$PWD/src",
+    "UV_CACHE_DIR": "$PWD/.uv-cache",
+    "UV_PYTHON_PREFERENCE": "only-managed"
+  }
+}

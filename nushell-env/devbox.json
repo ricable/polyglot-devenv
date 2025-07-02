@@ -1,0 +1,29 @@
+{
+  "packages": ["nushell@0.103.0", "teller@2.0.7", "git@2.49.0"],
+  "shell": {
+    "init_hook": [
+      "echo 'Nushell Automation Environment'",
+      "nu --version",
+      "echo 'Available scripts: nu scripts/list.nu'"
+    ],
+    "scripts": {
+      "setup": "mkdir -p scripts config && nu scripts/setup.nu",
+      "format": "nu scripts/format.nu",
+      "check": "nu scripts/check.nu",
+      "test": "nu scripts/test.nu",
+      "clean": "rm -rf .env *.log tmp/ || true",
+      "watch": "nu scripts/watch.nu",
+      "list": "nu scripts/list.nu",
+      "validate": "nu scripts/validate.nu",
+      "deploy": "nu scripts/deploy.nu",
+      "secrets": "teller scan",
+      "env-sync": "nu scripts/env-sync.nu"
+    }
+  },
+  "env": {
+    "NU_LIB_DIRS": "$PWD/scripts",
+    "NU_PLUGIN_DIRS": "$PWD/.nu-plugins",
+    "NUSHELL_CONFIG_DIR": "$PWD/config",
+    "TELLER_CONFIG": "$PWD/.teller.yml"
+  }
+}

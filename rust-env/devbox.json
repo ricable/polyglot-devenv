@@ -1,0 +1,26 @@
+{
+  "packages": ["rustc", "cargo", "rust-analyzer", "clippy", "rustfmt"],
+  "shell": {
+    "init_hook": [
+      "echo 'Rust Development Environment'",
+      "rustc --version",
+      "cargo --version"
+    ],
+    "scripts": {
+      "build": "cargo build",
+      "build-release": "cargo build --release",
+      "run": "cargo run",
+      "test": "cargo test",
+      "test-watch": "cargo watch -x test",
+      "format": "cargo fmt",
+      "lint": "cargo clippy -- -D warnings",
+      "clean": "cargo clean",
+      "check": "cargo check",
+      "doc": "cargo doc --open",
+      "watch": "cargo watch -x 'run'"
+    }
+  },
+  "env": {
+    "RUST_BACKTRACE": "1"
+  }
+}
