@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'file_path=$(echo \"$0\" | jq -r \".tool_input.file_path // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$file_path\" =~ \\.py$ ]] || [[ \"$PWD\" =~ python-env ]]; then echo \"🐍 Auto-formatting Python files...\" && cd python-env && devbox run format --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ \\.(ts|js|tsx|jsx)$ ]] || [[ \"$PWD\" =~ typescript-env ]]; then echo \"📘 Auto-formatting TypeScript/JavaScript files...\" && cd typescript-env && devbox run format --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ \\.rs$ ]] || [[ \"$PWD\" =~ rust-env ]]; then echo \"🦀 Auto-formatting Rust files...\" && cd rust-env && devbox run format --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ \\.go$ ]] || [[ \"$PWD\" =~ go-env ]]; then echo \"🐹 Auto-formatting Go files...\" && cd go-env && devbox run format --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ \\.nu$ ]] || [[ \"$PWD\" =~ nushell-env ]]; then echo \"🐚 Auto-formatting Nushell files...\" && cd nushell-env && devbox run format --quiet 2>/dev/null || true; fi'"
+            "command": "bash -c 'file_path=$(echo \"$0\" | jq -r \".tool_input.file_path // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$file_path\" =~ \\.py$ ]] || [[ \"$PWD\" =~ python-env ]]; then echo \"🐍 Auto-formatting Python files...\" && cd python-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"format\" \"python-env\" \"devbox run format --quiet\" --quiet || devbox run format --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ \\.(ts|js|tsx|jsx)$ ]] || [[ \"$PWD\" =~ typescript-env ]]; then echo \"📘 Auto-formatting TypeScript/JavaScript files...\" && cd typescript-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"format\" \"typescript-env\" \"devbox run format --quiet\" --quiet || devbox run format --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ \\.rs$ ]] || [[ \"$PWD\" =~ rust-env ]]; then echo \"🦀 Auto-formatting Rust files...\" && cd rust-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"format\" \"rust-env\" \"devbox run format --quiet\" --quiet || devbox run format --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ \\.go$ ]] || [[ \"$PWD\" =~ go-env ]]; then echo \"🐹 Auto-formatting Go files...\" && cd go-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"format\" \"go-env\" \"devbox run format --quiet\" --quiet || devbox run format --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ \\.nu$ ]] || [[ \"$PWD\" =~ nushell-env ]]; then echo \"🐚 Auto-formatting Nushell files...\" && cd nushell-env && nu scripts/performance-analytics.nu measure \"format\" \"nushell-env\" \"devbox run format --quiet\" --quiet || devbox run format --quiet 2>/dev/null || true; fi'"
           }
         ]
       },
@@ -15,7 +15,34 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'file_path=$(echo \"$0\" | jq -r \".tool_input.file_path // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$file_path\" =~ test.*\\.py$|.*_test\\.py$|.*\\.test\\.py$ ]]; then echo \"🧪 Running Python tests...\" && cd python-env && devbox run test --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ .*\\.(test|spec)\\.(ts|js)$|.*\\.test\\.(tsx|jsx)$ ]]; then echo \"🧪 Running TypeScript/JavaScript tests...\" && cd typescript-env && devbox run test --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ .*_test\\.rs$|tests/.*\\.rs$ ]]; then echo \"🧪 Running Rust tests...\" && cd rust-env && devbox run test --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ .*_test\\.go$|.*\\.test\\.go$ ]]; then echo \"🧪 Running Go tests...\" && cd go-env && devbox run test --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ test.*\\.nu$|.*_test\\.nu$ ]]; then echo \"🧪 Running Nushell tests...\" && cd nushell-env && devbox run test --quiet 2>/dev/null || true; fi'"
+            "command": "bash -c 'file_path=$(echo \"$0\" | jq -r \".tool_input.file_path // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$file_path\" =~ test.*\\.py$|.*_test\\.py$|.*\\.test\\.py$ ]]; then echo \"🧪 Running Python tests...\" && cd python-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"test\" \"python-env\" \"devbox run test --quiet\" --quiet || devbox run test --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ .*\\.(test|spec)\\.(ts|js)$|.*\\.test\\.(tsx|jsx)$ ]]; then echo \"🧪 Running TypeScript/JavaScript tests...\" && cd typescript-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"test\" \"typescript-env\" \"devbox run test --quiet\" --quiet || devbox run test --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ .*_test\\.rs$|tests/.*\\.rs$ ]]; then echo \"🧪 Running Rust tests...\" && cd rust-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"test\" \"rust-env\" \"devbox run test --quiet\" --quiet || devbox run test --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ .*_test\\.go$|.*\\.test\\.go$ ]]; then echo \"🧪 Running Go tests...\" && cd go-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"test\" \"go-env\" \"devbox run test --quiet\" --quiet || devbox run test --quiet 2>/dev/null || true; elif [[ \"$file_path\" =~ test.*\\.nu$|.*_test\\.nu$ ]]; then echo \"🧪 Running Nushell tests...\" && cd nushell-env && nu scripts/performance-analytics.nu measure \"test\" \"nushell-env\" \"devbox run test --quiet\" --quiet || devbox run test --quiet 2>/dev/null || true; fi'"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'nu nushell-env/scripts/resource-monitor.nu record \"file_edit\" 2>/dev/null || true'"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'file_path=$(echo \"$0\" | jq -r \".tool_input.file_path // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$file_path\" =~ (package\\.json|pyproject\\.toml|Cargo\\.toml|go\\.mod|uv\\.lock|package-lock\\.json|Cargo\\.lock|go\\.sum)$ ]]; then echo \"📦 Dependency file changed, running scan...\"; nu nushell-env/scripts/dependency-monitor.nu scan-all --quiet 2>/dev/null || echo \"Dependency scan failed\"; fi'"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'file_path=$(echo \"$0\" | jq -r \".tool_input.file_path // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$file_path\" =~ (devbox\\.json|package\\.json|pyproject\\.toml|Cargo\\.toml|go\\.mod|tsconfig\\.json)$ ]]; then echo \"⚙️  Configuration file changed, detecting drift...\"; nu nushell-env/scripts/environment-drift.nu snapshot --quiet 2>/dev/null || echo \"Drift snapshot completed\"; fi'"
           }
         ]
       }
@@ -26,7 +53,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'command=$(echo \"$0\" | jq -r \".tool_input.command // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$command\" =~ git.*commit ]]; then echo \"🔍 Running pre-commit validation...\" && if [[ \"$PWD\" =~ python-env ]]; then cd python-env && devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ typescript-env ]]; then cd typescript-env && devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ rust-env ]]; then cd rust-env && devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ go-env ]]; then cd go-env && devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ nushell-env ]]; then cd nushell-env && devbox run check --quiet 2>/dev/null || true; else echo \"Running cross-language validation...\" && nu nushell-env/scripts/validate-all.nu 2>/dev/null || true; fi; fi'"
+            "command": "bash -c 'command=$(echo \"$0\" | jq -r \".tool_input.command // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$command\" =~ git.*commit ]]; then echo \"🔍 Running pre-commit validation...\" && nu nushell-env/scripts/resource-monitor.nu record \"pre_commit\" 2>/dev/null || true && if [[ \"$PWD\" =~ python-env ]]; then cd python-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"lint\" \"python-env\" \"devbox run lint --quiet\" --quiet || devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ typescript-env ]]; then cd typescript-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"lint\" \"typescript-env\" \"devbox run lint --quiet\" --quiet || devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ rust-env ]]; then cd rust-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"lint\" \"rust-env\" \"devbox run lint --quiet\" --quiet || devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ go-env ]]; then cd go-env && nu ../nushell-env/scripts/performance-analytics.nu measure \"lint\" \"go-env\" \"devbox run lint --quiet\" --quiet || devbox run lint --quiet 2>/dev/null || true; elif [[ \"$PWD\" =~ nushell-env ]]; then cd nushell-env && nu scripts/performance-analytics.nu measure \"check\" \"nushell-env\" \"devbox run check --quiet\" --quiet || devbox run check --quiet 2>/dev/null || true; else echo \"Running cross-language validation...\" && nu nushell-env/scripts/performance-analytics.nu measure \"validate_all\" \"cross_language\" \"nu nushell-env/scripts/validate-all.nu\" --quiet || nu nushell-env/scripts/validate-all.nu 2>/dev/null || true; fi; fi'"
           }
         ]
       },
@@ -35,7 +62,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'file_path=$(echo \"$0\" | jq -r \".tool_input.file_path // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$file_path\" =~ \\.(env|config|json|yaml|yml)$ ]]; then echo \"🔐 Scanning for secrets in configuration files...\" && (command -v git-secrets >/dev/null && git secrets --scan \"$file_path\" 2>/dev/null || echo \"git-secrets not installed, skipping scan\") || true; fi'"
+            "command": "bash -c 'file_path=$(echo \"$0\" | jq -r \".tool_input.file_path // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$file_path\" =~ \\.(env|config|json|yaml|yml|py|js|ts|jsx|tsx|rs|go)$ ]]; then echo \"🔐 Running advanced security scan...\" && nu nushell-env/scripts/security-scanner.nu scan-file \"$file_path\" --quiet 2>/dev/null | head -5 || echo \"Security scan completed\"; fi'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'command=$(echo \"$0\" | jq -r \".tool_input.command // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$command\" =~ devbox.*run.*(build|test|lint) ]]; then nu nushell-env/scripts/resource-monitor.nu record \"devbox_operation\" 2>/dev/null || true; fi'"
           }
         ]
       }
@@ -45,7 +81,23 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'echo \"🎯 Task completed! Running status check...\"; git status 2>/dev/null || echo \"Not in a git repository\"; echo \"📊 Running cross-language validation summary...\"; nu nushell-env/scripts/validate-all.nu parallel 2>/dev/null || echo \"Cross-language validation completed with some issues\"'"
+            "command": "bash -c 'echo \"🎯 Task completed! Running intelligent analysis...\"; nu nushell-env/scripts/resource-monitor.nu record \"task_completion\" 2>/dev/null || true; git status 2>/dev/null || echo \"Not in a git repository\"; echo \"📊 Running cross-language validation summary...\"; nu nushell-env/scripts/performance-analytics.nu measure \"validate_all\" \"cross_language\" \"nu nushell-env/scripts/validate-all.nu parallel\" --quiet 2>/dev/null || nu nushell-env/scripts/validate-all.nu parallel 2>/dev/null || echo \"Cross-language validation completed with some issues\"'"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'echo \"🚀 Performance Analysis:\"; nu nushell-env/scripts/performance-analytics.nu report --days 1 --format table 2>/dev/null || echo \"Performance data unavailable\"; echo \"\\n💾 Resource Optimization:\"; nu nushell-env/scripts/resource-monitor.nu optimize 2>/dev/null || echo \"Resource analysis unavailable\"; echo \"\\n📦 Dependency Health:\"; nu nushell-env/scripts/dependency-monitor.nu report --days 1 --format summary 2>/dev/null || echo \"Dependency data unavailable\"; echo \"\\n🛡️  Security Status:\"; nu nushell-env/scripts/security-scanner.nu report --days 1 --format summary 2>/dev/null || echo \"Security data unavailable\"; echo \"\\n⚙️  Environment Consistency:\"; nu nushell-env/scripts/environment-drift.nu report --format summary 2>/dev/null || echo \"Drift analysis unavailable\"'"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'echo \"🔍 Monitoring for automated issue creation...\"; nu nushell-env/scripts/github-integration.nu monitor-hooks --quiet 2>/dev/null || echo \"GitHub integration monitoring completed\"'"
           }
         ]
       }
@@ -56,6 +108,17 @@
           {
             "type": "command",
             "command": "bash -c 'echo \"🔔 Claude Code notification: $(echo \"$0\" | jq -r \".message // \\\"Unknown notification\\\"\" 2>/dev/null || echo \"Unknown notification\")\" >> ~/.claude/notifications.log'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse_FailureHandling": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'exit_code=$(echo \"$0\" | jq -r \".exit_code // 0\" 2>/dev/null || echo \"0\"); if [[ \"$exit_code\" != \"0\" ]]; then command=$(echo \"$0\" | jq -r \".tool_input.command // \\\"\\\"\" 2>/dev/null || echo \"\"); output=$(echo \"$0\" | jq -r \".tool_result.stderr // .tool_result.stdout // \\\"\\\"\" 2>/dev/null || echo \"\"); environment=\"unknown\"; if [[ \"$PWD\" =~ python-env ]]; then environment=\"python\"; elif [[ \"$PWD\" =~ typescript-env ]]; then environment=\"typescript\"; elif [[ \"$PWD\" =~ rust-env ]]; then environment=\"rust\"; elif [[ \"$PWD\" =~ go-env ]]; then environment=\"go\"; elif [[ \"$PWD\" =~ nushell-env ]]; then environment=\"nushell\"; fi; echo \"🚨 Command failure detected, analyzing pattern...\"; nu nushell-env/scripts/failure-pattern-learning.nu record \"$environment\" \"$command\" \"$exit_code\" \"$output\" 2>/dev/null || echo \"Failure pattern analysis completed\"; fi'"
           }
         ]
       }

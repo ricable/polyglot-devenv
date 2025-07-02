@@ -214,34 +214,166 @@ This environment includes intelligent automation through Claude Code hooks that 
 
 ### Automated Workflows
 
-| Trigger | Action | Environments |
-|---------|--------|--------------|
-| **Edit files** | Auto-format code | Python (ruff), TypeScript (prettier), Rust (rustfmt), Go (goimports), Nushell |
-| **Edit test files** | Run relevant tests | pytest, jest, cargo test, go test, nu test |
-| **Git commit** | Pre-commit validation | Lint + secret scan across environments |
-| **Task completion** | Cross-language validation | `nu scripts/validate-all.nu` + git status |
-| **Claude notifications** | Log to file | `~/.claude/notifications.log` |
+| Trigger | Action | Intelligence Added |
+|---------|--------|-------------------|
+| **Edit files** | Auto-format + performance tracking | Measures format time, detects slow operations |
+| **Edit test files** | Run tests + performance analysis | Tracks test execution time, detects flaky tests |
+| **Edit config files** | Dependency scan + drift detection | Monitors dependency changes, environment consistency |
+| **Edit code files** | Security scan | Detects security anti-patterns, secrets, vulnerabilities |
+| **Git commit** | Pre-commit validation + analytics | Performance-tracked linting, resource monitoring |
+| **Command failures** | Failure pattern learning | Analyzes error patterns, suggests solutions, learns fixes |
+| **Task completion** | Intelligence report + GitHub integration | Performance, security, dependencies, automated issue creation |
+| **Claude notifications** | Structured logging | Enhanced notification tracking and analysis |
 
-### Hook Management with Nushell
+### Intelligent Monitoring Features
+
+**Real-time Intelligence**:
+- 🔍 **Performance Analytics**: Track build times, test duration, and resource usage patterns
+- 💾 **Resource Monitoring**: Monitor memory, CPU, and disk usage with intelligent alerts
+- 📦 **Dependency Health**: Proactive scanning for outdated packages and security vulnerabilities
+- 🛡️ **Security Analysis**: Advanced pattern detection for security anti-patterns and secrets
+- ⚙️ **Environment Drift**: Automatic detection of configuration changes and inconsistencies
+- 🧠 **Failure Pattern Learning**: AI-powered analysis of build/test failures with solution suggestions
+- 🧪 **Test Intelligence**: Flaky test detection and performance regression analysis
+- 🔗 **GitHub Integration**: Automated issue creation for critical failures and performance regressions
+
+**Proactive Alerts**:
+- Performance degradation warnings (>50% increase in build times)
+- High resource usage alerts (>85% memory/CPU usage)  
+- Critical security vulnerabilities (immediate notification)
+- Outdated dependencies (>30% of packages outdated)
+- Environment drift detection (configuration inconsistencies)
+- Automated GitHub issues for critical failures and security alerts
+
+### Hook Management Commands
 
 ```bash
-# Check current hooks status
-nu nushell-env/scripts/hooks.nu status
+# Install hooks for this project
+./.claude/install-hooks.sh
 
-# Generate hooks from CLAUDE.md rules automatically
-nu nushell-env/scripts/hooks.nu generate
+# Generate hooks from natural language
+/project:polyglot-rule2hook "Format code after editing files"
 
-# Validate hook configuration
-nu nushell-env/scripts/hooks.nu validate
+# Test environment setup
+./.claude/install-hooks.sh --test
+```
 
-# Test hook functionality
-nu nushell-env/scripts/hooks.nu test --hook-type format
-nu nushell-env/scripts/hooks.nu test --hook-type lint
-nu nushell-env/scripts/hooks.nu test --hook-type test
+## Intelligent Development Analytics
 
-# Backup and restore configurations
-nu nushell-env/scripts/hooks.nu backup --name "before-changes"
-nu nushell-env/scripts/hooks.nu restore "before-changes" --scope project
+The enhanced hooks system provides comprehensive analytics and monitoring capabilities:
+
+### 📊 Performance Intelligence
+```bash
+# View performance analytics dashboard
+nu nushell-env/scripts/performance-analytics.nu dashboard
+
+# Generate performance reports
+nu nushell-env/scripts/performance-analytics.nu report --days 7
+
+# Get optimization suggestions
+nu nushell-env/scripts/performance-analytics.nu optimize
+
+# Track specific command performance
+nu nushell-env/scripts/performance-analytics.nu measure "build" "python-env" "devbox run build"
+```
+
+### 💾 Resource Monitoring
+```bash
+# Monitor resource usage in real-time
+nu nushell-env/scripts/resource-monitor.nu watch --interval 30
+
+# Generate resource usage reports
+nu nushell-env/scripts/resource-monitor.nu report --hours 24
+
+# Get resource optimization recommendations
+nu nushell-env/scripts/resource-monitor.nu optimize
+
+# Monitor command resource usage
+nu nushell-env/scripts/resource-monitor.nu monitor-command "devbox run test"
+```
+
+### 📦 Dependency Health
+```bash
+# Scan all environments for dependency issues
+nu nushell-env/scripts/dependency-monitor.nu scan-all
+
+# Generate dependency health reports
+nu nushell-env/scripts/dependency-monitor.nu report --format summary
+
+# Update dependencies with security fixes
+nu nushell-env/scripts/dependency-monitor.nu update --security-only
+
+# View dependency optimization suggestions
+nu nushell-env/scripts/dependency-monitor.nu optimize
+```
+
+### 🛡️ Security Analysis
+```bash
+# Run comprehensive security scan
+nu nushell-env/scripts/security-scanner.nu scan-all
+
+# Generate security reports
+nu nushell-env/scripts/security-scanner.nu report --format summary
+
+# Auto-fix security issues where possible
+nu nushell-env/scripts/security-scanner.nu fix --severity critical --dry-run
+
+# Scan specific file for security issues
+nu nushell-env/scripts/security-scanner.nu scan-file "src/app.py"
+```
+
+### ⚙️ Environment Consistency
+```bash
+# Create baseline snapshot of all environments
+nu nushell-env/scripts/environment-drift.nu snapshot --save-as-baseline
+
+# Detect configuration drift
+nu nushell-env/scripts/environment-drift.nu detect
+
+# Generate drift analysis report
+nu nushell-env/scripts/environment-drift.nu report --format summary
+
+# Synchronize environment from baseline
+nu nushell-env/scripts/environment-drift.nu sync python-env --from-baseline
+```
+
+### 🧠 Failure Pattern Learning
+```bash
+# Learn patterns from recent failures
+nu nushell-env/scripts/failure-pattern-learning.nu learn-patterns --days 7
+
+# Generate failure analysis report
+nu nushell-env/scripts/failure-pattern-learning.nu report --days 7
+
+# Simulate failure scenarios for testing
+nu nushell-env/scripts/failure-pattern-learning.nu simulate python --scenario dependency_missing
+```
+
+### 🧪 Test Intelligence
+```bash
+# Run intelligent test analysis
+nu nushell-env/scripts/test-intelligence.nu run python-env
+
+# Detect flaky tests
+nu nushell-env/scripts/test-intelligence.nu detect-flaky --environment python-env
+
+# Analyze test performance trends
+nu nushell-env/scripts/test-intelligence.nu analyze-trends --days 7
+```
+
+### 🔗 GitHub Integration
+```bash
+# Initialize GitHub integration
+nu nushell-env/scripts/github-integration.nu init
+
+# Monitor hooks for automated issue creation
+nu nushell-env/scripts/github-integration.nu monitor-hooks
+
+# Generate GitHub integration report
+nu nushell-env/scripts/github-integration.nu report --days 7
+
+# Test integration (dry run)
+nu nushell-env/scripts/github-integration.nu test --dry-run
 ```
 
 ### Intelligent Environment Detection
@@ -444,85 +576,17 @@ devbox generate shell-completion     # Generate shell completions
 devbox lock                          # Lock current package versions
 ```
 
-### Sample Python Devbox Configuration
-```json
-{
-  "packages": ["python@3.12", "uv", "ruff", "mypy"],
-  "shell": {
-    "init_hook": [
-      "echo 'Python Development Environment'",
-      "uv --version",
-      "python --version"
-    ],
-    "scripts": {
-      "setup": "uv sync --dev",
-      "install": "uv sync --dev",
-      "add": "uv add",
-      "remove": "uv remove", 
-      "format": "uv run ruff format .",
-      "lint": "uv run ruff check . --fix",
-      "type-check": "uv run mypy .",
-      "test": "uv run pytest --cov=src",
-      "test-watch": "uv run pytest --cov=src -f",
-      "clean": "find . -type d -name '__pycache__' -exec rm -rf {} + && find . -name '*.pyc' -delete",
-      "build": "uv build",
-      "deps": "uv tree",
-      "lock": "uv lock",
-      "sync": "uv sync --dev",
-      "run": "uv run"
-    }
-  },
-  "env": {
-    "PYTHONPATH": "$PWD/src",
-    "UV_CACHE_DIR": "$PWD/.uv-cache",
-    "UV_PYTHON_PREFERENCE": "only-managed"
-  },
-  "services": {
-    "postgres": {
-      "packages": ["postgresql"],
-      "process_configs": [
-        {
-          "command": "postgres -D $PWD/.devbox/postgresql/data",
-          "log_location": "$PWD/.devbox/postgresql/postgresql.log"
-        }
-      ]
-    }
-  }
-}
-```
+### Sample Devbox Configurations
 
-### Sample Nushell Devbox Configuration
-```json
-{
-  "packages": ["nushell@0.103.0", "teller@2.0.7", "git@2.49.0"],
-  "shell": {
-    "init_hook": [
-      "echo 'Nushell Automation Environment'",
-      "nu --version",
-      "echo 'Available scripts: nu scripts/list.nu'"
-    ],
-    "scripts": {
-      "setup": "mkdir -p scripts config && nu scripts/setup.nu",
-      "format": "nu scripts/format.nu",
-      "check": "nu scripts/check.nu",
-      "test": "nu scripts/test.nu",
-      "clean": "rm -rf .env *.log tmp/ || true",
-      "watch": "nu scripts/watch.nu",
-      "list": "nu scripts/list.nu",
-      "validate": "nu scripts/validate.nu",
-      "deploy": "nu scripts/deploy.nu",
-      "secrets": "teller scan",
-      "env-sync": "nu scripts/env-sync.nu"
-    }
-  },
-  "env": {
-    "NU_LIB_DIRS": "$PWD/scripts",
-    "NU_PLUGIN_DIRS": "$PWD/.nu-plugins",
-    "NUSHELL_CONFIG_DIR": "$PWD/config",
-    "TELLER_CONFIG": "$PWD/.teller.yml"
-  }
-}
-```
+**Python Environment**:
+- Packages: `python@3.12`, `uv`, `ruff`, `mypy`, `pytest`
+- Scripts: `setup`, `format`, `lint`, `test`, `build`
+- Environment: `PYTHONPATH`, `UV_CACHE_DIR`
+
+**Nushell Environment**:
+- Packages: `nushell@0.103.0`, `teller`, `git`
+- Scripts: `format`, `check`, `test`, `validate`, `deploy`
+- Environment: `NU_LIB_DIRS`, `NUSHELL_CONFIG_DIR`
 
 ## Testing Standards
 - 80% code coverage minimum
@@ -546,7 +610,28 @@ devbox lock                          # Lock current package versions
 7. **Nushell for Automation** - Use Nushell as the default scripting shell for DevOps workflows
 8. **Auto-activation** - Use direnv for seamless environment switching
 9. **Structured Data First** - Leverage Nushell's data-oriented approach for configuration and automation
-10. **Intelligent Automation** - Claude Code hooks provide automated quality gates and workflow optimization
+10. **Intelligence-Driven Development** - Comprehensive analytics, learning, and automation via Claude Code hooks
+
+## Intelligence-Driven Development Summary
+
+This environment features **8 intelligent systems** that transform reactive development into proactive workflows:
+
+**Core Intelligence Systems**:
+- 🔍 **Performance Analytics** - Real-time tracking with optimization recommendations
+- 💾 **Resource Monitoring** - Memory/CPU/disk usage analysis with proactive alerts
+- 📦 **Dependency Health** - Cross-language vulnerability scanning and update management
+- 🛡️ **Security Analysis** - Advanced pattern detection for security anti-patterns
+- ⚙️ **Environment Drift** - Configuration consistency and synchronization
+- 🧠 **Failure Learning** - AI-powered failure analysis with solution suggestions
+- 🧪 **Test Intelligence** - Flaky test detection and performance regression analysis
+- 🔗 **GitHub Integration** - Automated issue creation and development workflow enhancement
+
+**Key Benefits**:
+- **Zero Manual Intervention** - Quality gates run automatically via hooks
+- **Proactive Issue Detection** - Critical failures create GitHub issues with solutions
+- **Continuous Learning** - System learns from failures to prevent future issues
+- **Cross-Language Support** - Python, TypeScript, Rust, Go, and Nushell environments
+- **Performance Optimization** - Real-time analytics with actionable recommendations
 
 ## Security & Performance
 - Input validation at boundaries
