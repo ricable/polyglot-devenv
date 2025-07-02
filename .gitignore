@@ -264,3 +264,10 @@ config/production.json
 .claude/settings.json.backup*
 .claude/backups/
 .claude/notifications.log
+
+# Conversion and automation artifacts
+CONVERSION-SUMMARY.md
+
+# Local development files
+CLAUDE.local.md
+.mcp.json
