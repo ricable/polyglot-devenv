@@ -1,11 +1,11 @@
 package main
 
-import"fmt"
+import "fmt"
 
-func helloWorld(name string)string{
-return fmt.Sprintf("Hello, %s!",name)
+func helloWorld(name string) string {
+	return fmt.Sprintf("Hello, %s!", name)
 }
 
-func main(){
-fmt.Println(helloWorld("World"))
+func main() {
+	fmt.Println(helloWorld("World"))
 }
