@@ -3,6 +3,79 @@
 ## Project Overview
 Polyglot development environment for Python, TypeScript, Rust, Go, and Nushell with AI-optimized practices using Devbox for isolated, reproducible environments. Nushell serves as the default scripting shell for automation, DevOps workflows, and cross-language orchestration.
 
+### 🪝 Claude Code Hooks Automation
+This environment includes intelligent Claude Code hooks that automate quality gates, formatting, testing, and validation across all languages. The hooks system provides:
+
+- **Auto-formatting**: Automatically formats code after editing (ruff, prettier, rustfmt, goimports)
+- **Auto-testing**: Runs tests when test files are modified
+- **Pre-commit validation**: Lints code and scans for secrets before commits
+- **Cross-language validation**: Comprehensive quality checks across all environments
+- **Task completion automation**: Shows status and runs validation when tasks finish
+
+**Quick Setup**: Run `./.claude/install-hooks.sh` to enable automated workflows, or use `/project:polyglot-rule2hook` in Claude Code to convert natural language rules to hooks.
+
+⚠️ **Note**: If you don't need hooks automation, simply ignore the `.claude/` directory. All devbox environments work independently without hooks.
+
+## Repository & Collaboration
+
+### Getting Started
+```bash
+# Clone to another machine
+git clone https://github.com/ricable/polyglot-devenv.git
+cd polyglot-devenv
+
+# Install prerequisites (if needed)
+curl -fsSL https://get.jetify.com/devbox | bash
+brew install direnv
+
+# Set up any environment
+cd python-env && devbox shell
+devbox run install
+```
+
+### Collaboration Workflow
+```bash
+# Fork the repository on GitHub, then:
+git clone https://github.com/YOUR_USERNAME/polyglot-devenv.git
+cd polyglot-devenv
+
+# Create a feature branch
+git checkout -b feature/your-feature-name
+
+# Make changes, test, and commit
+devbox run test  # In any environment
+git add .
+git commit -m "Add your feature"
+
+# Push and create pull request
+git push origin feature/your-feature-name
+# Then create PR on GitHub
+```
+
+### CI/CD Setup
+```bash
+# Set up GitHub Actions workflows for all environments
+cd nushell-env && devbox shell
+devbox run create-workflow
+
+# Or create workflows for specific languages
+nu scripts/github.nu create-workflow --language python
+nu scripts/github.nu create-workflow --language typescript
+
+# Additional automation capabilities
+nu scripts/github.nu setup                    # Configure GitHub CLI
+nu scripts/github.nu status                   # Check repo status
+nu scripts/github.nu release --version v1.0.0 # Create releases
+nu scripts/kubernetes.nu setup                # Set up K8s dev environment
+nu scripts/containers.nu build --env all      # Build all container images
+```
+
+### Repository Structure
+- **Public Repository**: https://github.com/ricable/polyglot-devenv
+- **Issues & Discussions**: Use GitHub Issues for bug reports and feature requests
+- **Contributing**: See individual environment READMEs for language-specific guidelines
+- **Automation**: Comprehensive Nushell scripts for DevOps workflows
+
 ## Quick Reference
 
 ### Essential Commands by Language
@@ -100,8 +173,92 @@ polyglot-project/
 │   ├── config/         # Configuration files (.env, secrets)
 │   ├── common.nu       # Shared utilities and functions
 │   └── .teller.yml     # Secret management configuration
+├── .claude/            # Claude Code configuration
+│   ├── commands/       # Custom slash commands
+│   │   └── polyglot-rule2hook.md  # Enhanced rule2hook command
+│   ├── polyglot-hooks-config.json # Predefined hook configuration
+│   ├── install-hooks.sh           # Hooks installation script
+│   ├── README-hooks.md            # Hooks documentation
+│   └── settings.json              # Project-specific settings (created on install)
 └── CLAUDE.md           # This file
 ```
+
+## Claude Code Hooks Automation
+
+This environment includes intelligent automation through Claude Code hooks that provide real-time quality assurance, formatting, and validation across all programming languages.
+
+### Quick Setup
+
+**Install Hooks (Recommended)**:
+```bash
+# Install project-specific hooks (recommended for teams)
+./.claude/install-hooks.sh
+
+# Or install globally for all your projects
+./.claude/install-hooks.sh --user
+
+# Test environment setup
+./.claude/install-hooks.sh --test
+```
+
+**Using Natural Language Rules**:
+```bash
+# In Claude Code, convert rules to hooks automatically
+/project:polyglot-rule2hook "Format code after editing files"
+/project:polyglot-rule2hook "Run tests when test files are modified"
+/project:polyglot-rule2hook "Validate all environments when finishing tasks"
+
+# Convert existing CLAUDE.md automation rules
+/project:polyglot-rule2hook
+```
+
+### Automated Workflows
+
+| Trigger | Action | Environments |
+|---------|--------|--------------|
+| **Edit files** | Auto-format code | Python (ruff), TypeScript (prettier), Rust (rustfmt), Go (goimports), Nushell |
+| **Edit test files** | Run relevant tests | pytest, jest, cargo test, go test, nu test |
+| **Git commit** | Pre-commit validation | Lint + secret scan across environments |
+| **Task completion** | Cross-language validation | `nu scripts/validate-all.nu` + git status |
+| **Claude notifications** | Log to file | `~/.claude/notifications.log` |
+
+### Hook Management with Nushell
+
+```bash
+# Check current hooks status
+nu nushell-env/scripts/hooks.nu status
+
+# Generate hooks from CLAUDE.md rules automatically
+nu nushell-env/scripts/hooks.nu generate
+
+# Validate hook configuration
+nu nushell-env/scripts/hooks.nu validate
+
+# Test hook functionality
+nu nushell-env/scripts/hooks.nu test --hook-type format
+nu nushell-env/scripts/hooks.nu test --hook-type lint
+nu nushell-env/scripts/hooks.nu test --hook-type test
+
+# Backup and restore configurations
+nu nushell-env/scripts/hooks.nu backup --name "before-changes"
+nu nushell-env/scripts/hooks.nu restore "before-changes" --scope project
+```
+
+### Intelligent Environment Detection
+
+Hooks automatically detect the appropriate environment using:
+
+1. **File extension analysis**: `.py` → Python, `.ts/.js` → TypeScript, `.rs` → Rust, `.go` → Go, `.nu` → Nushell
+2. **Directory context**: Working in `python-env/` automatically uses Python tools
+3. **Cross-language orchestration**: `Stop` hooks run comprehensive validation across all environments
+
+### Benefits
+
+- **Zero manual intervention**: Quality gates run automatically
+- **Environment isolation**: Each language uses its own tools via devbox
+- **Performance optimized**: Hooks use `--quiet` flags and error handling
+- **Team consistency**: Project-specific hooks ensure same standards for all developers
+- **Customizable**: Natural language rule conversion makes it easy to add new automations
 
 ## Devbox Setup
 
@@ -389,6 +546,7 @@ devbox lock                          # Lock current package versions
 7. **Nushell for Automation** - Use Nushell as the default scripting shell for DevOps workflows
 8. **Auto-activation** - Use direnv for seamless environment switching
 9. **Structured Data First** - Leverage Nushell's data-oriented approach for configuration and automation
+10. **Intelligent Automation** - Claude Code hooks provide automated quality gates and workflow optimization
 
 ## Security & Performance
 - Input validation at boundaries
