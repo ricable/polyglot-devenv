@@ -1,5 +1,5 @@
 {
-  "packages": ["nodejs@20", "typescript@latest"],
+  "packages": ["nodejs@20", "typescript@latest", "nushell"],
   "shell": {
     "init_hook": [
       "echo 'TypeScript Development Environment'",
@@ -16,7 +16,14 @@
       "test":       "npm run test",
       "test-watch": "npm run test -- --watch",
       "clean":      "rm -rf dist node_modules/.cache",
-      "type-check": "npm run type-check"
+      "type-check": "npm run type-check",
+      "devpod:provision": "bash ../devpod-automation/scripts/provision-typescript.sh",
+      "devpod:connect": "echo 'ℹ️  Each provision creates a new workspace. Use devbox run devpod:provision to create and connect.'",
+      "devpod:start": "echo 'ℹ️  Use devbox run devpod:provision to create a new workspace or devpod list to see existing ones.'",
+      "devpod:stop": "bash -c 'echo \"🛑 Available TypeScript workspaces:\"; devpod list | grep polyglot-typescript-devpod || echo \"No TypeScript workspaces found\"'",
+      "devpod:delete": "bash -c 'echo \"🗑️  TypeScript workspaces to delete:\"; devpod list | grep polyglot-typescript-devpod || echo \"No TypeScript workspaces found\"'",
+      "devpod:sync": "echo 'Sync: Update devbox.json and rebuild workspace with devbox run devpod:provision'",
+      "devpod:status": "bash -c 'echo \"📊 TypeScript DevPod workspaces:\"; devpod list | grep polyglot-typescript-devpod || echo \"No TypeScript workspaces found. Run: devbox run devpod:provision\"'"
     }
   },
   "env": {

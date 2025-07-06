@@ -63,7 +63,7 @@ export def "run safe" [
 
 # Check if command exists
 export def "cmd exists" [command: string] {
-    which $command | length > 0
+    (which $command | length) > 0
 }
 
 # Wait for condition with timeout
@@ -91,7 +91,7 @@ export def "config load" [file_path: string] {
     if ($file_path | path exists) {
         if ($file_path | str ends-with ".json") {
             open $file_path | from json
-        } else if ($file_path | str ends-with ".yaml" or $file_path | str ends-with ".yml") {
+        } else if (($file_path | str ends-with ".yaml") or ($file_path | str ends-with ".yml")) {
             open $file_path | from yaml
         } else {
             open $file_path
@@ -107,7 +107,7 @@ export def "config save" [
 ] {
     if ($file_path | str ends-with ".json") {
         $data | to json | save $file_path --force
-    } else if ($file_path | str ends-with ".yaml" or $file_path | str ends-with ".yml") {
+    } else if (($file_path | str ends-with ".yaml") or ($file_path | str ends-with ".yml")) {
         $data | to yaml | save $file_path --force
     } else {
         $data | save $file_path --force
@@ -198,8 +198,8 @@ export def "fs cleanup-backups" [
 
 # Network helpers
 export def "net wait-for-port" [
-    host: string = "localhost"
     port: int
+    host: string = "localhost"
     --timeout = 30
 ] {
     wait for {
@@ -214,6 +214,6 @@ export def "secret get" [key: string] {
     if (cmd exists "teller") {
         teller get $key
     } else {
-        env get-or-prompt $key $"Enter value for ($key)" --secret
+        env get-or-prompt $key $"Enter value for ($key)" --secret true
     }
 }

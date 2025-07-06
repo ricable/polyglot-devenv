@@ -5,9 +5,19 @@ description = "Python component of polyglot development environment"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi",
-    "pydantic",
+    "pydantic[email]",
     "httpx",
     "requests>=2.32.4",
+    "sqlalchemy[asyncio]>=2.0",
+    "asyncpg>=0.30.0",
+    "alembic>=1.16.2",
+    "pyjwt>=2.10.1",
+    "passlib[bcrypt]>=1.7.4",
+    "python-multipart>=0.0.20",
+    "pydantic-settings>=2.10.1",
+    "pytest-asyncio>=1.0.0",
+    "aiosqlite>=0.21.0",
+    "uvicorn[standard]>=0.35.0",
 ]
 
 [project.optional-dependencies]

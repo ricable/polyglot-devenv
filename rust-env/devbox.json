@@ -1,5 +1,5 @@
 {
-  "packages": ["rustc", "cargo", "rust-analyzer", "clippy", "rustfmt"],
+  "packages": ["rustc", "cargo", "rust-analyzer", "clippy", "rustfmt", "nushell"],
   "shell": {
     "init_hook": [
       "echo 'Rust Development Environment'",
@@ -17,7 +17,14 @@
       "clean": "cargo clean",
       "check": "cargo check",
       "doc": "cargo doc --open",
-      "watch": "cargo watch -x 'run'"
+      "watch": "cargo watch -x 'run'",
+      "devpod:provision": "bash ../devpod-automation/scripts/provision-rust.sh",
+      "devpod:connect": "echo 'ℹ️  Each provision creates a new workspace. Use devbox run devpod:provision to create and connect.'",
+      "devpod:start": "echo 'ℹ️  Use devbox run devpod:provision to create a new workspace or devpod list to see existing ones.'",
+      "devpod:stop": "bash -c 'echo \"🛑 Available Rust workspaces:\"; devpod list | grep polyglot-rust-devpod || echo \"No Rust workspaces found\"'",
+      "devpod:delete": "bash -c 'echo \"🗑️  Rust workspaces to delete:\"; devpod list | grep polyglot-rust-devpod || echo \"No Rust workspaces found\"'",
+      "devpod:sync": "echo 'Sync: Update devbox.json and rebuild workspace with devbox run devpod:provision'",
+      "devpod:status": "bash -c 'echo \"📊 Rust DevPod workspaces:\"; devpod list | grep polyglot-rust-devpod || echo \"No Rust workspaces found. Run: devbox run devpod:provision\"'"
     }
   },
   "env": {

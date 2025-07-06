@@ -38,7 +38,7 @@ def "main suggest" [] {
 def analyze_changes [changes: list<string>] {
     let languages = ($changes | each { |file|
         if ($file | str ends-with ".py") { "python" }
-        else if ($file | str ends-with ".ts") or ($file | str ends-with ".tsx") or ($file | str ends-with ".js") or ($file | str ends-with ".jsx") { "typescript" }
+        else if (($file | str ends-with ".ts") or ($file | str ends-with ".tsx") or ($file | str ends-with ".js") or ($file | str ends-with ".jsx")) { "typescript" }
         else if ($file | str ends-with ".rs") { "rust" }
         else if ($file | str ends-with ".go") { "go" }
         else if ($file | str ends-with ".nu") { "nushell" }

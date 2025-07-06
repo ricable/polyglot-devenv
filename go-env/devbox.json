@@ -1,5 +1,5 @@
 {
-  "packages": ["go@1.22", "golangci-lint@latest"],
+  "packages": ["go@1.22", "golangci-lint@latest", "nushell"],
   "shell": {
     "init_hook": [
       "echo 'Go Development Environment'",
@@ -16,7 +16,14 @@
       "mod-tidy":     "go mod tidy",
       "mod-download": "go mod download",
       "vet":          "go vet ./...",
-      "watch":        "find . -name '*.go' | entr -r go run ./cmd/main.go"
+      "watch":        "find . -name '*.go' | entr -r go run ./cmd/main.go",
+      "devpod:provision": "bash ../devpod-automation/scripts/provision-go.sh",
+      "devpod:connect": "echo 'ℹ️  Each provision creates a new workspace. Use devbox run devpod:provision to create and connect.'",
+      "devpod:start": "echo 'ℹ️  Use devbox run devpod:provision to create a new workspace or devpod list to see existing ones.'",
+      "devpod:stop": "bash -c 'echo \"🛑 Available Go workspaces:\"; devpod list | grep polyglot-go-devpod || echo \"No Go workspaces found\"'",
+      "devpod:delete": "bash -c 'echo \"🗑️  Go workspaces to delete:\"; devpod list | grep polyglot-go-devpod || echo \"No Go workspaces found\"'",
+      "devpod:sync": "echo 'Sync: Update devbox.json and rebuild workspace with devbox run devpod:provision'",
+      "devpod:status": "bash -c 'echo \"📊 Go DevPod workspaces:\"; devpod list | grep polyglot-go-devpod || echo \"No Go workspaces found. Run: devbox run devpod:provision\"'"
     }
   },
   "env": {

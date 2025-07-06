@@ -75,8 +75,18 @@ polyglot-project/
 │   ├── scripts/        # Nushell automation scripts
 │   ├── config/         # Configuration files (.env, secrets)
 │   └── common.nu       # Shared utilities and functions
+├── devpod-automation/  # DevPod containerized development
+│   ├── scripts/        # Provisioning and management scripts
+│   ├── templates/      # Language-specific devcontainer templates
+│   ├── config/         # Docker provider configuration
+│   └── README.md       # DevPod automation documentation
+├── context-engineering/  # Context Engineering framework
+│   ├── templates/      # PRP templates for all environments
+│   ├── PRPs/           # Generated Product Requirements Prompts
+│   ├── examples/       # Example PRPs and implementations
+│   └── docs/           # Integration and usage documentation
 ├── .claude/            # Claude Code configuration
-│   ├── commands/       # Custom slash commands
+│   ├── commands/       # Custom slash commands (including /generate-prp, /execute-prp)
 │   ├── install-hooks.sh           # Hooks installation script
 │   └── settings.json              # Project-specific settings
 ├── CLAUDE.md           # This file (project standards)
@@ -86,13 +96,15 @@ polyglot-project/
 ## Quick Setup & Core Commands
 
 ### Essential Commands by Environment
-| Environment | Enter | Install | Format | Lint | Test |
-|-------------|-------|---------|--------|------|------|
-| Python | `cd python-env && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` |
-| TypeScript | `cd typescript-env && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` |
-| Rust | `cd rust-env && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` |
-| Go | `cd go-env && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` |
-| Nushell | `cd nushell-env && devbox shell` | `devbox run setup` | `devbox run format` | `devbox run check` | `devbox run test` |
+| Environment | Enter | Install | Format | Lint | Test | DevPod (Single) | DevPod (Multi) | Context Engineering |
+|-------------|-------|---------|--------|------|------|-----------------|----------------|---------------------|
+| Python | `cd python-env && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-python` | `/devpod-python 3` | `/generate-prp feature.md --env python-env` |
+| TypeScript | `cd typescript-env && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-typescript` | `/devpod-typescript 2` | `/generate-prp feature.md --env typescript-env` |
+| Rust | `cd rust-env && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-rust` | `/devpod-rust 4` | `/generate-prp feature.md --env rust-env` |
+| Go | `cd go-env && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-go` | `/devpod-go 5` | `/generate-prp feature.md --env go-env` |
+| Nushell | `cd nushell-env && devbox shell` | `devbox run setup` | `devbox run format` | `devbox run check` | `devbox run test` | `devbox run devpod:provision` | *N/A* | `/generate-prp feature.md --env nushell-env` |
+
+> **DevPod Enhancement**: New parameterized Claude Code commands allow provisioning multiple isolated workspaces: `/devpod-python 3` creates 3 unique Python environments with automatic VS Code integration.
 
 ### Core Devbox Commands
 ```bash
@@ -147,6 +159,389 @@ This environment includes intelligent automation through Claude Code hooks that 
 - 🔗 **GitHub Integration** - Automated issue creation and development workflow enhancement
 
 > **Custom Automation**: Add personal hooks and automation scripts to `CLAUDE.local.md`
+
+## DevPod Containerized Development
+
+This environment includes comprehensive DevPod automation for containerized development workflows, providing isolated, reproducible development environments using Docker containers.
+
+### Quick DevPod Setup
+```bash
+# Complete DevPod setup (install + configure + optimize) - first time only
+nu devpod-automation/scripts/docker-setup.nu --install --configure --optimize
+
+# Check DevPod status
+nu devpod-automation/scripts/docker-setup.nu --status
+
+# Provision any language environment (creates unique workspace each time)
+cd python-env && devbox run devpod:provision    # Creates polyglot-python-devpod-YYYYMMDD-HHMMSS
+cd typescript-env && devbox run devpod:provision
+cd rust-env && devbox run devpod:provision
+cd go-env && devbox run devpod:provision
+cd nushell-env && devbox run devpod:provision
+
+# Manage workspaces
+devbox run devpod:status     # Check workspace status for this language
+devpod list                  # See all workspaces across languages
+devbox run devpod:sync       # Sync environment changes
+```
+
+### DevPod Automation Features
+
+| Feature | Description | Usage |
+|---------|-------------|-------|
+| **Automated Provisioning** | One-command workspace creation | `devbox run devpod:provision` |
+| **Language-Specific Templates** | Optimized devcontainer configs per language | Automatic template selection |
+| **Workspace Lifecycle** | Complete container management | `devbox run devpod:start/stop/delete` |
+| **Environment Sync** | Bidirectional Devbox ↔ DevPod sync | `devbox run devpod:sync` |
+| **Performance Optimization** | Docker caching and resource tuning | Automatic via `docker-setup.nu` |
+| **IDE Integration** | VS Code with extensions and settings | `devbox run devpod:connect` |
+
+### 🚀 DevPod Unique Workspace Creation
+
+**Every `devbox run devpod:provision` now creates a fresh workspace with a unique timestamp:**
+- **Format**: `polyglot-{language}-devpod-{YYYYMMDD-HHMMSS}`
+- **Example**: `polyglot-python-devpod-20250706-223016`
+
+**Updated Scripts:**
+1. **`provision-python.sh`** ✅ (Creates unique Python workspaces)
+2. **`provision-typescript.sh`** ✅ (Creates unique TypeScript workspaces)  
+3. **`provision-rust.sh`** ✅ (Creates unique Rust workspaces)
+4. **`provision-go.sh`** ✅ (Creates unique Go workspaces)
+5. **`provision-nushell.sh`** ✅ (Creates unique Nushell workspaces)
+6. **`provision-all.sh`** ✅ (Management script)
+
+**Updated Environment Commands:**
+- `devbox run devpod:provision` - Always creates a new workspace + opens VS Code
+- `devbox run devpod:status` - Shows all workspaces for that language
+- `devbox run devpod:stop` - Lists available workspaces to stop  
+- `devbox run devpod:delete` - Lists available workspaces to delete
+- `devbox run devpod:connect` - Guidance to use provision for new workspaces
+
+### 🎯 Three Ways to Use DevPod
+
+```bash
+# Method 1: Direct script execution
+bash devpod-automation/scripts/provision-python.sh
+bash devpod-automation/scripts/provision-typescript.sh
+bash devpod-automation/scripts/provision-rust.sh
+bash devpod-automation/scripts/provision-go.sh
+bash devpod-automation/scripts/provision-nushell.sh
+
+# Method 2: From within environments (most convenient)
+cd python-env && devbox run devpod:provision
+cd typescript-env && devbox run devpod:provision
+cd rust-env && devbox run devpod:provision
+cd go-env && devbox run devpod:provision
+cd nushell-env && devbox run devpod:provision
+
+# Method 3: Using the management script
+bash devpod-automation/scripts/provision-all.sh status     # Check all
+bash devpod-automation/scripts/provision-all.sh provision  # Interactive setup
+bash devpod-automation/scripts/provision-all.sh list       # Show all scripts
+```
+
+### 🧹 Workspace Management
+
+```bash
+# Check all your workspaces
+devpod list
+
+# Check language-specific workspaces
+cd python-env && devbox run devpod:status
+cd typescript-env && devbox run devpod:status
+cd rust-env && devbox run devpod:status
+cd go-env && devbox run devpod:status
+cd nushell-env && devbox run devpod:status
+
+# Clean up old workspaces when needed
+bash devpod-automation/scripts/provision-all.sh clean-all
+
+# Stop specific workspaces
+devpod stop polyglot-python-devpod-20250706-223016
+devpod list  # Find workspace names first
+
+# Delete specific workspaces  
+devpod delete polyglot-python-devpod-20250706-223016
+```
+
+### 🎯 Workflow Benefits
+
+- **🔄 Fresh Environment** - Each provision gives you a completely clean container
+- **🧪 Experimentation** - Test different configurations without affecting other workspaces  
+- **🛡️ Isolation** - Complete isolation between different development sessions
+- **🚀 Fast Setup** - Same fast provisioning, but with unique containers each time
+- **📊 Tracking** - Easy to track which workspace is which via timestamps
+- **🧹 Easy Cleanup** - Clean up old workspaces when no longer needed
+
+## Context Engineering Framework
+
+This environment includes a comprehensive context engineering framework that provides structured, template-based feature development with AI-optimized practices.
+
+### Quick Context Engineering Setup
+```bash
+# PHASE 1: PRP Generation (Native Environment)
+/generate-prp features/user-api.md --env python-env        # Generate comprehensive PRP
+/generate-prp features/monitoring.md --env multi           # Cross-environment feature
+
+# PHASE 2: DevPod Provisioning (Prepare Execution Environment)
+cd python-env && devbox run devpod:provision               # Create isolated workspace
+devbox run devpod:connect                                  # Connect VS Code to container
+
+# PHASE 3: PRP Execution (Inside DevPod Container)
+/execute-prp context-engineering/PRPs/user-api-python.md --validate
+
+# Environment-specific examples
+/generate-prp features/api-endpoint.md --env python-env     # FastAPI patterns
+/generate-prp features/web-component.md --env typescript-env # React/Vue patterns  
+/generate-prp features/cli-tool.md --env rust-env          # Clap + async patterns
+/generate-prp features/microservice.md --env go-env        # Context + interfaces
+/generate-prp features/automation.md --env nushell-env     # Pipeline automation
+```
+
+### Context Engineering Features
+
+| Feature | Description | Usage |
+|---------|-------------|-------|
+| **PRP Generation** | Create comprehensive implementation prompts | `/generate-prp <feature-file> --env <environment>` |
+| **PRP Execution** | Implement features with validation loops | `/execute-prp <prp-file> --validate --monitor` |
+| **Multi-Language Templates** | Environment-specific PRP templates | Automatic template selection based on target |
+| **Cross-Environment Support** | Handle features spanning multiple environments | `--env multi` for polyglot features |
+| **Validation Integration** | Leverage existing hooks and quality gates | Automatic integration with devbox tooling |
+| **Performance Tracking** | Monitor implementation performance | Built-in analytics and optimization |
+
+### Context Engineering Commands
+
+| Command | Purpose | Example |
+|---------|---------|---------|
+| **`/generate-prp`** | Generate comprehensive PRPs | `/generate-prp features/api.md --env python-env` |
+| **`/execute-prp`** | Execute PRPs with validation | `/execute-prp context-engineering/PRPs/api-python.md` |
+
+### Template Structure
+
+```
+context-engineering/
+├── templates/
+│   ├── prp_base.md           # Polyglot base template
+│   ├── python_prp.md         # FastAPI, uv, async patterns
+│   ├── typescript_prp.md     # Node.js, strict mode, Jest
+│   ├── rust_prp.md           # Tokio, serde, ownership patterns
+│   ├── go_prp.md             # Context, interfaces, simplicity
+│   └── nushell_prp.md        # Structured data, automation
+├── PRPs/                     # Generated implementation prompts
+├── examples/                 # Reference implementations
+│   └── python-api-example.md # Complete FastAPI example
+└── docs/                     # Integration and usage guides
+```
+
+### Environment-Specific Context Engineering
+
+**Python Environment**:
+- FastAPI patterns with async/await
+- SQLAlchemy async ORM integration
+- uv package management exclusively
+- Pydantic v2 for data validation
+- pytest-asyncio for testing
+
+**TypeScript Environment**:
+- Strict TypeScript with no `any` types
+- Modern Node.js patterns with ES modules
+- Jest testing with comprehensive coverage
+- ESLint and Prettier integration
+- Result patterns for error handling
+
+**Rust Environment**:
+- Async-first with Tokio runtime
+- Memory safety and ownership patterns
+- serde for serialization
+- Custom error types with thiserror
+- Comprehensive testing with cargo
+
+**Go Environment**:
+- Context for cancellation and timeouts
+- Small, focused interfaces
+- Explicit error handling
+- Table-driven tests
+- Simple, readable code patterns
+
+**Nushell Environment**:
+- Structured data processing
+- Type safety with parameter hints
+- Cross-environment orchestration
+- Pipeline-oriented function design
+- Automation and DevOps workflows
+
+### PRP Generation vs Execution Workflow
+
+**PRP Generation** (Native Environment):
+- 🧠 **Research & Planning** - Generate comprehensive PRPs with full context
+- 📊 **Codebase Analysis** - Deep analysis of existing patterns and dependencies
+- 🔍 **External Research** - WebSearch for documentation and best practices
+- 📝 **Template Application** - Environment-specific PRP generation
+
+**PRP Execution** (DevPod Remote Environment):
+- 🐳 **Isolated Implementation** - Clean containerized development environment
+- ⚡ **Focused Development** - Distraction-free coding with all context provided
+- 🛡️ **Environment Safety** - No host system pollution during implementation
+- 📦 **Reproducible Results** - Consistent execution across different machines
+
+### Integration Benefits
+
+**Development Workflow**:
+- 🚀 **Structured Development** - Comprehensive PRPs with all necessary context
+- 🔄 **Dual-Environment Approach** - Generation in native, execution in containers
+- 📦 **Complete Implementation** - One-pass feature implementation with validation
+- ⚡ **Integrated Tooling** - Seamless integration with existing hooks and automation
+
+**Quality Assurance**:
+- ✅ **Validation Gates** - Automatic quality checks per environment
+- 🧪 **Comprehensive Testing** - Testing patterns included in all templates
+- 📊 **Performance Tracking** - Built-in performance monitoring and optimization
+- 🔍 **Security Integration** - Security scanning and validation included
+
+**Cross-Environment Support**:
+- 🌐 **Polyglot Features** - Support for features spanning multiple languages
+- 🔗 **Integration Points** - Clear patterns for cross-environment communication
+- 📈 **Monitoring** - Unified monitoring across all environments
+- 🛡️ **Security** - Consistent security patterns across languages
+
+### 🔗 Seamless Environment Integration
+
+The framework seamlessly integrates with your existing polyglot environment, leveraging all the automation scripts, hooks, and intelligence systems you've already built. It provides a structured approach to feature development that ensures consistency, quality, and comprehensive context for AI-assisted implementation.
+
+**Integrated Systems**:
+- ✅ **DevPod Automation** - PRPs can target containerized environments  
+- ✅ **Claude Code Hooks** - Automatic validation and quality gates
+- ✅ **Performance Analytics** - Built-in monitoring and optimization
+- ✅ **Security Scanning** - Integrated security analysis and patterns
+- ✅ **Cross-Language Support** - Unified patterns across all environments
+- ✅ **Intelligence Systems** - Leverages existing resource monitoring and analytics
+
+> **Getting Started**: See `context-engineering/docs/integration-guide.md` for comprehensive usage instructions and examples.
+
+### DevPod Commands by Environment
+
+| Action | Python | TypeScript | Rust | Go | Nushell |
+|--------|--------|------------|------|----|---------| 
+| **Provision** | `devbox run devpod:provision` | `devbox run devpod:provision` | `devbox run devpod:provision` | `devbox run devpod:provision` | `devbox run devpod:provision` |
+| **Connect** | `devbox run devpod:connect` | `devbox run devpod:connect` | `devbox run devpod:connect` | `devbox run devpod:connect` | `devbox run devpod:connect` |
+| **Start** | `devbox run devpod:start` | `devbox run devpod:start` | `devbox run devpod:start` | `devbox run devpod:start` | `devbox run devpod:start` |
+| **Stop** | `devbox run devpod:stop` | `devbox run devpod:stop` | `devbox run devpod:stop` | `devbox run devpod:stop` | `devbox run devpod:stop` |
+| **Status** | `devbox run devpod:status` | `devbox run devpod:status` | `devbox run devpod:status` | `devbox run devpod:status` | `devbox run devpod:status` |
+| **Sync** | `devbox run devpod:sync` | `devbox run devpod:sync` | `devbox run devpod:sync` | `devbox run devpod:sync` | `devbox run devpod:sync` |
+
+### DevPod Workspace Management
+```bash
+# Management script operations (recommended)
+bash devpod-automation/scripts/provision-all.sh status     # Check all workspace status
+bash devpod-automation/scripts/provision-all.sh provision  # Interactive provisioning
+bash devpod-automation/scripts/provision-all.sh list       # Show all available scripts
+bash devpod-automation/scripts/provision-all.sh stop-all   # Stop all running workspaces
+bash devpod-automation/scripts/provision-all.sh clean-all  # Delete all workspaces
+
+# Advanced Nushell operations (optional)
+nu devpod-automation/scripts/devpod-manage.nu list                    # List all workspaces
+nu devpod-automation/scripts/devpod-manage.nu status --all            # Check all workspace status
+nu devpod-automation/scripts/devpod-manage.nu cleanup --all           # Clean up unused workspaces
+
+# Environment synchronization
+nu devpod-automation/scripts/devpod-sync.nu --auto                    # Auto-sync mode (watch for changes)
+nu devpod-automation/scripts/devpod-sync.nu --recreate               # Force recreate workspaces after sync
+```
+
+### Docker Provider Optimization
+```bash
+# Complete Docker setup and optimization
+nu devpod-automation/scripts/docker-setup.nu --install --configure --optimize
+
+# Performance monitoring and tuning
+nu devpod-automation/scripts/docker-setup.nu --status               # Check Docker provider status
+docker system df                                                    # Check Docker resource usage
+docker system prune -af                                            # Clean up unused resources
+
+# Cache volume management
+docker volume ls | grep devpod                                     # List DevPod cache volumes
+docker volume create devpod-npm-cache                              # Create additional cache volumes
+```
+
+### DevContainer Templates
+
+The automation system includes optimized devcontainer templates for each language:
+
+- **Base Template**: Common VS Code extensions and settings
+- **Python**: Python 3.12, uv package manager, debugging support
+- **TypeScript**: Node.js 20, TypeScript strict mode, hot reload
+- **Rust**: Latest Rust toolchain, rust-analyzer, debugging with CodeLLDB
+- **Go**: Go 1.22, delve debugger, air for live reload
+- **Nushell**: Nushell environment with automation tools
+- **Full-Stack**: Multi-language template for complex projects
+
+### Integration Benefits
+
+**Development Workflow**:
+- 🚀 **Instant Setup** - Zero-configuration development environments
+- 🔄 **Environment Consistency** - Identical development experience across machines
+- 📦 **Dependency Isolation** - Containers prevent host system pollution
+- ⚡ **Performance** - Optimized Docker caching and resource allocation
+
+**CI/CD Integration**:
+- ✅ **Reproducible Builds** - Same container environment for dev and CI
+- 🧪 **Test Isolation** - Clean test environments for each run
+- 📊 **Resource Control** - Predictable resource usage and limits
+- 🔍 **Debugging** - Full debugging capabilities in containerized environment
+
+> **Performance Note**: DevPod workspaces use optimized Docker configurations with build caching, volume mounts for package caches, and resource limits tuned for development workflows.
+
+## 🎯 Complete Development Workflow Summary
+
+This polyglot environment now provides three integrated development approaches:
+
+### 🏠 **Native Development** (Devbox)
+```bash
+cd python-env && devbox shell
+devbox run test && devbox run lint
+```
+
+### 🐳 **Containerized Development** (DevPod)  
+```bash
+cd python-env && devbox run devpod:provision  # Creates unique workspace + opens VS Code
+devbox run devpod:status                      # Check your workspaces
+devpod list                                   # See all workspaces
+```
+
+### 🧠 **AI-Assisted Development** (Context Engineering)
+```bash
+# Phase 1: Generate PRP (Native Environment)
+/generate-prp features/api.md --env python-env
+
+# Phase 2: Provision DevPod (Execution Environment) 
+cd python-env && devbox run devpod:provision
+
+# Phase 3: Execute PRP (Inside Container)
+/execute-prp context-engineering/PRPs/api-python.md --validate
+```
+
+### 🔗 **Unified Commands by Environment**
+
+| Environment | Native | DevPod | Context Engineering (Generation → Execution) |
+|-------------|--------|--------|---------------------------------------------|
+| **Python** | `devbox run test` | `devbox run devpod:provision` | `/generate-prp` (native) → `/execute-prp` (DevPod) |
+| **TypeScript** | `devbox run test` | `devbox run devpod:provision` | `/generate-prp` (native) → `/execute-prp` (DevPod) |
+| **Rust** | `devbox run test` | `devbox run devpod:provision` | `/generate-prp` (native) → `/execute-prp` (DevPod) |
+| **Go** | `devbox run test` | `devbox run devpod:provision` | `/generate-prp` (native) → `/execute-prp` (DevPod) |
+| **Nushell** | `devbox run test` | `devbox run devpod:provision` | `/generate-prp` (native) → `/execute-prp` (DevPod) |
+
+### 🚀 **Key Benefits**
+
+- **🔄 Flexibility** - Choose your development style: native, containerized, or AI-assisted
+- **🛡️ Dual-Environment Safety** - Generate PRPs in native environment, execute in isolated containers
+- **🧪 Fresh Execution** - Each DevPod workspace provides a completely clean implementation environment
+- **🧠 Comprehensive Context** - Rich planning in native environment with focused execution in containers
+- **⚡ Performance** - Optimized Docker configurations and build caching for execution environments
+- **🔗 Seamless Integration** - PRPs work across native and containerized environments
+- **📊 Unified Monitoring** - Performance analytics track both generation and execution phases
+- **🧹 Clean Workflows** - Native planning without host pollution during implementation
+
+> **Getting Started**: Use any approach independently or combine them. The environment is designed for maximum flexibility while maintaining consistency and quality across all development workflows.
 
 ## Style Guidelines
 

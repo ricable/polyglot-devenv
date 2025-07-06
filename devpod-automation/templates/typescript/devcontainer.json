@@ -1,0 +1,107 @@
+{
+    "name": "Polyglot TypeScript Development Environment",
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:20-bullseye",
+    
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": true,
+            "username": "vscode",
+            "userUid": "1000",
+            "userGid": "1000"
+        },
+        "ghcr.io/devcontainers/features/git:1": {
+            "version": "latest",
+            "ppa": true
+        },
+        "ghcr.io/devcontainers/features/github-cli:1": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest",
+            "enableNonRootDocker": true
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "20",
+            "nodeGypDependencies": true
+        }
+    },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.vscode-json",
+                "github.vscode-github-actions",
+                "github.vscode-pull-request-github",
+                "eamodio.gitlens",
+                "ms-vscode.vscode-typescript-next",
+                "bradlc.vscode-tailwindcss",
+                "esbenp.prettier-vscode",
+                "dbaeumer.vscode-eslint",
+                "mkhl.direnv"
+            ],
+            "settings": {
+                "editor.formatOnSave": true,
+                "editor.rulers": [88, 100, 120],
+                "files.trimTrailingWhitespace": true,
+                "git.autofetch": true,
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "typescript.preferences.importModuleSpecifier": "relative",
+                "[typescript]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode"
+                },
+                "[javascript]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode"
+                }
+            }
+        },
+        "devpod": {
+            "prebuildRepository": "ghcr.io/ricable/polyglot-devenv-typescript"
+        }
+    },
+
+    "containerEnv": {
+        "TERM": "xterm-256color",
+        "COLORTERM": "truecolor",
+        "NODE_ENV": "development",
+        "NPM_CONFIG_UPDATE_NOTIFIER": "false"
+    },
+
+    "mounts": [
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
+        "type=volume,source=vscode-server-extensions,target=/home/vscode/.vscode-server/extensions",
+        "type=volume,source=npm-cache,target=/home/vscode/.npm",
+        "type=volume,source=node-modules,target=/workspace/node_modules"
+    ],
+
+    "forwardPorts": [3000, 8080, 5173],
+    "portsAttributes": {
+        "3000": {
+            "label": "Frontend Development Server",
+            "onAutoForward": "notify"
+        },
+        "8080": {
+            "label": "API Server",
+            "onAutoForward": "notify"
+        },
+        "5173": {
+            "label": "Vite Development Server",
+            "onAutoForward": "notify"
+        }
+    },
+
+    "postCreateCommand": [
+        "echo 'Setting up TypeScript environment...'",
+        "npm install",
+        "echo 'TypeScript environment ready'"
+    ],
+
+    "postStartCommand": "echo 'TypeScript DevPod ready. Run: npm run dev'",
+    
+    "postAttachCommand": "echo 'Welcome to TypeScript DevPod! 📘'",
+
+    "workspaceFolder": "/workspace",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+    
+    "remoteUser": "vscode",
+    "updateRemoteUserUID": true
+}
