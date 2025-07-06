@@ -171,8 +171,24 @@ nu devpod-automation/scripts/docker-setup.nu --install --configure --optimize
 
 # Check DevPod status
 nu devpod-automation/scripts/docker-setup.nu --status
+```
 
-# Provision any language environment (creates unique workspace each time)
+### 🚀 **NEW: Parameterized DevPod Commands**
+
+```bash
+# Single workspace per language (default behavior)
+/devpod-python           # 1 Python workspace
+/devpod-typescript       # 1 TypeScript workspace  
+/devpod-rust             # 1 Rust workspace
+/devpod-go               # 1 Go workspace
+
+# Multiple workspaces for parallel development
+/devpod-python 3         # 3 Python workspaces
+/devpod-typescript 2     # 2 TypeScript workspaces
+/devpod-rust 4           # 4 Rust workspaces
+/devpod-go 5             # 5 Go workspaces
+
+# Alternative: Traditional devbox commands (creates 1 workspace)
 cd python-env && devbox run devpod:provision    # Creates polyglot-python-devpod-YYYYMMDD-HHMMSS
 cd typescript-env && devbox run devpod:provision
 cd rust-env && devbox run devpod:provision
@@ -180,40 +196,88 @@ cd go-env && devbox run devpod:provision
 cd nushell-env && devbox run devpod:provision
 
 # Manage workspaces
-devbox run devpod:status     # Check workspace status for this language
-devpod list                  # See all workspaces across languages
+devpod list                                     # See all workspaces across languages
+devpod stop <workspace-name>                   # Stop specific workspace
+bash devpod-automation/scripts/provision-all.sh clean-all  # Clean up old workspaces
 devbox run devpod:sync       # Sync environment changes
 ```
 
 ### DevPod Automation Features
 
-| Feature | Description | Usage |
-|---------|-------------|-------|
-| **Automated Provisioning** | One-command workspace creation | `devbox run devpod:provision` |
-| **Language-Specific Templates** | Optimized devcontainer configs per language | Automatic template selection |
-| **Workspace Lifecycle** | Complete container management | `devbox run devpod:start/stop/delete` |
-| **Environment Sync** | Bidirectional Devbox ↔ DevPod sync | `devbox run devpod:sync` |
-| **Performance Optimization** | Docker caching and resource tuning | Automatic via `docker-setup.nu` |
-| **IDE Integration** | VS Code with extensions and settings | `devbox run devpod:connect` |
+| Feature | Description | Usage | Enhancement |
+|---------|-------------|-------|-------------|
+| **Parameterized Provisioning** | Create multiple workspaces with count parameter | `/devpod-python 3` | **🆕 NEW** |
+| **Automated Provisioning** | One-command workspace creation | `devbox run devpod:provision` | ✅ Enhanced |
+| **Language-Specific Templates** | Optimized devcontainer configs per language | Automatic template selection | ✅ Enhanced |
+| **Workspace Lifecycle** | Complete container management | `devbox run devpod:start/stop/delete` | ✅ Enhanced |
+| **Environment Sync** | Bidirectional Devbox ↔ DevPod sync | `devbox run devpod:sync` | ✅ Enhanced |
+| **Performance Optimization** | Docker caching and resource tuning | Automatic via `docker-setup.nu` | ✅ Enhanced |
+| **IDE Integration** | VS Code with extensions and settings | Automatic per workspace | ✅ Enhanced |
+
+### 🎯 **NEW: Claude Code DevPod Commands**
+
+| Command | Parameters | Description | Workspace Naming |
+|---------|------------|-------------|------------------|
+| **`/devpod-python [count]`** | count: 1-10 (default: 1) | Provision Python environments | `polyglot-python-devpod-YYYYMMDD-HHMMSS-N` |
+| **`/devpod-typescript [count]`** | count: 1-10 (default: 1) | Provision TypeScript environments | `polyglot-typescript-devpod-YYYYMMDD-HHMMSS-N` |
+| **`/devpod-rust [count]`** | count: 1-10 (default: 1) | Provision Rust environments | `polyglot-rust-devpod-YYYYMMDD-HHMMSS-N` |
+| **`/devpod-go [count]`** | count: 1-10 (default: 1) | Provision Go environments | `polyglot-go-devpod-YYYYMMDD-HHMMSS-N` |
+
+**Key Features:**
+- 🔢 **Parameterized Count**: Provision 1-10 workspaces per command
+- 🏷️ **Unique Naming**: Timestamp + sequence number for complete isolation
+- ⚡ **Parallel Support**: Multiple environments for testing, experimentation, collaboration
+- 🛡️ **Safety Limits**: Maximum 10 workspaces to prevent resource exhaustion
+- 📊 **Progress Tracking**: Real-time feedback during provisioning
+- 🔧 **Auto VS Code**: Each workspace automatically opens VS Code
+
+### 🎯 **Use Cases & Examples**
+
+**Single Development Environment:**
+```bash
+/devpod-python          # Quick single Python workspace
+/devpod-rust            # Quick single Rust workspace
+```
+
+**Parallel Development:**
+```bash
+/devpod-python 3        # 3 Python workspaces for:
+                        # - Feature development
+                        # - Bug fixes  
+                        # - Experimentation
+```
+
+**Team Collaboration:**
+```bash
+/devpod-typescript 2    # 2 TypeScript workspaces for:
+                        # - Frontend components
+                        # - Backend API development
+```
+
+**Testing & Validation:**
+```bash
+/devpod-rust 4          # 4 Rust workspaces for:
+                        # - Different dependency versions
+                        # - Performance comparisons
+                        # - Feature branches
+                        # - Integration testing
+```
 
 ### 🚀 DevPod Unique Workspace Creation
 
-**Every `devbox run devpod:provision` now creates a fresh workspace with a unique timestamp:**
-- **Format**: `polyglot-{language}-devpod-{YYYYMMDD-HHMMSS}`
-- **Example**: `polyglot-python-devpod-20250706-223016`
+**Every workspace gets a unique identifier:**
+- **Format**: `polyglot-{language}-devpod-{YYYYMMDD-HHMMSS}-{N}`
+- **Examples**:
+  - `polyglot-python-devpod-20250706-225233-1`
+  - `polyglot-python-devpod-20250706-225239-2`
+  - `polyglot-python-devpod-20250706-225245-3`
 
-**Updated Scripts:**
-1. **`provision-python.sh`** ✅ (Creates unique Python workspaces)
-2. **`provision-typescript.sh`** ✅ (Creates unique TypeScript workspaces)  
-3. **`provision-rust.sh`** ✅ (Creates unique Rust workspaces)
-4. **`provision-go.sh`** ✅ (Creates unique Go workspaces)
-5. **`provision-nushell.sh`** ✅ (Creates unique Nushell workspaces)
-6. **`provision-all.sh`** ✅ (Management script)
-
-**Updated Environment Commands:**
-- `devbox run devpod:provision` - Always creates a new workspace + opens VS Code
-- `devbox run devpod:status` - Shows all workspaces for that language
-- `devbox run devpod:stop` - Lists available workspaces to stop  
+**Workspace Features:**
+- 🔧 **Auto VS Code**: Each workspace automatically opens VS Code
+- 🔌 **SSH Access**: Direct container access via `ssh workspace-name.devpod`
+- 🏷️ **Language-Specific Extensions**: Pre-configured for optimal development
+- 📦 **Complete Isolation**: Independent containers with no conflicts
+- 🚀 **Fast Provisioning**: Optimized Docker caching for speed  
 - `devbox run devpod:delete` - Lists available workspaces to delete
 - `devbox run devpod:connect` - Guidance to use provision for new workspaces
 
@@ -522,13 +586,13 @@ cd python-env && devbox run devpod:provision
 
 ### 🔗 **Unified Commands by Environment**
 
-| Environment | Native | DevPod | Context Engineering (Generation → Execution) |
-|-------------|--------|--------|---------------------------------------------|
-| **Python** | `devbox run test` | `devbox run devpod:provision` | `/generate-prp` (native) → `/execute-prp` (DevPod) |
-| **TypeScript** | `devbox run test` | `devbox run devpod:provision` | `/generate-prp` (native) → `/execute-prp` (DevPod) |
-| **Rust** | `devbox run test` | `devbox run devpod:provision` | `/generate-prp` (native) → `/execute-prp` (DevPod) |
-| **Go** | `devbox run test` | `devbox run devpod:provision` | `/generate-prp` (native) → `/execute-prp` (DevPod) |
-| **Nushell** | `devbox run test` | `devbox run devpod:provision` | `/generate-prp` (native) → `/execute-prp` (DevPod) |
+| Environment | Native | DevPod (Single) | DevPod (Multi) | Context Engineering |
+|-------------|--------|-----------------|----------------|---------------------|
+| **Python** | `devbox run test` | `/devpod-python` | `/devpod-python 3` | `/generate-prp` → `/execute-prp` |
+| **TypeScript** | `devbox run test` | `/devpod-typescript` | `/devpod-typescript 2` | `/generate-prp` → `/execute-prp` |
+| **Rust** | `devbox run test` | `/devpod-rust` | `/devpod-rust 4` | `/generate-prp` → `/execute-prp` |
+| **Go** | `devbox run test` | `/devpod-go` | `/devpod-go 5` | `/generate-prp` → `/execute-prp` |
+| **Nushell** | `devbox run test` | `devbox run devpod:provision` | *N/A* | `/generate-prp` → `/execute-prp` |
 
 ### 🚀 **Key Benefits**
 
