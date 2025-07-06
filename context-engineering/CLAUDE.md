@@ -57,3 +57,40 @@
 - **Never hallucinate libraries or functions** – only use known, verified Python packages.
 - **Always confirm file paths and module names** exist before referencing them in code or tests.
 - **Never delete or overwrite existing code** unless explicitly instructed to or if part of a task from `TASK.md`.
+
+### 🚀 Enhanced Context Engineering System
+
+The project includes an advanced context engineering framework with dynamic template generation, intelligent dojo integration, and sophisticated argument parsing.
+
+#### Ready to Use
+
+The enhanced system is immediately available with these new capabilities:
+
+```bash
+# Smart PRP generation with auto-detection
+/context generate chat-interface --examples dojo
+
+# Complete workflows
+/context workflow user-management --env python-env --validate
+
+# Multiple DevPod environments  
+/context devpod --env typescript-env --count 3
+
+# Advanced analysis
+/context analyze --env multi --verbose --format json
+```
+
+#### Key Features
+- **Dynamic Templates**: Context-aware PRP generation based on project analysis
+- **Dojo Integration**: Automatic inclusion of CopilotKit patterns and components
+- **Smart Arguments**: Enhanced `$ARGUMENT` parsing with validation and help
+- **Unified Interface**: Single `/context` command for all operations
+- **Auto-Detection**: Intelligent environment and pattern detection
+
+#### Command Reference
+- `/context generate <feature>` - Generate PRPs with smart defaults
+- `/context execute <prp-file>` - Execute PRPs with validation
+- `/context workflow <feature>` - Complete generate+execute workflow
+- `/context devpod --env <env> --count <n>` - Provision multiple DevPod workspaces
+- `/context analyze --env <env>` - Analyze project structure and patterns
+- `/generate-prp-enhanced <file>` - Advanced PRP generation with all features
