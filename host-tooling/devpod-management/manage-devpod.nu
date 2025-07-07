@@ -17,8 +17,8 @@ def main [command?: string, environment?: string] {
             help: "Usage: nu manage-devpod.nu <command> <environment>"
         }
     }
-    let valid_environments = ["python", "typescript", "rust", "go", "nushell"]
-    let valid_commands = ["provision", "connect", "start", "stop", "delete", "sync", "status", "help"]
+    let valid_environments = ["python", "typescript", "rust", "go", "nushell", "agentic-eval-unified", "agentic-eval-claude", "agentic-eval-gemini", "agentic-eval-results"]
+    let valid_commands = ["provision", "connect", "start", "stop", "delete", "sync", "status", "help", "provision-eval"]
     
     if $environment not-in $valid_environments {
         error make {
@@ -36,6 +36,7 @@ def main [command?: string, environment?: string] {
     
     match $command {
         "provision" => { provision $environment }
+        "provision-eval" => { provision_eval $environment }
         "connect" => { connect $environment }
         "start" => { start $environment }
         "stop" => { stop $environment }
@@ -50,6 +51,12 @@ def main [command?: string, environment?: string] {
 def provision [environment: string] {
     print $"🚀 Provisioning ($environment) DevPod workspace..."
     
+    # Handle agentic evaluation environments
+    if ($environment | str starts-with "agentic-eval-") {
+        provision_agentic_eval $environment
+        return
+    }
+    
     let script_path = $"../../devpod-automation/scripts/provision-($environment).sh"
     
     if not ($script_path | path exists) {
@@ -60,6 +67,92 @@ def provision [environment: string] {
     }
     
     bash $script_path
+}
+
+def provision_eval [environment: string, count?: int] {
+    let workspace_count = if ($count | is-empty) { 1 } else { $count }
+    print $"🧪 Provisioning ($workspace_count) ($environment) agentic evaluation workspace(s)..."
+    provision_agentic_eval $environment $workspace_count
+}
+
+def provision_agentic_eval [environment: string, count?: int] {
+    let workspace_count = if ($count | is-empty) { 1 } else { $count }
+    print $"🤖 Setting up ($workspace_count) agentic evaluation workspace(s) for ($environment)..."
+    
+    # Validate evaluation environment types
+    let valid_eval_environments = ["agentic-eval-unified", "agentic-eval-claude", "agentic-eval-gemini", "agentic-eval-results"]
+    if $environment not-in $valid_eval_environments {
+        error make {
+            msg: $"Invalid agentic evaluation environment: ($environment)"
+            help: $"Valid evaluation environments: ($valid_eval_environments | str join ', ')"
+        }
+    }
+    
+    # Check if DevPod is available
+    let devpod_available = try {
+        bash -c "command -v devpod"
+        true
+    } catch {
+        false
+    }
+    
+    if not $devpod_available {
+        error make {
+            msg: "DevPod is not installed or not available in PATH"
+            help: "Please install DevPod first: https://devpod.sh/docs/getting-started/install"
+        }
+    }
+    
+    # Get the appropriate template path
+    let template_path = $"../devpod-automation/templates/($environment)"
+    
+    if not ($template_path | path exists) {
+        error make {
+            msg: $"Template not found: ($template_path)"
+            help: "Make sure the agentic evaluation templates are properly set up"
+        }
+    }
+    
+    # Create workspaces
+    for i in 1..$workspace_count {
+        let workspace_name = $"polyglot-($environment)-workspace-($i)"
+        print $"🔧 Creating workspace ($i)/($workspace_count): ($workspace_name)"
+        
+        try {
+            bash -c $"devpod up ($workspace_name) --ide vscode --devcontainer-path ($template_path)/devcontainer.json"
+            print $"✅ Successfully created workspace: ($workspace_name)"
+        } catch {
+            print $"❌ Failed to create workspace: ($workspace_name)"
+        }
+    }
+    
+    print $"🎉 Agentic evaluation setup complete!"
+    print $"📊 Environment: ($environment)"
+    print $"🔢 Workspaces created: ($workspace_count)"
+    print ""
+    print "🚀 Next steps:"
+    match $environment {
+        "agentic-eval-unified" => {
+            print "  - Both Claude Code CLI and Gemini CLI are available"
+            print "  - Start comparative evaluations across all languages"
+            print "  - Access evaluation framework at /workspace/agentic-eval/"
+        }
+        "agentic-eval-claude" => {
+            print "  - Claude Code CLI focused environment"
+            print "  - Evaluate Claude's performance on coding tasks"
+            print "  - Results stored in /workspace/agentic-eval/results/claude/"
+        }
+        "agentic-eval-gemini" => {
+            print "  - Gemini CLI focused environment"
+            print "  - Evaluate Gemini's performance on coding tasks"
+            print "  - Results stored in /workspace/agentic-eval/results/gemini/"
+        }
+        "agentic-eval-results" => {
+            print "  - Results analysis and visualization environment"
+            print "  - Jupyter Lab available for data analysis"
+            print "  - Compare Claude vs Gemini performance metrics"
+        }
+    }
 }
 
 def connect [environment: string] {
@@ -77,8 +170,15 @@ def start [environment: string] {
 def stop [environment: string] {
     print $"🛑 Available ($environment) workspaces:"
     
+    # Determine search pattern based on environment type
+    let search_pattern = if ($environment | str starts-with "agentic-eval-") {
+        $"polyglot-($environment)-workspace"
+    } else {
+        $"polyglot-($environment)-devpod"
+    }
+    
     let workspaces = try {
-        bash -c $"devpod list | grep polyglot-($environment)-devpod"
+        bash -c $"devpod list | grep ($search_pattern)"
     } catch {
         ""
     }
@@ -95,8 +195,15 @@ def stop [environment: string] {
 def delete [environment: string] {
     print $"🗑️  ($environment) workspaces to delete:"
     
+    # Determine search pattern based on environment type
+    let search_pattern = if ($environment | str starts-with "agentic-eval-") {
+        $"polyglot-($environment)-workspace"
+    } else {
+        $"polyglot-($environment)-devpod"
+    }
+    
     let workspaces = try {
-        bash -c $"devpod list | grep polyglot-($environment)-devpod"
+        bash -c $"devpod list | grep ($search_pattern)"
     } catch {
         ""
     }
@@ -119,8 +226,15 @@ def sync [environment: string] {
 def status [environment: string] {
     print $"📊 ($environment) DevPod workspaces:"
     
+    # Determine search pattern based on environment type
+    let search_pattern = if ($environment | str starts-with "agentic-eval-") {
+        $"polyglot-($environment)-workspace"
+    } else {
+        $"polyglot-($environment)-devpod"
+    }
+    
     let workspaces = try {
-        bash -c $"devpod list | grep polyglot-($environment)-devpod"
+        bash -c $"devpod list | grep ($search_pattern)"
     } catch {
         ""
     }
@@ -130,6 +244,30 @@ def status [environment: string] {
         print $"Run 'nu manage-devpod.nu provision ($environment)' to create one"
     } else {
         print $workspaces
+        
+        # Show additional info for agentic evaluation environments
+        if ($environment | str starts-with "agentic-eval-") {
+            print ""
+            print "🤖 Agentic Evaluation Environment Info:"
+            match $environment {
+                "agentic-eval-unified" => {
+                    print "  - Comparative evaluation (Claude + Gemini)"
+                    print "  - Multi-language support (Python, TypeScript, Rust, Go, Nushell)"
+                }
+                "agentic-eval-claude" => {
+                    print "  - Claude Code CLI focused"
+                    print "  - Performance analysis and benchmarking"
+                }
+                "agentic-eval-gemini" => {
+                    print "  - Gemini CLI focused"
+                    print "  - Performance analysis and benchmarking"
+                }
+                "agentic-eval-results" => {
+                    print "  - Results analysis and visualization"
+                    print "  - Jupyter Lab for data science workflows"
+                }
+            }
+        }
     }
 }
 
@@ -137,19 +275,53 @@ def help_command [environment: string] {
     print $"🔧 DevPod Management for ($environment)"
     print ""
     print "Available commands:"
-    print "  provision  - Create and provision a new DevPod workspace"
-    print "  connect    - Show connection instructions"
-    print "  start      - Show workspace start instructions"
-    print "  stop       - List and stop workspaces"
-    print "  delete     - List and delete workspaces"
-    print "  sync       - Sync configuration changes"
-    print "  status     - Show workspace status"
-    print "  help       - Show this help message"
+    print "  provision      - Create and provision a new DevPod workspace"
+    print "  provision-eval - Create agentic evaluation workspace(s) with count"
+    print "  connect        - Show connection instructions"
+    print "  start          - Show workspace start instructions"
+    print "  stop           - List and stop workspaces"
+    print "  delete         - List and delete workspaces"
+    print "  sync           - Sync configuration changes"
+    print "  status         - Show workspace status"
+    print "  help           - Show this help message"
     print ""
-    print "Examples:"
-    print $"  nu manage-devpod.nu provision ($environment)"
-    print $"  nu manage-devpod.nu status ($environment)"
-    print $"  nu manage-devpod.nu stop ($environment)"
+    
+    if ($environment | str starts-with "agentic-eval-") {
+        print "🤖 Agentic Evaluation Commands:"
+        print $"  nu manage-devpod.nu provision ($environment)     - Create single evaluation workspace"
+        print $"  nu manage-devpod.nu provision-eval ($environment) 3 - Create 3 evaluation workspaces"
+        print $"  nu manage-devpod.nu status ($environment)        - Show evaluation workspace status"
+        print ""
+        print "🔬 Evaluation Features:"
+        match $environment {
+            "agentic-eval-unified" => {
+                print "  - Both Claude Code CLI and Gemini CLI available"
+                print "  - Comparative evaluation across Python, TypeScript, Rust, Go, Nushell"
+                print "  - Comprehensive evaluation framework at /workspace/agentic-eval/"
+            }
+            "agentic-eval-claude" => {
+                print "  - Claude Code CLI focused environment"
+                print "  - Claude performance analysis and benchmarking"
+                print "  - Results at /workspace/agentic-eval/results/claude/"
+            }
+            "agentic-eval-gemini" => {
+                print "  - Gemini CLI focused environment"
+                print "  - Gemini performance analysis and benchmarking"
+                print "  - Results at /workspace/agentic-eval/results/gemini/"
+            }
+            "agentic-eval-results" => {
+                print "  - Results analysis and visualization environment"
+                print "  - Jupyter Lab for data science and analytics"
+                print "  - Compare Claude vs Gemini performance metrics"
+            }
+        }
+    } else {
+        print "Standard Environment Commands:"
+        print $"  nu manage-devpod.nu provision ($environment)"
+        print $"  nu manage-devpod.nu status ($environment)"
+        print $"  nu manage-devpod.nu stop ($environment)"
+    }
+    
     print ""
     print "Direct devpod commands:"
     print "  devpod list                    - List all workspaces"
@@ -160,14 +332,28 @@ def help_command [environment: string] {
 
 # Show help if no arguments provided  
 def "show usage" [] {
-    print "DevPod Management Script"
-    print "Usage: nu manage-devpod.nu <command> <environment>"
+    print "DevPod Management Script with Agentic Evaluation Support"
+    print "Usage: nu manage-devpod.nu <command> <environment> [count]"
     print ""
-    print "Commands: provision, connect, start, stop, delete, sync, status, help"
-    print "Environments: python, typescript, rust, go, nushell"
+    print "Commands: provision, provision-eval, connect, start, stop, delete, sync, status, help"
     print ""
-    print "Examples:"
+    print "Standard Environments:"
+    print "  python, typescript, rust, go, nushell"
+    print ""
+    print "🤖 Agentic Evaluation Environments:"
+    print "  agentic-eval-unified  - Comparative Claude + Gemini evaluation"
+    print "  agentic-eval-claude   - Claude Code CLI focused"
+    print "  agentic-eval-gemini   - Gemini CLI focused"
+    print "  agentic-eval-results  - Results analysis & visualization"
+    print ""
+    print "Standard Examples:"
     print "  nu manage-devpod.nu provision python"
     print "  nu manage-devpod.nu status typescript"
     print "  nu manage-devpod.nu help rust"
+    print ""
+    print "🧪 Agentic Evaluation Examples:"
+    print "  nu manage-devpod.nu provision agentic-eval-unified"
+    print "  nu manage-devpod.nu provision-eval agentic-eval-claude 3"
+    print "  nu manage-devpod.nu status agentic-eval-results"
+    print "  nu manage-devpod.nu help agentic-eval-unified"
 }
