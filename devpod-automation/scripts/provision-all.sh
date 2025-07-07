@@ -1,10 +1,14 @@
 #!/bin/bash
 # DevPod provisioning overview and bulk operations script
+# NOTE: This script runs on the HOST machine and delegates to host-tooling/ scripts
 
 set -e
 
-echo "🐳 DevPod Polyglot Environment Manager"
-echo "======================================"
+echo "🐳 DevPod Polyglot Environment Manager (Host Script)"
+echo "===================================================="
+echo "⚠️  IMPORTANT: DevPod management scripts moved to host-tooling/"
+echo "   Use: nu host-tooling/devpod-management/devpod-manage.nu"
+echo "   Or source: host-tooling/shell-integration/aliases.sh"
 
 show_usage() {
     echo "Usage: $0 [COMMAND] [OPTIONS]"
