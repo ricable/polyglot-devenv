@@ -16,7 +16,7 @@ Polyglot development environment for Python, TypeScript, Rust, Go, and Nushell w
 git clone https://github.com/ricable/polyglot-devenv.git && cd polyglot-devenv
 curl -fsSL https://get.jetify.com/devbox | bash && brew install direnv
 echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc
-cd python-env && devbox shell && devbox run install
+cd dev-env/python && devbox shell && devbox run install
 ```
 
 ## Quick Reference Hub
@@ -25,18 +25,18 @@ cd python-env && devbox shell && devbox run install
 
 | Environment | Enter | Install | Format | Lint | Test | DevPod (Single) | DevPod (Multi) | Context Engineering | Enterprise PRP |
 |-------------|-------|---------|--------|------|------|-----------------|----------------|---------------------|----------------|
-| **Python** | `cd python-env && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-python` | `/devpod-python 3` | `/generate-prp feature.md --env python-env` | `python .claude/commands/generate-prp-v2.py` |
-| **TypeScript** | `cd typescript-env && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-typescript` | `/devpod-typescript 2` | `/generate-prp feature.md --env typescript-env` | `python .claude/commands/generate-prp-v2.py` |
-| **Rust** | `cd rust-env && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-rust` | `/devpod-rust 4` | `/generate-prp feature.md --env rust-env` | `python .claude/commands/generate-prp-v2.py` |
-| **Go** | `cd go-env && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-go` | `/devpod-go 5` | `/generate-prp feature.md --env go-env` | `python .claude/commands/generate-prp-v2.py` |
-| **Nushell** | `cd nushell-env && devbox shell` | `devbox run setup` | `devbox run format` | `devbox run check` | `devbox run test` | `devbox run devpod:provision` | *N/A* | `/generate-prp feature.md --env nushell-env` | `python .claude/commands/generate-prp-v2.py` |
+| **Python** | `cd dev-env/python && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-python` | `/devpod-python 3` | `/generate-prp feature.md --env dev-env/python` | `python .claude/commands/generate-prp-v2.py` |
+| **TypeScript** | `cd dev-env/typescript && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-typescript` | `/devpod-typescript 2` | `/generate-prp feature.md --env dev-env/typescript` | `python .claude/commands/generate-prp-v2.py` |
+| **Rust** | `cd dev-env/rust && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-rust` | `/devpod-rust 4` | `/generate-prp feature.md --env dev-env/rust` | `python .claude/commands/generate-prp-v2.py` |
+| **Go** | `cd dev-env/go && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-go` | `/devpod-go 5` | `/generate-prp feature.md --env dev-env/go` | `python .claude/commands/generate-prp-v2.py` |
+| **Nushell** | `cd dev-env/nushell && devbox shell` | `devbox run setup` | `devbox run format` | `devbox run check` | `devbox run test` | `devbox run devpod:provision` | *N/A* | `/generate-prp feature.md --env dev-env/nushell` | `python .claude/commands/generate-prp-v2.py` |
 
 ### Development Workflow Commands
 
 | Workflow | Native | Containerized | AI-Assisted | Enterprise |
 |----------|--------|---------------|-------------|------------|
-| **Setup** | `devbox shell` | `/devpod-python [count]` | `/generate-prp features/api.md --env python-env` | `python .claude/commands/generate-prp-v2.py` |
-| **Develop** | `devbox run test` | `devbox run devpod:provision` | `cd python-env && devbox run devpod:provision` | `--workers 4 --debug` |
+| **Setup** | `devbox shell` | `/devpod-python [count]` | `/generate-prp features/api.md --env dev-env/python` | `python .claude/commands/generate-prp-v2.py` |
+| **Develop** | `devbox run test` | `devbox run devpod:provision` | `cd dev-env/python && devbox run devpod:provision` | `--workers 4 --debug` |
 | **Execute** | `devbox run lint` | `devpod list` | `/execute-prp context-engineering/PRPs/api-python.md` | `python .claude/commands/execute-prp-v2.py` |
 | **Monitor** | Built-in hooks | `devbox run devpod:status` | `--validate --monitor` | `--timeout 300 --monitor` |
 
@@ -112,11 +112,12 @@ mcp tool security_scan              # Security scanning via MCP
 
 ```
 polyglot-project/
-├── python-env/          # Python Devbox environment (python, uv, src/, pyproject.toml)
-├── typescript-env/      # TypeScript Devbox environment (nodejs, src/, package.json)
-├── rust-env/            # Rust Devbox environment (rustc, src/, Cargo.toml)
-├── go-env/              # Go Devbox environment (go, cmd/, go.mod)
-├── nushell-env/         # Nushell scripting environment (nushell, scripts/, config/, common.nu)
+├── dev-env/             # Unified development environment container
+│   ├── python/          # Python Devbox environment (python, uv, src/, pyproject.toml)
+│   ├── typescript/      # TypeScript Devbox environment (nodejs, src/, package.json)
+│   ├── rust/            # Rust Devbox environment (rustc, src/, Cargo.toml)
+│   ├── go/              # Go Devbox environment (go, cmd/, go.mod)
+│   └── nushell/         # Nushell scripting environment (nushell, scripts/, config/, common.nu)
 ├── scripts/             # Cross-language validation and automation scripts (NEW ✅)
 │   ├── validate-all.nu  # Comprehensive validation script with parallel execution
 │   └── sync-configs.nu  # Configuration synchronization across environments
@@ -228,14 +229,14 @@ bash devpod-automation/scripts/provision-all.sh clean-all
 ### Context Engineering Framework
 
 **PRP Workflow**:
-1. **Generation** (Native): `/generate-prp features/api.md --env python-env`
-2. **Provisioning** (DevPod): `cd python-env && devbox run devpod:provision`  
+1. **Generation** (Native): `/generate-prp features/api.md --env dev-env/python`
+2. **Provisioning** (DevPod): `cd dev-env/python && devbox run devpod:provision`  
 3. **Execution** (Container): `/execute-prp context-engineering/PRPs/api-python.md --validate`
 
 **Enterprise System** (NEW - 275% faster execution):
 ```bash
 # Enhanced Generation with Version Control
-python .claude/commands/generate-prp-v2.py features/user-api.md --env python-env --workers 4 --debug
+python .claude/commands/generate-prp-v2.py features/user-api.md --env dev-env/python --workers 4 --debug
 
 # Enhanced Execution with Auto-Rollback  
 python .claude/commands/execute-prp-v2.py context-engineering/PRPs/user-api-python.md --validate --monitor --timeout 300
@@ -290,7 +291,7 @@ python .claude/commands/execute-prp-v2.py context-engineering/PRPs/user-api-pyth
   - **Nushell**: nu format for `.nu` files ✅
 - **Environment Detection**: Multi-layer detection system tested and working:
   - **File Extension**: `.py` → Python, `.ts/.js` → TypeScript, `.rs` → Rust, `.go` → Go, `.nu` → Nushell ✅
-  - **Directory Context**: PWD detection for `python-env/`, `typescript-env/`, etc. ✅
+  - **Directory Context**: PWD detection for `dev-env/python/`, `dev-env/typescript/`, etc. ✅
   - **Devbox Integration**: Automatic `devbox run format` commands ✅
 - **Test Integration**: Auto-testing verified for test file patterns:
   - **Python**: `test_*.py`, `*_test.py`, `*.test.py` → pytest ✅
@@ -336,11 +337,11 @@ python .claude/commands/execute-prp-v2.py context-engineering/PRPs/user-api-pyth
   - `.go` → Go environment (goimports, golangci-lint, go test) ✅
   - `.nu` → Nushell environment (nu format, nu check) ✅
 - **Path-Based Detection**: Directory context detection verified:
-  - `python-env/` → Auto-selects Python tools ✅
-  - `typescript-env/` → Auto-selects TypeScript tools ✅
-  - `rust-env/` → Auto-selects Rust tools ✅
-  - `go-env/` → Auto-selects Go tools ✅
-  - `nushell-env/` → Auto-selects Nushell tools ✅
+  - `dev-env/python/` → Auto-selects Python tools ✅
+  - `dev-env/typescript/` → Auto-selects TypeScript tools ✅
+  - `dev-env/rust/` → Auto-selects Rust tools ✅
+  - `dev-env/go/` → Auto-selects Go tools ✅
+  - `dev-env/nushell/` → Auto-selects Nushell tools ✅
 - **Tool Selection**: Automatically chooses correct tools based on context:
   - **Python**: ruff (format/lint), mypy (types), pytest (tests) ✅
   - **TypeScript**: prettier (format), eslint (lint), jest (tests) ✅
@@ -418,7 +419,7 @@ python .claude/commands/execute-prp-v2.py context-engineering/PRPs/user-api-pyth
 - **Dependencies**: Mock external dependencies
 - **Frameworks**: pytest (Python), Jest (TypeScript), cargo test (Rust), go test (Go)
 - **Auto-Testing**: Hooks automatically run tests when `*_test.py`, `*.test.ts`, `*_test.rs`, `*_test.go` files are modified ✅
-- **Validation**: `nu nushell-env/scripts/validate-all.nu parallel` or `devbox run lint && devbox run test`
+- **Validation**: `nu dev-env/nushell/scripts/validate-all.nu parallel` or `devbox run lint && devbox run test`
 - **Hook Integration**: Real-time test execution with environment detection and framework selection ✅
 
 ### Security & Performance
@@ -434,17 +435,17 @@ python .claude/commands/execute-prp-v2.py context-engineering/PRPs/user-api-pyth
 ### Language Environment Setup
 ```bash
 # Python Environment                 # TypeScript Environment
-mkdir python-env && cd python-env   mkdir typescript-env && cd typescript-env
+mkdir -p dev-env/python && cd dev-env/python   mkdir -p dev-env/typescript && cd dev-env/typescript
 devbox init && devbox add python@3.12 uv ruff mypy pytest    devbox init && devbox add nodejs@20 typescript eslint prettier jest
 devbox generate direnv && direnv allow                       devbox generate direnv && direnv allow
 
 # Rust Environment                   # Go Environment  
-mkdir rust-env && cd rust-env       mkdir go-env && cd go-env
+mkdir -p dev-env/rust && cd dev-env/rust       mkdir -p dev-env/go && cd dev-env/go
 devbox init && devbox add rustc cargo rust-analyzer clippy rustfmt    devbox init && devbox add go@1.22 golangci-lint goimports
 devbox generate direnv && direnv allow                       devbox generate direnv && direnv allow
 
 # Nushell Environment
-mkdir nushell-env && cd nushell-env
+mkdir -p dev-env/nushell && cd dev-env/nushell
 devbox init && devbox add nushell@0.105.1 teller git && mkdir -p scripts config
 devbox generate direnv && direnv allow
 ```
@@ -490,11 +491,11 @@ strict = true
 
 def "main validate parallel" [] {
     [
-        {name: "python", cmd: "cd python-env && devbox run lint && devbox run test"},
-        {name: "typescript", cmd: "cd typescript-env && devbox run lint && devbox run test"},
-        {name: "rust", cmd: "cd rust-env && devbox run lint && devbox run test"},
-        {name: "go", cmd: "cd go-env && devbox run lint && devbox run test"},
-        {name: "nushell", cmd: "cd nushell-env && devbox run check && devbox run test"}
+        {name: "python", cmd: "cd dev-env/python && devbox run lint && devbox run test"},
+        {name: "typescript", cmd: "cd dev-env/typescript && devbox run lint && devbox run test"},
+        {name: "rust", cmd: "cd dev-env/rust && devbox run lint && devbox run test"},
+        {name: "go", cmd: "cd dev-env/go && devbox run lint && devbox run test"},
+        {name: "nushell", cmd: "cd dev-env/nushell && devbox run check && devbox run test"}
     ] | par-each { |env|
         print $"🚀 Starting ($env.name)..."
         bash -c $env.cmd

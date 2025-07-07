@@ -4,7 +4,7 @@
 # This is the implementation of the validation script described in CLAUDE.md
 # Usage: nu scripts/validate-all.nu [--parallel] [--environment environment]
 
-use ../nushell-env/common.nu *
+use ../dev-env/nushell/common.nu *
 
 def main [
     --parallel(-p)
@@ -122,11 +122,11 @@ def validate-parallel [target_env: string, skip: list<string>, verbose: bool] {
 
 def get-validation-environments [target_env: string, skip: list<string>] {
     let all_environments = [
-        {name: "Python", emoji: "🐍", dir: "python-env", commands: ["lint", "test"]},
-        {name: "TypeScript", emoji: "📘", dir: "typescript-env", commands: ["lint", "test"]}, 
-        {name: "Rust", emoji: "🦀", dir: "rust-env", commands: ["lint", "test"]},
-        {name: "Go", emoji: "🐹", dir: "go-env", commands: ["lint", "test"]},
-        {name: "Nushell", emoji: "🐚", dir: "nushell-env", commands: ["check", "test"]}
+        {name: "Python", emoji: "🐍", dir: "dev-env/python", commands: ["lint", "test"]},
+        {name: "TypeScript", emoji: "📘", dir: "dev-env/typescript", commands: ["lint", "test"]}, 
+        {name: "Rust", emoji: "🦀", dir: "dev-env/rust", commands: ["lint", "test"]},
+        {name: "Go", emoji: "🐹", dir: "dev-env/go", commands: ["lint", "test"]},
+        {name: "Nushell", emoji: "🐚", dir: "dev-env/nushell", commands: ["check", "test"]}
     ]
     
     let filtered = if $target_env == "all" {

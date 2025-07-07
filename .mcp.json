@@ -10,27 +10,6 @@
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
     },
-    "knowledge-graph-memory": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-memory"
-      ]
-    },
-    "desktop-commander": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@wonderwhy-er/desktop-commander"
-      ]
-    },
-    "puppeteer": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-puppeteer"
-      ]
-    },
     "polyglot-dev": {
       "command": "node",
       "args": [

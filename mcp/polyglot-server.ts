@@ -53,7 +53,7 @@ type ToolInput = z.infer<typeof ToolInputSchema>;
 const EnvironmentDetectSchema = z.object({});
 
 const EnvironmentInfoSchema = z.object({
-  environment: z.string().describe("Environment name (python-env, typescript-env, etc.)"),
+  environment: z.string().describe("Environment name (dev-env/python, dev-env/typescript, etc.)"),
 });
 
 const EnvironmentValidateSchema = z.object({
@@ -91,7 +91,7 @@ const DevboxQuickStartSchema = z.object({
 
 // DevPod Tools
 const DevpodProvisionSchema = z.object({
-  environment: z.string().describe("Environment type (python-env, typescript-env, etc.)"),
+  environment: z.string().describe("Environment type (dev-env/python, dev-env/typescript, etc.)"),
   count: z.number().min(1).max(10).default(1).describe("Number of workspaces to provision (1-10)"),
 });
 
@@ -103,7 +103,7 @@ const DevpodStatusSchema = z.object({
 
 // Dynamic DevPod Start Tool
 const DevpodStartSchema = z.object({
-  environment: z.enum(["python-env", "typescript-env", "rust-env", "go-env", "nushell-env"]).describe("Environment to start (python-env, typescript-env, rust-env, go-env, nushell-env)"),
+  environment: z.enum(["dev-env/python", "dev-env/typescript", "dev-env/rust", "dev-env/go", "dev-env/nushell"]).describe("Environment to start (dev-env/python, dev-env/typescript, dev-env/rust, dev-env/go, dev-env/nushell)"),
   count: z.number().min(1).max(5).default(1).describe("Number of workspaces to start (1-5)"),
 });
 
@@ -536,7 +536,7 @@ export const createServer = () => {
     }
 
     const environments = args.environment ? [args.environment] : 
-      ["python-env", "typescript-env", "rust-env", "go-env", "nushell-env"];
+      ["dev-env/python", "dev-env/typescript", "dev-env/rust", "dev-env/go", "dev-env/nushell"];
 
     let content = "🔍 **Environment Validation Results**\n\n";
     
@@ -889,7 +889,7 @@ export const createServer = () => {
 
   async function handleDevboxStatus(args: z.infer<typeof DevboxStatusSchema>) {
     const environments = args.environment ? [args.environment] : 
-      ["python-env", "typescript-env", "rust-env", "go-env", "nushell-env"];
+      ["dev-env/python", "dev-env/typescript", "dev-env/rust", "dev-env/go", "dev-env/nushell"];
 
     let content = "📊 **DevBox Environment Status**\n\n";
     
@@ -1203,7 +1203,7 @@ export const createServer = () => {
 
   async function handlePolyglotCheck(args: z.infer<typeof PolyglotCheckSchema>, progressToken?: string | number) {
     const environments = args.environment ? [args.environment] : 
-      ["python-env", "typescript-env", "rust-env", "go-env", "nushell-env"];
+      ["dev-env/python", "dev-env/typescript", "dev-env/rust", "dev-env/go", "dev-env/nushell"];
 
     let content = "🔍 **Polyglot Environment Quality Check**\n\n";
     
@@ -1351,7 +1351,7 @@ export const createServer = () => {
     } else {
       content += "🔄 **Mode:** Sequential execution\n\n";
       
-      const environments = ["python-env", "typescript-env", "rust-env", "go-env", "nushell-env"];
+      const environments = ["dev-env/python", "dev-env/typescript", "dev-env/rust", "dev-env/go", "dev-env/nushell"];
       
       for (let i = 0; i < environments.length; i++) {
         const env = environments[i];
@@ -1383,7 +1383,7 @@ export const createServer = () => {
 
   async function handlePolyglotClean(args: z.infer<typeof PolyglotCleanSchema>) {
     const environments = args.environment ? [args.environment] : 
-      ["python-env", "typescript-env", "rust-env", "go-env", "nushell-env"];
+      ["dev-env/python", "dev-env/typescript", "dev-env/rust", "dev-env/go", "dev-env/nushell"];
 
     let content = "🧹 **Environment Cleanup**\n\n";
     
@@ -1468,7 +1468,7 @@ export const createServer = () => {
 
   async function handleSecurityScan(args: z.infer<typeof SecurityScanSchema>) {
     const environments = args.environment ? [args.environment] : 
-      ["python-env", "typescript-env", "rust-env", "go-env", "nushell-env"];
+      ["dev-env/python", "dev-env/typescript", "dev-env/rust", "dev-env/go", "dev-env/nushell"];
 
     let content = "🔐 **Security Scan Results**\n\n";
     

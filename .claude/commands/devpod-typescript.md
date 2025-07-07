@@ -24,7 +24,7 @@ Creates new DevPod workspace(s) for TypeScript development with:
 ## Command
 
 ```bash
-cd /Users/cedric/dev/github.com/polyglot-devenv/typescript-env
+cd /Users/cedric/dev/github.com/polyglot-devenv/dev-env/typescript
 
 # Get count from argument or default to 1
 COUNT=${ARGUMENT:-1}
@@ -50,7 +50,7 @@ for i in $(seq 1 $COUNT); do
     # Generate unique workspace name with timestamp and sequence
     TIMESTAMP=$(date +%Y%m%d-%H%M%S)
     WORKSPACE_NAME="polyglot-typescript-devpod-$TIMESTAMP-$i"
-    WORKSPACE_SOURCE="/Users/cedric/dev/github.com/polyglot-devenv/typescript-env"
+    WORKSPACE_SOURCE="/Users/cedric/dev/github.com/polyglot-devenv/dev-env/typescript"
     
     echo "🏷️  Workspace name: $WORKSPACE_NAME"
     

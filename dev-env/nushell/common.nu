@@ -116,7 +116,7 @@ export def "config save" [
 
 # Development environment helpers
 export def "dev setup-all" [] {
-    let environments = ["python-env", "typescript-env", "rust-env", "go-env"]
+    let environments = ["dev-env/python", "dev-env/typescript", "dev-env/rust", "dev-env/go"]
     
     for env in $environments {
         if ($env | path exists) {
@@ -133,11 +133,11 @@ export def "dev setup-all" [] {
 
 export def "dev test-all" [] {
     let environments = [
-        {name: "Python", dir: "python-env", commands: ["lint", "test"]},
-        {name: "TypeScript", dir: "typescript-env", commands: ["lint", "test"]}, 
-        {name: "Rust", dir: "rust-env", commands: ["lint", "test"]},
-        {name: "Go", dir: "go-env", commands: ["lint", "test"]},
-        {name: "Nushell", dir: "nushell-env", commands: ["check", "test"]}
+        {name: "Python", dir: "dev-env/python", commands: ["lint", "test"]},
+        {name: "TypeScript", dir: "dev-env/typescript", commands: ["lint", "test"]}, 
+        {name: "Rust", dir: "dev-env/rust", commands: ["lint", "test"]},
+        {name: "Go", dir: "dev-env/go", commands: ["lint", "test"]},
+        {name: "Nushell", dir: "dev-env/nushell", commands: ["check", "test"]}
     ]
     
     for env in $environments {

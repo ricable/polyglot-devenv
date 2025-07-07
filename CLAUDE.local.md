@@ -8,15 +8,15 @@
 ### My Development Aliases
 ```bash
 # Environment shortcuts - quick navigation between languages
-alias pydev="cd python-env && devbox shell"
-alias tsdev="cd typescript-env && devbox shell"
-alias rustdev="cd rust-env && devbox shell"
-alias godev="cd go-env && devbox shell"
-alias nudev="cd nushell-env && devbox shell"
+alias pydev="cd dev-env/python && devbox shell"
+alias tsdev="cd dev-env/typescript && devbox shell"
+alias rustdev="cd dev-env/rust && devbox shell"
+alias godev="cd dev-env/go && devbox shell"
+alias nudev="cd dev-env/nushell && devbox shell"
 
 # Quick environment switching with status
-alias env-status="nu nushell-env/scripts/list.nu"
-alias env-health="nu nushell-env/scripts/validate-all.nu quick"
+alias env-status="nu dev-env/nushell/scripts/list.nu"
+alias env-health="nu dev-env/nushell/scripts/validate-all.nu quick"
 
 # Return to project root from any environment
 alias root="cd /Users/cedric/dev/claude/rules"
@@ -28,11 +28,11 @@ alias setup-all="root && pydev && devbox run setup && root && tsdev && devbox ru
 ### Custom Commands & Scripts
 ```bash
 # Intelligence dashboard shortcuts
-alias intel="nu nushell-env/scripts/performance-analytics.nu dashboard"
-alias perf="nu nushell-env/scripts/performance-analytics.nu report --days 7"
-alias resources="nu nushell-env/scripts/resource-monitor.nu optimize"
-alias security="nu nushell-env/scripts/security-scanner.nu scan-all"
-alias deps="nu nushell-env/scripts/dependency-monitor.nu report --format summary"
+alias intel="nu dev-env/nushell/scripts/performance-analytics.nu dashboard"
+alias perf="nu dev-env/nushell/scripts/performance-analytics.nu report --days 7"
+alias resources="nu dev-env/nushell/scripts/resource-monitor.nu optimize"
+alias security="nu dev-env/nushell/scripts/security-scanner.nu scan-all"
+alias deps="nu dev-env/nushell/scripts/dependency-monitor.nu report --format summary"
 
 # Quick validation and testing
 alias validate="nu scripts/validate-all.nu --parallel"
@@ -48,11 +48,11 @@ alias post-work="intel && resources"
 ### Personal Productivity Shortcuts
 ```bash
 # IDE shortcuts for each environment
-alias code-py="code python-env/src"
-alias code-ts="code typescript-env/src"
-alias code-rust="code rust-env/src"
-alias code-go="code go-env/cmd"
-alias code-nu="code nushell-env/scripts"
+alias code-py="code dev-env/python/src"
+alias code-ts="code dev-env/typescript/src"
+alias code-rust="code dev-env/rust/src"
+alias code-go="code dev-env/go/cmd"
+alias code-nu="code dev-env/nushell/scripts"
 alias code-all="code ."
 
 # Documentation and config editing
@@ -61,8 +61,8 @@ alias edit-local="code CLAUDE.local.md"
 alias edit-hooks="code .claude/settings.json"
 
 # Log analysis shortcuts
-alias logs-perf="tail -f nushell-env/logs/performance.log"
-alias logs-security="tail -f nushell-env/logs/security.log"
+alias logs-perf="tail -f dev-env/nushell/logs/performance.log"
+alias logs-security="tail -f dev-env/nushell/logs/security.log"
 alias logs-hooks="tail -f ~/.claude/notifications.log"
 
 # Git workflow enhancements
@@ -111,7 +111,7 @@ export TERM="xterm-256color"
 
 # Polyglot development optimization
 export RUST_BACKTRACE=1
-export PYTHONPATH="/Users/cedric/dev/claude/rules/python-env/src"
+export PYTHONPATH="/Users/cedric/dev/claude/rules/dev-env/python/src"
 export GOPATH="/Users/cedric/go"
 export NODE_ENV="development"
 
@@ -140,26 +140,26 @@ export PROMPT_COMMAND="history -a"
 cdclaude() {
     cd /Users/cedric/dev/claude/rules
     echo "📁 Claude Polyglot Environment"
-    echo "🐍 Python: cd python-env"
-    echo "📘 TypeScript: cd typescript-env" 
-    echo "🦀 Rust: cd rust-env"
-    echo "🐹 Go: cd go-env"
-    echo "🐚 Nushell: cd nushell-env"
+    echo "🐍 Python: cd dev-env/python"
+    echo "📘 TypeScript: cd dev-env/typescript" 
+    echo "🦀 Rust: cd dev-env/rust"
+    echo "🐹 Go: cd dev-env/go"
+    echo "🐚 Nushell: cd dev-env/nushell"
 }
 
 # Environment-aware prompt additions
 claude_env_info() {
-    if [[ $PWD == *"python-env"* ]]; then echo "🐍 PY"
-    elif [[ $PWD == *"typescript-env"* ]]; then echo "📘 TS"
-    elif [[ $PWD == *"rust-env"* ]]; then echo "🦀 RS"
-    elif [[ $PWD == *"go-env"* ]]; then echo "🐹 GO"
-    elif [[ $PWD == *"nushell-env"* ]]; then echo "🐚 NU"
+    if [[ $PWD == *"dev-env/python"* ]]; then echo "🐍 PY"
+    elif [[ $PWD == *"dev-env/typescript"* ]]; then echo "📘 TS"
+    elif [[ $PWD == *"dev-env/rust"* ]]; then echo "🦀 RS"
+    elif [[ $PWD == *"dev-env/go"* ]]; then echo "🐹 GO"
+    elif [[ $PWD == *"dev-env/nushell"* ]]; then echo "🐚 NU"
     elif [[ $PWD == *"claude/rules"* ]]; then echo "🤖 CLAUDE"
     fi
 }
 
 # Nushell configuration enhancements
-# Add to nushell-env/config/config.nu
+# Add to dev-env/nushell/config/config.nu
 $env.config.table.mode = "rounded"
 $env.config.completions.quick = true
 $env.config.history.max_size = 100_000
@@ -210,7 +210,7 @@ alias monitor = nu scripts/resource-monitor.nu watch --interval 30
 - **Cross-Language Validation**: The `validate-all.nu` script is comprehensive - use `--parallel` flag for faster feedback during development
 - **Hooks Automation**: The Claude Code hooks provide real-time quality assurance - customize notification preferences in `.claude/settings.json`
 - **Environment Isolation**: Each language environment is perfectly isolated with devbox - take advantage of this for experimenting with different package versions
-- **Nushell Scripts**: The automation scripts in `nushell-env/scripts/` are production-ready - study them for learning advanced Nushell patterns
+- **Nushell Scripts**: The automation scripts in `dev-env/nushell/scripts/` are production-ready - study them for learning advanced Nushell patterns
 
 #### Language-Specific Tips
 - **Python**: Use `uv run` exclusively instead of activating virtual environments - it's faster and more reliable in this setup
@@ -220,7 +220,7 @@ alias monitor = nu scripts/resource-monitor.nu watch --interval 30
 - **Nushell**: Data pipelines are the key strength - think in terms of structured data transformations rather than text processing
 
 #### Debugging Insights
-- **Performance Issues**: Use `nu nushell-env/scripts/performance-analytics.nu optimize` to get specific recommendations
+- **Performance Issues**: Use `nu dev-env/nushell/scripts/performance-analytics.nu optimize` to get specific recommendations
 - **Resource Problems**: The resource monitor can identify memory leaks and CPU bottlenecks across all environments
 - **Security Concerns**: Regular security scans help catch issues before they become vulnerabilities
 - **Environment Drift**: The drift detection system prevents configuration inconsistencies that cause mysterious bugs
@@ -244,7 +244,7 @@ tar -czf ~/backups/claude_backup_$timestamp.tar.gz \
 
 # env-health-check.nu - Validate all environments with performance tracking
 #!/usr/bin/env nu
-use nushell-env/common.nu *
+use dev-env/nushell/common.nu *
 
 def main [] {
     log info "🏥 Running comprehensive environment health check..."
@@ -256,8 +256,8 @@ def main [] {
     nu scripts/validate-all.nu --parallel
     
     # Check intelligence systems
-    nu nushell-env/scripts/dependency-monitor.nu scan-all --quiet
-    nu nushell-env/scripts/security-scanner.nu scan-all --quiet
+    nu dev-env/nushell/scripts/dependency-monitor.nu scan-all --quiet
+    nu dev-env/nushell/scripts/security-scanner.nu scan-all --quiet
     
     # Performance summary
     let duration = ((date now) - $start_time)
@@ -273,7 +273,7 @@ from datetime import datetime, timedelta
 def get_performance_data():
     """Get last 24 hours of performance data"""
     result = subprocess.run([
-        "nu", "nushell-env/scripts/performance-analytics.nu", 
+        "nu", "dev-env/nushell/scripts/performance-analytics.nu", 
         "report", "--days", "1", "--format", "json"
     ], capture_output=True, text=True)
     
@@ -346,10 +346,10 @@ validate
 
 # Personal additional checks
 echo "📊 Checking performance impact..."
-nu nushell-env/scripts/performance-analytics.nu measure "pre-commit" "validation" "validate"
+nu dev-env/nushell/scripts/performance-analytics.nu measure "pre-commit" "validation" "validate"
 
 echo "🔐 Running personal security checks..."
-nu nushell-env/scripts/security-scanner.nu scan-file "$(git diff --cached --name-only)" --quiet
+nu dev-env/nushell/scripts/security-scanner.nu scan-file "$(git diff --cached --name-only)" --quiet
 
 echo "✅ Enhanced pre-commit checks completed!"
 
@@ -358,7 +358,7 @@ echo "✅ Enhanced pre-commit checks completed!"
 echo "🧪 Running comprehensive test suite with personal tracking..."
 
 # Test each environment with timing
-for env in python-env typescript-env rust-env go-env nushell-env; do
+for env in dev-env/python dev-env/typescript dev-env/rust dev-env/go dev-env/nushell; do
     if [ -d "$env" ]; then
         echo "Testing $env..."
         cd "$env"
@@ -368,7 +368,7 @@ for env in python-env typescript-env rust-env go-env nushell-env; do
 done
 
 # Generate personal test report
-nu nushell-env/scripts/test-intelligence.nu analyze-trends --days 7
+nu dev-env/nushell/scripts/test-intelligence.nu analyze-trends --days 7
 
 # my-deploy-check - Pre-deployment validation
 #!/bin/bash
@@ -428,8 +428,8 @@ echo "✅ Deployment readiness verified!"
     "**/node_modules": true,
     "**/.uv-cache": true
   },
-  "python.defaultInterpreterPath": "./python-env/.venv/bin/python",
-  "rust-analyzer.linkedProjects": ["./rust-env/Cargo.toml"],
+  "python.defaultInterpreterPath": "./dev-env/python/.venv/bin/python",
+  "rust-analyzer.linkedProjects": ["./dev-env/rust/Cargo.toml"],
   "go.gopath": "/Users/cedric/go",
   "typescript.preferences.importModuleSpecifier": "relative",
   "editor.rulers": [88, 100, 120],
@@ -600,16 +600,16 @@ daily-metrics() {
     echo "=================================="
     
     # Build performance
-    nu nushell-env/scripts/performance-analytics.nu report --days 1 --format table
+    nu dev-env/nushell/scripts/performance-analytics.nu report --days 1 --format table
     
     # Resource usage
-    nu nushell-env/scripts/resource-monitor.nu report --hours 24
+    nu dev-env/nushell/scripts/resource-monitor.nu report --hours 24
     
     # Test intelligence
-    nu nushell-env/scripts/test-intelligence.nu analyze-trends --days 1
+    nu dev-env/nushell/scripts/test-intelligence.nu analyze-trends --days 1
     
     # Security summary
-    nu nushell-env/scripts/security-scanner.nu report --days 1 --format summary
+    nu dev-env/nushell/scripts/security-scanner.nu report --days 1 --format summary
 }
 
 # Real-time monitoring dashboard
@@ -617,10 +617,10 @@ live-monitor() {
     echo "🔴 Starting live development monitoring..."
     
     # Start resource monitoring
-    nu nushell-env/scripts/resource-monitor.nu watch --interval 30 &
+    nu dev-env/nushell/scripts/resource-monitor.nu watch --interval 30 &
     
     # Start performance tracking
-    nu nushell-env/scripts/performance-analytics.nu monitor &
+    nu dev-env/nushell/scripts/performance-analytics.nu monitor &
     
     # Monitor system resources
     top -u &
@@ -635,13 +635,13 @@ weekly-review() {
     echo "======================================"
     
     # Performance trends
-    nu nushell-env/scripts/performance-analytics.nu report --days 7 --format detailed
+    nu dev-env/nushell/scripts/performance-analytics.nu report --days 7 --format detailed
     
     # Resource optimization recommendations
-    nu nushell-env/scripts/resource-monitor.nu optimize
+    nu dev-env/nushell/scripts/resource-monitor.nu optimize
     
     # Dependency health check
-    nu nushell-env/scripts/dependency-monitor.nu report --days 7
+    nu dev-env/nushell/scripts/dependency-monitor.nu report --days 7
     
     # Generate improvement suggestions
     echo "💡 Personal Optimization Recommendations:"
@@ -659,16 +659,16 @@ weekly-review() {
 #### Common Issues & Solutions
 - **Environment Not Loading**: Run `devbox shell --pure` to reset environment state
 - **Package Conflicts**: Use `devbox update` followed by `devbox clean` to refresh packages  
-- **Performance Degradation**: Check `nu nushell-env/scripts/performance-analytics.nu optimize` for specific recommendations
-- **Test Failures**: Use `nu nushell-env/scripts/test-intelligence.nu detect-flaky --environment <env>` to identify flaky tests
-- **Memory Issues**: Monitor with `nu nushell-env/scripts/resource-monitor.nu watch` to identify memory leaks
+- **Performance Degradation**: Check `nu dev-env/nushell/scripts/performance-analytics.nu optimize` for specific recommendations
+- **Test Failures**: Use `nu dev-env/nushell/scripts/test-intelligence.nu detect-flaky --environment <env>` to identify flaky tests
+- **Memory Issues**: Monitor with `nu dev-env/nushell/scripts/resource-monitor.nu watch` to identify memory leaks
 - **Build Slowness**: Check compiler/build caching and consider parallel builds
 
 #### Debugging Tools & Commands
 ```bash
 # Language-specific debugging
 debug-python() {
-    cd python-env
+    cd dev-env/python
     echo "🐍 Python debugging session"
     echo "PYTHONPATH: $PYTHONPATH"
     echo "Virtual env: $(which python)"
@@ -677,7 +677,7 @@ debug-python() {
 }
 
 debug-typescript() {
-    cd typescript-env  
+    cd dev-env/typescript  
     echo "📘 TypeScript debugging session"
     echo "Node version: $(node --version)"
     echo "NPM version: $(npm --version)"
@@ -686,7 +686,7 @@ debug-typescript() {
 }
 
 debug-rust() {
-    cd rust-env
+    cd dev-env/rust
     echo "🦀 Rust debugging session"
     echo "Rust version: $(rustc --version)"
     echo "Cargo version: $(cargo --version)"
@@ -695,7 +695,7 @@ debug-rust() {
 }
 
 debug-go() {
-    cd go-env
+    cd dev-env/go
     echo "🐹 Go debugging session"
     echo "Go version: $(go version)"
     echo "GOPATH: $GOPATH"
@@ -704,7 +704,7 @@ debug-go() {
 }
 
 debug-nushell() {
-    cd nushell-env
+    cd dev-env/nushell
     echo "🐚 Nushell debugging session"
     echo "Nu version: $(nu --version)"
     echo "Config dir: $NUSHELL_CONFIG_DIR"
@@ -730,10 +730,10 @@ debug-performance() {
     echo "======================="
     
     # Check recent performance data
-    nu nushell-env/scripts/performance-analytics.nu report --days 1
+    nu dev-env/nushell/scripts/performance-analytics.nu report --days 1
     
     # Resource usage
-    nu nushell-env/scripts/resource-monitor.nu report --hours 1
+    nu dev-env/nushell/scripts/resource-monitor.nu report --hours 1
     
     # Identify bottlenecks
     echo "🔍 Checking for performance bottlenecks..."
@@ -755,7 +755,7 @@ emergency-reset() {
         echo "Cleaning all environments..."
         
         # Clean each environment
-        for env in python-env typescript-env rust-env go-env nushell-env; do
+        for env in dev-env/python dev-env/typescript dev-env/rust dev-env/go dev-env/nushell; do
             if [ -d "$env" ]; then
                 echo "Cleaning $env..."
                 cd "$env"

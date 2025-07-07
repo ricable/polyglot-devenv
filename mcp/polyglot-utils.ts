@@ -19,7 +19,7 @@ export function getWorkspaceRoot(): string {
 }
 
 // Environment paths
-export const ENVIRONMENTS = ["python-env", "typescript-env", "rust-env", "go-env", "nushell-env"] as const;
+export const ENVIRONMENTS = ["dev-env/python", "dev-env/typescript", "dev-env/rust", "dev-env/go", "dev-env/nushell"] as const;
 
 export function getEnvironmentPath(environment: string): string {
   const workspaceRoot = getWorkspaceRoot();

@@ -23,7 +23,7 @@ Creates new DevPod workspace(s) for Python development with:
 ## Command
 
 ```bash
-cd /Users/cedric/dev/github.com/polyglot-devenv/python-env
+cd /Users/cedric/dev/github.com/polyglot-devenv/dev-env/python
 
 # Get count from argument or default to 1
 COUNT=${ARGUMENT:-1}
@@ -49,7 +49,7 @@ for i in $(seq 1 $COUNT); do
     # Generate unique workspace name with timestamp and sequence
     TIMESTAMP=$(date +%Y%m%d-%H%M%S)
     WORKSPACE_NAME="polyglot-python-devpod-$TIMESTAMP-$i"
-    WORKSPACE_SOURCE="/Users/cedric/dev/github.com/polyglot-devenv/python-env"
+    WORKSPACE_SOURCE="/Users/cedric/dev/github.com/polyglot-devenv/dev-env/python"
     
     echo "🏷️  Workspace name: $WORKSPACE_NAME"
     
