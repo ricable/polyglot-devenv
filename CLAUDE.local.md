@@ -19,7 +19,7 @@ alias env-status="nu dev-env/nushell/scripts/list.nu"
 alias env-health="nu dev-env/nushell/scripts/validate-all.nu quick"
 
 # Return to project root from any environment
-alias root="cd /Users/cedric/dev/claude/rules"
+alias root="cd /Users/cedric/dev/github.com/polyglot-devenv"
 
 # Fast environment setup
 alias setup-all="root && pydev && devbox run setup && root && tsdev && devbox run install && root && nudev && devbox run setup"
@@ -111,12 +111,12 @@ export TERM="xterm-256color"
 
 # Polyglot development optimization
 export RUST_BACKTRACE=1
-export PYTHONPATH="/Users/cedric/dev/claude/rules/dev-env/python/src"
+export PYTHONPATH="/Users/cedric/dev/github.com/polyglot-devenv/dev-env/python/src"
 export GOPATH="/Users/cedric/go"
 export NODE_ENV="development"
 
 # Claude Code and intelligence systems
-export CLAUDE_PROJECT_ROOT="/Users/cedric/dev/claude/rules"
+export CLAUDE_PROJECT_ROOT="/Users/cedric/dev/github.com/polyglot-devenv"
 export CLAUDE_PERFORMANCE_LOG="true"
 export CLAUDE_RESOURCE_MONITOR="true"
 
@@ -138,7 +138,7 @@ export PROMPT_COMMAND="history -a"
 
 # Claude project navigation
 cdclaude() {
-    cd /Users/cedric/dev/claude/rules
+    cd /Users/cedric/dev/github.com/polyglot-devenv
     echo "📁 Claude Polyglot Environment"
     echo "🐍 Python: cd dev-env/python"
     echo "📘 TypeScript: cd dev-env/typescript" 
@@ -154,7 +154,7 @@ claude_env_info() {
     elif [[ $PWD == *"dev-env/rust"* ]]; then echo "🦀 RS"
     elif [[ $PWD == *"dev-env/go"* ]]; then echo "🐹 GO"
     elif [[ $PWD == *"dev-env/nushell"* ]]; then echo "🐚 NU"
-    elif [[ $PWD == *"claude/rules"* ]]; then echo "🤖 CLAUDE"
+    elif [[ $PWD == *"polyglot-devenv"* ]]; then echo "🤖 CLAUDE"
     fi
 }
 
@@ -226,6 +226,89 @@ alias monitor = nu scripts/resource-monitor.nu watch --interval 30
 - **Environment Drift**: The drift detection system prevents configuration inconsistencies that cause mysterious bugs
 - **Test Failures**: The test intelligence system can identify flaky tests and performance regressions automatically
 
+## Context Engineering Integration
+
+### Workspace vs DevPod Workflows
+
+**Context Engineering** now supports clear separation between development and deployment:
+
+```bash
+# Workspace Development (Local PRP Generation)
+alias prp-gen="cd context-engineering/workspace && /generate-prp"
+alias prp-features="code context-engineering/workspace/features"
+alias prp-templates="code context-engineering/workspace/templates"
+
+# DevPod Execution (Containerized PRP Execution)
+alias prp-exec-py="/devpod-python && /execute-prp"
+alias prp-exec-ts="/devpod-typescript && /execute-prp"
+alias prp-exec-rust="/devpod-rust && /execute-prp"
+alias prp-exec-go="/devpod-go && /execute-prp"
+
+# Combined Workflows
+alias prp-workflow="prp-gen && prp-exec-py"  # Generate then execute in Python DevPod
+```
+
+### Personal PRP Development Patterns
+
+```bash
+# My typical PRP development flow
+personal-prp-workflow() {
+    local feature_name=$1
+    local environment=${2:-python}
+    
+    echo "🚀 Starting PRP workflow for $feature_name in $environment environment"
+    
+    # Step 1: Generate PRP in workspace
+    cd context-engineering/workspace
+    /generate-prp features/$feature_name.md --env dev-env/$environment
+    
+    # Step 2: Review generated PRP
+    code context-engineering/workspace/PRPs/$feature_name-$environment.md
+    
+    # Step 3: Execute in appropriate DevPod environment
+    case $environment in
+        python) /devpod-python && /execute-prp context-engineering/devpod/environments/python/PRPs/$feature_name-python.md ;;
+        typescript) /devpod-typescript && /execute-prp context-engineering/devpod/environments/typescript/PRPs/$feature_name-typescript.md ;;
+        rust) /devpod-rust && /execute-prp context-engineering/devpod/environments/rust/PRPs/$feature_name-rust.md ;;
+        go) /devpod-go && /execute-prp context-engineering/devpod/environments/go/PRPs/$feature_name-go.md ;;
+    esac
+    
+    echo "✅ PRP workflow completed for $feature_name"
+}
+
+# Quick PRP commands for daily use
+alias quick-py-prp="personal-prp-workflow"  # Default to Python
+alias quick-ts-prp="personal-prp-workflow \$1 typescript"
+alias quick-rust-prp="personal-prp-workflow \$1 rust"
+alias quick-go-prp="personal-prp-workflow \$1 go"
+```
+
+### Context Engineering Performance Tracking
+
+```bash
+# Personal performance tracking for PRP workflows
+track-prp-performance() {
+    local prp_file=$1
+    local environment=$2
+    
+    echo "📊 Tracking PRP performance for $prp_file in $environment"
+    
+    # Measure generation time
+    nu dev-env/nushell/scripts/performance-analytics.nu measure "prp-generation" "$prp_file" "/generate-prp $prp_file --env $environment"
+    
+    # Measure execution time  
+    nu dev-env/nushell/scripts/performance-analytics.nu measure "prp-execution" "$prp_file" "/execute-prp $prp_file --validate"
+    
+    # Generate performance report
+    nu dev-env/nushell/scripts/performance-analytics.nu report --format table --filter "prp-*"
+}
+
+# PRP-specific monitoring aliases
+alias prp-perf="track-prp-performance"
+alias prp-metrics="nu dev-env/nushell/scripts/performance-analytics.nu report --filter prp-*"
+alias prp-optimize="nu dev-env/nushell/scripts/performance-analytics.nu optimize --filter prp-*"
+```
+
 ## Local Tools & Automation
 
 ### Personal Development Scripts
@@ -240,7 +323,7 @@ tar -czf ~/backups/claude_backup_$timestamp.tar.gz \
     --exclude='*/node_modules/*' \
     --exclude='*/.uv-cache/*' \
     --exclude='*/devbox.lock' \
-    /Users/cedric/dev/claude/rules
+    /Users/cedric/dev/github.com/polyglot-devenv
 
 # env-health-check.nu - Validate all environments with performance tracking
 #!/usr/bin/env nu

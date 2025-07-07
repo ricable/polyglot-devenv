@@ -1,296 +1,338 @@
-# Context Engineering Template
+# Context Engineering Framework
 
-A comprehensive template for getting started with Context Engineering - the discipline of engineering context for AI coding assistants so they have the information necessary to get the job done end to end.
+This project implements an enhanced context engineering system for generating and executing Product Requirements Prompts (PRPs) across multiple development environments with clear separation between development (workspace) and deployment (devpod) concerns.
 
-> **Context Engineering is 10x better than prompt engineering and 100x better than vibe coding.**
+## Architecture Overview
+
+The system is organized with clear separation between development (workspace) and deployment (devpod) concerns:
+
+```
+context-engineering/
+├── workspace/              # Local development & PRP generation
+│   ├── features/          # Feature definitions (input)
+│   ├── templates/         # PRP templates by environment
+│   ├── generators/        # PRP generation tools
+│   └── docs/             # Workspace usage docs
+├── devpod/               # Containerized execution environment
+│   ├── environments/     # Environment-specific configs
+│   │   ├── python/       # Maps to /devpod-python
+│   │   ├── typescript/   # Maps to /devpod-typescript
+│   │   ├── rust/         # Maps to /devpod-rust
+│   │   ├── go/           # Maps to /devpod-go
+│   │   └── nushell/      # Maps to devbox run devpod:provision
+│   ├── execution/        # Execution engines & reports
+│   ├── monitoring/       # Performance & security tracking
+│   └── configs/          # DevPod-specific configurations
+├── shared/               # Resources used by both workspace & devpod
+│   ├── examples/         # Reference examples (including dojo/)
+│   ├── utils/           # Common utilities
+│   ├── schemas/         # Validation schemas
+│   └── docs/            # Shared documentation
+└── archive/             # Historical PRPs and reports
+```
 
 ## 🚀 Quick Start
 
-```bash
-# 1. Clone this template
-git clone https://github.com/coleam00/Context-Engineering-Intro.git
-cd Context-Engineering-Intro
-
-# 2. Set up your project rules (optional - template provided)
-# Edit CLAUDE.md to add your project-specific guidelines
-
-# 3. Add examples (highly recommended)
-# Place relevant code examples in the examples/ folder
-
-# 4. Create your initial feature request
-# Edit INITIAL.md with your feature requirements
-
-# 5. Generate a comprehensive PRP (Product Requirements Prompt)
-# In Claude Code, run:
-/generate-prp INITIAL.md
-
-# 6. Execute the PRP to implement your feature
-# In Claude Code, run:
-/execute-prp PRPs/your-feature-name.md
-```
-
-## 📚 Table of Contents
-
-- [What is Context Engineering?](#what-is-context-engineering)
-- [Template Structure](#template-structure)
-- [Step-by-Step Guide](#step-by-step-guide)
-- [Writing Effective INITIAL.md Files](#writing-effective-initialmd-files)
-- [The PRP Workflow](#the-prp-workflow)
-- [Using Examples Effectively](#using-examples-effectively)
-- [Best Practices](#best-practices)
-
-## What is Context Engineering?
-
-Context Engineering represents a paradigm shift from traditional prompt engineering:
-
-### Prompt Engineering vs Context Engineering
-
-**Prompt Engineering:**
-- Focuses on clever wording and specific phrasing
-- Limited to how you phrase a task
-- Like giving someone a sticky note
-
-**Context Engineering:**
-- A complete system for providing comprehensive context
-- Includes documentation, examples, rules, patterns, and validation
-- Like writing a full screenplay with all the details
-
-### Why Context Engineering Matters
-
-1. **Reduces AI Failures**: Most agent failures aren't model failures - they're context failures
-2. **Ensures Consistency**: AI follows your project patterns and conventions
-3. **Enables Complex Features**: AI can handle multi-step implementations with proper context
-4. **Self-Correcting**: Validation loops allow AI to fix its own mistakes
-
-## Template Structure
-
-```
-context-engineering-intro/
-├── .claude/
-│   ├── commands/
-│   │   ├── generate-prp.md    # Generates comprehensive PRPs
-│   │   └── execute-prp.md     # Executes PRPs to implement features
-│   └── settings.local.json    # Claude Code permissions
-├── PRPs/
-│   ├── templates/
-│   │   └── prp_base.md       # Base template for PRPs
-│   └── EXAMPLE_multi_agent_prp.md  # Example of a complete PRP
-├── examples/                  # Your code examples (critical!)
-├── CLAUDE.md                 # Global rules for AI assistant
-├── INITIAL.md               # Template for feature requests
-├── INITIAL_EXAMPLE.md       # Example feature request
-└── README.md                # This file
-```
-
-This template doesn't focus on RAG and tools with context engineering because I have a LOT more in store for that soon. ;)
-
-## Step-by-Step Guide
-
-### 1. Set Up Global Rules (CLAUDE.md)
-
-The `CLAUDE.md` file contains project-wide rules that the AI assistant will follow in every conversation. The template includes:
-
-- **Project awareness**: Reading planning docs, checking tasks
-- **Code structure**: File size limits, module organization
-- **Testing requirements**: Unit test patterns, coverage expectations
-- **Style conventions**: Language preferences, formatting rules
-- **Documentation standards**: Docstring formats, commenting practices
-
-**You can use the provided template as-is or customize it for your project.**
-
-### 2. Create Your Initial Feature Request
-
-Edit `INITIAL.md` to describe what you want to build:
-
-```markdown
-## FEATURE:
-[Describe what you want to build - be specific about functionality and requirements]
-
-## EXAMPLES:
-[List any example files in the examples/ folder and explain how they should be used]
-
-## DOCUMENTATION:
-[Include links to relevant documentation, APIs, or MCP server resources]
-
-## OTHER CONSIDERATIONS:
-[Mention any gotchas, specific requirements, or things AI assistants commonly miss]
-```
-
-**See `INITIAL_EXAMPLE.md` for a complete example.**
-
-### 3. Generate the PRP
-
-PRPs (Product Requirements Prompts) are comprehensive implementation blueprints that include:
-
-- Complete context and documentation
-- Implementation steps with validation
-- Error handling patterns
-- Test requirements
-
-They are similar to PRDs (Product Requirements Documents) but are crafted more specifically to instruct an AI coding assistant.
-
-Run in Claude Code:
-```bash
-/generate-prp INITIAL.md
-```
-
-**Note:** The slash commands are custom commands defined in `.claude/commands/`. You can view their implementation:
-- `.claude/commands/generate-prp.md` - See how it researches and creates PRPs
-- `.claude/commands/execute-prp.md` - See how it implements features from PRPs
-
-The `$ARGUMENTS` variable in these commands receives whatever you pass after the command name (e.g., `INITIAL.md` or `PRPs/your-feature.md`).
-
-This command will:
-1. Read your feature request
-2. Research the codebase for patterns
-3. Search for relevant documentation
-4. Create a comprehensive PRP in `PRPs/your-feature-name.md`
-
-### 4. Execute the PRP
-
-Once generated, execute the PRP to implement your feature:
+### Workspace Development (PRP Generation)
 
 ```bash
-/execute-prp PRPs/your-feature-name.md
+# Navigate to workspace
+cd context-engineering/workspace
+
+# Create a feature definition
+code features/user-api.md
+
+# Generate a PRP for Python environment
+/generate-prp features/user-api.md --env dev-env/python
+
+# Review generated PRP
+code workspace/generated-PRPs/user-api-python.md
 ```
 
-The AI coding assistant will:
-1. Read all context from the PRP
-2. Create a detailed implementation plan
-3. Execute each step with validation
-4. Run tests and fix any issues
-5. Ensure all success criteria are met
+### DevPod Execution (Containerized)
 
-## Writing Effective INITIAL.md Files
+```bash
+# Provision Python DevPod environment
+/devpod-python
 
-### Key Sections Explained
+# Execute PRP in isolated container
+/execute-prp context-engineering/devpod/environments/python/PRPs/user-api-python.md --validate
 
-**FEATURE**: Be specific and comprehensive
-- ❌ "Build a web scraper"
-- ✅ "Build an async web scraper using BeautifulSoup that extracts product data from e-commerce sites, handles rate limiting, and stores results in PostgreSQL"
-
-**EXAMPLES**: Leverage the examples/ folder
-- Place relevant code patterns in `examples/`
-- Reference specific files and patterns to follow
-- Explain what aspects should be mimicked
-
-**DOCUMENTATION**: Include all relevant resources
-- API documentation URLs
-- Library guides
-- MCP server documentation
-- Database schemas
-
-**OTHER CONSIDERATIONS**: Capture important details
-- Authentication requirements
-- Rate limits or quotas
-- Common pitfalls
-- Performance requirements
-
-## The PRP Workflow
-
-### How /generate-prp Works
-
-The command follows this process:
-
-1. **Research Phase**
-   - Analyzes your codebase for patterns
-   - Searches for similar implementations
-   - Identifies conventions to follow
-
-2. **Documentation Gathering**
-   - Fetches relevant API docs
-   - Includes library documentation
-   - Adds gotchas and quirks
-
-3. **Blueprint Creation**
-   - Creates step-by-step implementation plan
-   - Includes validation gates
-   - Adds test requirements
-
-4. **Quality Check**
-   - Scores confidence level (1-10)
-   - Ensures all context is included
-
-### How /execute-prp Works
-
-1. **Load Context**: Reads the entire PRP
-2. **Plan**: Creates detailed task list using TodoWrite
-3. **Execute**: Implements each component
-4. **Validate**: Runs tests and linting
-5. **Iterate**: Fixes any issues found
-6. **Complete**: Ensures all requirements met
-
-See `PRPs/EXAMPLE_multi_agent_prp.md` for a complete example of what gets generated.
-
-## Using Examples Effectively
-
-The `examples/` folder is **critical** for success. AI coding assistants perform much better when they can see patterns to follow.
-
-### What to Include in Examples
-
-1. **Code Structure Patterns**
-   - How you organize modules
-   - Import conventions
-   - Class/function patterns
-
-2. **Testing Patterns**
-   - Test file structure
-   - Mocking approaches
-   - Assertion styles
-
-3. **Integration Patterns**
-   - API client implementations
-   - Database connections
-   - Authentication flows
-
-4. **CLI Patterns**
-   - Argument parsing
-   - Output formatting
-   - Error handling
-
-### Example Structure
-
+# Monitor execution
+nu context-engineering/devpod/monitoring/python-monitor.nu
 ```
-examples/
-├── README.md           # Explains what each example demonstrates
-├── cli.py             # CLI implementation pattern
-├── agent/             # Agent architecture patterns
-│   ├── agent.py      # Agent creation pattern
-│   ├── tools.py      # Tool implementation pattern
-│   └── providers.py  # Multi-provider pattern
-└── tests/            # Testing patterns
-    ├── test_agent.py # Unit test patterns
-    └── conftest.py   # Pytest configuration
+
+## Development Workflows
+
+### 1. Workspace-Only Development
+
+For local development and PRP generation:
+
+```bash
+# Generate PRP locally
+cd context-engineering/workspace
+/generate-prp features/chat-interface.md --env dev-env/typescript
+
+# Review and refine templates
+code templates/typescript_prp.md
+```
+
+### 2. Full DevPod Workflow
+
+For complete isolation and production-like execution:
+
+```bash
+# Step 1: Generate in workspace
+cd context-engineering/workspace
+/generate-prp features/api-backend.md --env dev-env/python
+
+# Step 2: Execute in DevPod
+/devpod-python
+/execute-prp context-engineering/devpod/environments/python/PRPs/api-backend-python.md
+
+# Step 3: Monitor and review
+nu context-engineering/devpod/monitoring/execution-report.nu --latest
+```
+
+### 3. Multi-Environment Development
+
+For features spanning multiple languages:
+
+```bash
+# Generate backend PRP
+/generate-prp features/api-backend.md --env dev-env/python
+
+# Generate frontend PRP  
+/generate-prp features/web-frontend.md --env dev-env/typescript
+
+# Generate monitoring PRP
+/generate-prp features/monitoring.md --env dev-env/nushell
+
+# Execute in order with dependency management
+/devpod-python && /execute-prp context-engineering/devpod/environments/python/PRPs/api-backend-python.md
+/devpod-typescript && /execute-prp context-engineering/devpod/environments/typescript/PRPs/web-frontend-typescript.md
+nu context-engineering/devpod/environments/nushell/execute-monitoring.nu
+```
+
+## Integration with Polyglot Environment
+
+### DevPod Command Mapping
+
+Each DevPod environment maps to containerized execution:
+
+| Command | Environment | Container Pattern | Max Workspaces |
+|---------|-------------|------------------|----------------|
+| `/devpod-python` | `dev-env/python` | `polyglot-python-devpod-{timestamp}-{N}` | 5 |
+| `/devpod-typescript` | `dev-env/typescript` | `polyglot-typescript-devpod-{timestamp}-{N}` | 5 |
+| `/devpod-rust` | `dev-env/rust` | `polyglot-rust-devpod-{timestamp}-{N}` | 5 |
+| `/devpod-go` | `dev-env/go` | `polyglot-go-devpod-{timestamp}-{N}` | 5 |
+| `devbox run devpod:provision` | `dev-env/nushell` | Nushell automation | N/A |
+
+### Personal Workflow Integration
+
+Add to your `CLAUDE.local.md`:
+
+```bash
+# Context Engineering Shortcuts
+alias prp-gen="cd context-engineering/workspace && /generate-prp"
+alias prp-features="code context-engineering/workspace/features"
+alias prp-templates="code context-engineering/workspace/templates"
+
+# DevPod Execution Shortcuts
+alias prp-exec-py="/devpod-python && /execute-prp"
+alias prp-exec-ts="/devpod-typescript && /execute-prp"
+alias prp-exec-rust="/devpod-rust && /execute-prp"
+alias prp-exec-go="/devpod-go && /execute-prp"
+
+# Complete Workflow
+personal-prp-workflow() {
+    local feature_name=$1
+    local environment=${2:-python}
+    
+    echo "🚀 Starting PRP workflow for $feature_name in $environment environment"
+    
+    # Generate PRP in workspace
+    cd context-engineering/workspace
+    /generate-prp features/$feature_name.md --env dev-env/$environment
+    
+    # Execute in DevPod environment
+    case $environment in
+        python) /devpod-python && /execute-prp context-engineering/devpod/environments/python/PRPs/$feature_name-python.md ;;
+        typescript) /devpod-typescript && /execute-prp context-engineering/devpod/environments/typescript/PRPs/$feature_name-typescript.md ;;
+        rust) /devpod-rust && /execute-prp context-engineering/devpod/environments/rust/PRPs/$feature_name-rust.md ;;
+        go) /devpod-go && /execute-prp context-engineering/devpod/environments/go/PRPs/$feature_name-go.md ;;
+    esac
+}
+```
+
+## Environment-Specific Features
+
+### Python Environment
+- **Framework**: FastAPI with async/await patterns
+- **Database**: SQLAlchemy async with PostgreSQL
+- **Testing**: pytest-asyncio with comprehensive coverage
+- **Package Management**: uv exclusively (no pip/poetry)
+- **Container**: Python 3.12.11 + uv 0.7.19
+
+### TypeScript Environment
+- **Framework**: Modern Node.js with ES modules
+- **Type Safety**: Strict TypeScript mode, no `any` types
+- **Testing**: Jest with comprehensive test patterns
+- **Quality**: ESLint + Prettier with strict rules
+- **Container**: Node.js 20.19.3 + TypeScript 5.8.3
+
+### Rust Environment
+- **Runtime**: Tokio for async operations
+- **Memory Safety**: Leverage ownership system effectively
+- **Error Handling**: Result<T, E> with custom error types
+- **Testing**: Cargo test with comprehensive scenarios
+- **Container**: Latest stable Rust + Cargo
+
+### Go Environment
+- **Patterns**: Clean, simple Go with context patterns
+- **Error Handling**: Explicit error checking with context
+- **Testing**: Table-driven tests
+- **Interfaces**: Small, focused interface design
+- **Container**: Go 1.22+ with standard toolchain
+
+### Nushell Environment
+- **Data Processing**: Structured data with built-in types
+- **Automation**: Cross-environment orchestration
+- **Type Safety**: Type hints for all parameters
+- **Integration**: DevBox automation and monitoring
+- **Container**: Nushell 0.105.1 with devbox
+
+## Performance & Monitoring
+
+### Built-in Analytics
+
+The system includes comprehensive performance tracking:
+
+```bash
+# Performance dashboard
+nu context-engineering/devpod/monitoring/dashboard.nu
+
+# Environment-specific metrics
+nu dev-env/nushell/scripts/performance-analytics.nu report --env python
+
+# Cross-environment validation
+nu scripts/validate-all.nu --parallel
+
+# Resource optimization
+nu dev-env/nushell/scripts/resource-monitor.nu optimize
+```
+
+### Quality Gates
+
+Each environment enforces quality standards:
+- **Linting**: Environment-specific linters (ruff, eslint, clippy, golangci-lint)
+- **Type Checking**: mypy (Python), TypeScript strict mode, Rust ownership
+- **Testing**: Minimum 80% coverage with framework-specific patterns
+- **Security**: Secret scanning, dependency vulnerability checks
+- **Performance**: Build time tracking, resource usage monitoring
+
+## Advanced Features
+
+### CopilotKit Integration
+
+The `shared/examples/dojo/` directory provides complete Next.js patterns:
+- **Agentic Chat**: Interactive AI conversations
+- **Generative UI**: Dynamic interface generation
+- **Human in the Loop**: Human oversight patterns
+- **Shared State**: Cross-component state management
+- **Tool-based UI**: Tool-driven interface generation
+
+### Multi-Agent Systems
+
+Support for complex multi-agent workflows:
+- **Agent Coordination**: Multiple AI agents working together
+- **Task Distribution**: Parallel execution across agents
+- **State Synchronization**: Shared state management
+- **Communication Patterns**: Inter-agent messaging
+
+### Version Control & Archiving
+
+- **Historical Tracking**: All PRPs and executions archived
+- **Performance Analysis**: Track improvements over time
+- **Pattern Recognition**: Identify successful implementations
+- **Regression Testing**: Use archived PRPs for validation
+
+## Getting Started
+
+### 1. Understand the Architecture
+
+Review the README files in each directory:
+- `workspace/README.md` - PRP generation and development
+- `devpod/README.md` - Containerized execution
+- `shared/README.md` - Common resources and utilities
+- `archive/README.md` - Historical tracking and analysis
+
+### 2. Set Up Personal Workflows
+
+Add context engineering integration to your `CLAUDE.local.md`:
+
+```bash
+# Copy examples from CLAUDE.local.md.template
+cp CLAUDE.local.md.template CLAUDE.local.md
+
+# Add context engineering sections
+code CLAUDE.local.md
+```
+
+### 3. Create Your First Feature
+
+```bash
+# Create feature definition
+cd context-engineering/workspace
+code features/my-first-feature.md
+
+# Generate PRP
+/generate-prp features/my-first-feature.md --env dev-env/python
+
+# Execute in DevPod
+/devpod-python
+/execute-prp context-engineering/devpod/environments/python/PRPs/my-first-feature-python.md
+```
+
+### 4. Monitor and Iterate
+
+```bash
+# Check execution results
+nu context-engineering/devpod/monitoring/execution-report.nu
+
+# Analyze performance
+nu dev-env/nushell/scripts/performance-analytics.nu dashboard
+
+# Review archived results
+ls context-engineering/archive/PRPs/
 ```
 
 ## Best Practices
 
-### 1. Be Explicit in INITIAL.md
-- Don't assume the AI knows your preferences
-- Include specific requirements and constraints
-- Reference examples liberally
+### 1. Clear Separation of Concerns
+- **Generate** in workspace for development and iteration
+- **Execute** in devpod for isolation and production-like conditions
+- **Archive** results for historical analysis and learning
 
-### 2. Provide Comprehensive Examples
-- More examples = better implementations
-- Show both what to do AND what not to do
-- Include error handling patterns
+### 2. Environment-Specific Optimization
+- Use language-appropriate patterns and frameworks
+- Leverage environment-specific tooling and best practices
+- Follow established conventions for each language
 
-### 3. Use Validation Gates
-- PRPs include test commands that must pass
-- AI will iterate until all validations succeed
-- This ensures working code on first try
+### 3. Comprehensive Testing
+- Include test requirements in feature definitions
+- Use environment-specific testing frameworks
+- Maintain high coverage standards
 
-### 4. Leverage Documentation
-- Include official API docs
-- Add MCP server resources
-- Reference specific documentation sections
-
-### 5. Customize CLAUDE.md
-- Add your conventions
-- Include project-specific rules
-- Define coding standards
+### 4. Continuous Monitoring
+- Track performance across all environments
+- Monitor resource usage and optimization opportunities
+- Use analytics for continuous improvement
 
 ## Resources
 
-- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
-- [Context Engineering Best Practices](https://www.philschmid.de/context-engineering)
+- **Integration Guide**: `workspace/docs/integration-guide.md`
+- **Architecture Docs**: `shared/docs/` directory
+- **Performance Analytics**: `dev-env/nushell/scripts/performance-analytics.nu`
+- **Cross-Environment Validation**: `scripts/validate-all.nu`
+- **DevPod Documentation**: `devpod/README.md` and environment-specific docs

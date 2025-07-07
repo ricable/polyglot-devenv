@@ -35,9 +35,9 @@ cd dev-env/python && devbox shell && devbox run install
 
 | Workflow | Native | Containerized | AI-Assisted | Enterprise |
 |----------|--------|---------------|-------------|------------|
-| **Setup** | `devbox shell` | `/devpod-python [count]` | `/generate-prp features/api.md --env dev-env/python` | `python .claude/commands/generate-prp-v2.py` |
-| **Develop** | `devbox run test` | `devbox run devpod:provision` | `cd dev-env/python && devbox run devpod:provision` | `--workers 4 --debug` |
-| **Execute** | `devbox run lint` | `devpod list` | `/execute-prp context-engineering/PRPs/api-python.md` | `python .claude/commands/execute-prp-v2.py` |
+| **Setup** | `devbox shell` | `/devpod-python [count]` | `cd context-engineering/workspace && /generate-prp features/api.md --env dev-env/python` | `python .claude/commands/generate-prp-v2.py` |
+| **Develop** | `devbox run test` | `devbox run devpod:provision` | `/devpod-python && code .` | `--workers 4 --debug` |
+| **Execute** | `devbox run lint` | `devpod list` | `/execute-prp context-engineering/devpod/environments/python/PRPs/api-python.md` | `python .claude/commands/execute-prp-v2.py` |
 | **Monitor** | Built-in hooks | `devbox run devpod:status` | `--validate --monitor` | `--timeout 300 --monitor` |
 
 ### Core Devbox Commands
@@ -68,11 +68,11 @@ mcp tool environment_detect         # Detect all polyglot environments via MCP
 mcp tool devpod_provision           # Provision DevPod workspaces via MCP (1-10 count)
 mcp resource polyglot://config/*    # Access configurations via MCP resources
 
-# Context Engineering                # Workspace Management
-/generate-prp <file> --env <env>    devpod list                 # List all workspaces
-/execute-prp <prp-file> --validate  devpod stop <name>         # Stop specific workspace
-/polyglot-rule2hook "rule text"     devpod delete <name>       # Delete workspace
-mcp tool prp_generate               # Generate PRPs via MCP with environment targeting
+# Context Engineering (Workspace)    # DevPod Execution (Containerized)
+cd context-engineering/workspace    /devpod-python [1-10]       # Provision Python containers
+/generate-prp features/api.md --env dev-env/python             /execute-prp context-engineering/devpod/environments/python/PRPs/api-python.md
+/generate-prp-v2 features/api.md    /devpod-typescript [1-10]   # Provision TypeScript containers
+mcp tool prp_generate               devpod list                 # List all workspaces
 
 # Cross-Language Validation (FULLY TESTED ✅)
 nu scripts/validate-all.nu                      # Full validation across all environments
@@ -122,7 +122,23 @@ polyglot-project/
 │   ├── validate-all.nu  # Comprehensive validation script with parallel execution
 │   └── sync-configs.nu  # Configuration synchronization across environments
 ├── devpod-automation/   # DevPod containerized development (scripts/, templates/, config/)
-├── context-engineering/ # Context Engineering framework (templates/, PRPs/, lib/, versions/, logs/)
+├── context-engineering/ # Context Engineering framework (REORGANIZED ✅)
+│   ├── workspace/        # Local development & PRP generation
+│   │   ├── features/     # Feature definitions (input)
+│   │   ├── templates/    # PRP templates by environment
+│   │   ├── generators/   # PRP generation tools
+│   │   └── docs/        # Workspace usage documentation
+│   ├── devpod/          # Containerized execution environment
+│   │   ├── environments/ # Environment-specific configs (python/, typescript/, rust/, go/, nushell/)
+│   │   ├── execution/   # Execution engines & reports
+│   │   ├── monitoring/  # Performance & security tracking
+│   │   └── configs/     # DevPod-specific configurations
+│   ├── shared/          # Resources used by both workspace & devpod
+│   │   ├── examples/    # Reference examples (including dojo/)
+│   │   ├── utils/      # Common utilities (Nushell tools)
+│   │   ├── schemas/    # Validation schemas
+│   │   └── docs/       # Shared documentation
+│   └── archive/         # Historical PRPs and reports
 ├── mcp/                 # Model Context Protocol server (PRODUCTION ✅)
 │   ├── polyglot-server.ts        # Dynamic polyglot MCP server with environment detection
 │   ├── polyglot-utils.ts         # Shared utilities and DevPod integration
@@ -228,18 +244,53 @@ bash devpod-automation/scripts/provision-all.sh clean-all
 
 ### Context Engineering Framework
 
-**PRP Workflow**:
-1. **Generation** (Native): `/generate-prp features/api.md --env dev-env/python`
-2. **Provisioning** (DevPod): `cd dev-env/python && devbox run devpod:provision`  
-3. **Execution** (Container): `/execute-prp context-engineering/PRPs/api-python.md --validate`
+**Workspace vs DevPod Architecture** (NEW - Clear Separation ✅):
+- **Workspace** (`context-engineering/workspace/`): Local PRP generation, template development, feature definitions
+- **DevPod** (`context-engineering/devpod/`): Containerized execution, environment-specific configs, monitoring
+- **Shared** (`context-engineering/shared/`): Common utilities, examples (dojo/), documentation
+- **Archive** (`context-engineering/archive/`): Historical tracking, performance analysis, pattern recognition
 
-**Enterprise System** (NEW - 275% faster execution):
+**PRP Workflow** (Updated):
+1. **Generation** (Workspace): `cd context-engineering/workspace && /generate-prp features/api.md --env dev-env/python`
+2. **Provisioning** (DevPod): `/devpod-python [count]` → Creates isolated containers
+3. **Execution** (DevPod): `/execute-prp context-engineering/devpod/environments/python/PRPs/api-python.md --validate`
+
+**Workflow Comparison**:
+
+| Aspect | Workspace Development | DevPod Execution | Personal Integration |
+|--------|----------------------|------------------|---------------------|
+| **Purpose** | PRP generation & templates | Isolated execution | Productivity shortcuts |
+| **Location** | `context-engineering/workspace/` | `context-engineering/devpod/` | `CLAUDE.local.md` |
+| **Commands** | `/generate-prp features/api.md` | `/devpod-python && /execute-prp` | `prp-workflow api python` |
+| **Benefits** | Fast iteration | Clean isolation | Personal automation |
+
+**Personal Integration**:
+```bash
+# Add to CLAUDE.local.md for productivity
+alias prp-gen="cd context-engineering/workspace && /generate-prp"
+alias prp-exec-py="/devpod-python && /execute-prp"
+alias prp-exec-ts="/devpod-typescript && /execute-prp"
+
+# Complete workflow automation
+personal-prp-workflow() {
+    local feature_name=$1
+    local environment=${2:-python}
+    cd context-engineering/workspace
+    /generate-prp features/$feature_name.md --env dev-env/$environment
+    case $environment in
+        python) /devpod-python && /execute-prp context-engineering/devpod/environments/python/PRPs/$feature_name-python.md ;;
+        typescript) /devpod-typescript && /execute-prp context-engineering/devpod/environments/typescript/PRPs/$feature_name-typescript.md ;;
+    esac
+}
+```
+
+**Enterprise System** (Enhanced - 275% faster execution):
 ```bash
 # Enhanced Generation with Version Control
 python .claude/commands/generate-prp-v2.py features/user-api.md --env dev-env/python --workers 4 --debug
 
 # Enhanced Execution with Auto-Rollback  
-python .claude/commands/execute-prp-v2.py context-engineering/PRPs/user-api-python.md --validate --monitor --timeout 300
+python .claude/commands/execute-prp-v2.py context-engineering/devpod/environments/python/PRPs/user-api-python.md --validate --monitor --timeout 300
 ```
 
 **Enterprise Features**: Version Control (Memento/Observer patterns) • Scalable Processing (Mediator/Factory patterns) • Auto-Rollback • Performance Monitoring • Execution History • Intelligent Recovery

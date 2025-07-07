@@ -21,7 +21,7 @@ A comprehensive polyglot development environment supporting Python, TypeScript, 
 ### 🤖 **AI-Powered Automation**
 - **Model Context Protocol (MCP)**: 40+ development tools for Claude integration
 - **Intelligent Hooks**: Auto-formatting, testing, and quality gates
-- **Context Engineering**: PRP generation with environment-specific templates
+- **Context Engineering Framework**: Workspace/DevPod separation for PRP generation and execution
 - **Performance Analytics**: Real-time monitoring and optimization
 
 ### 🐳 **Container Development**
@@ -190,7 +190,23 @@ polyglot-devenv/
 ├── scripts/                    # 🔄 Cross-language validation
 │   └── validate-all.nu         # ✅ Parallel validation script
 ├── devpod-automation/          # 🐳 Container development
-├── context-engineering/        # 📝 PRP templates & workflows
+├── context-engineering/        # 📝 Context Engineering Framework (REORGANIZED ✅)
+│   ├── workspace/              # 🏗️ Local development & PRP generation
+│   │   ├── features/           # 📋 Feature definitions (input)
+│   │   ├── templates/          # 📄 PRP templates by environment
+│   │   ├── generators/         # ⚙️ PRP generation tools
+│   │   └── docs/              # 📚 Workspace usage documentation
+│   ├── devpod/                # 🐳 Containerized execution environment
+│   │   ├── environments/      # 🌍 Environment-specific configs (python/, typescript/, rust/, go/, nushell/)
+│   │   ├── execution/         # 🚀 Execution engines & reports
+│   │   ├── monitoring/        # 📊 Performance & security tracking
+│   │   └── configs/           # ⚙️ DevPod-specific configurations
+│   ├── shared/                # 🔄 Resources used by both workspace & devpod
+│   │   ├── examples/          # 📖 Reference examples (including dojo/)
+│   │   ├── utils/            # 🛠️ Common utilities (Nushell tools)
+│   │   ├── schemas/          # ✅ Validation schemas
+│   │   └── docs/             # 📚 Shared documentation
+│   └── archive/               # 🗄️ Historical PRPs and reports
 ├── .claude/                    # 🧠 Claude Code integration
 │   ├── commands/               # ⚡ Slash commands
 │   ├── hooks/                  # 🪝 Intelligent automation
@@ -343,6 +359,43 @@ make perf-report
 
 # Security scan
 make security-scan
+```
+
+## 📝 Context Engineering Framework
+
+### Architecture Overview
+
+The Context Engineering system provides clear separation between development and execution:
+
+- **Workspace** (`context-engineering/workspace/`): Local PRP generation, template development, feature definitions
+- **DevPod** (`context-engineering/devpod/`): Containerized execution, environment-specific configs, monitoring  
+- **Shared** (`context-engineering/shared/`): Common utilities, examples (dojo/), documentation
+- **Archive** (`context-engineering/archive/`): Historical tracking, performance analysis
+
+### Workflow Examples
+
+```bash
+# Generate PRP in workspace
+cd context-engineering/workspace
+/generate-prp features/user-api.md --env dev-env/python
+
+# Execute in DevPod container
+/devpod-python
+/execute-prp context-engineering/devpod/environments/python/PRPs/user-api-python.md --validate
+
+# Personal productivity shortcuts (add to CLAUDE.local.md)
+alias prp-gen="cd context-engineering/workspace && /generate-prp"
+alias prp-exec-py="/devpod-python && /execute-prp"
+```
+
+### Enterprise Features
+
+```bash
+# Enhanced generation with version control
+python .claude/commands/generate-prp-v2.py features/api.md --env dev-env/python --workers 4
+
+# Enhanced execution with auto-rollback
+python .claude/commands/execute-prp-v2.py context-engineering/devpod/environments/python/PRPs/api-python.md --validate --monitor
 ```
 
 ## 🧠 Intelligent Automation
@@ -528,5 +581,7 @@ cd dev-env/python && devbox shell
 
 For detailed configuration and advanced usage, see:
 - [CLAUDE.md](CLAUDE.md) - Project standards and workflows
-- [MCP Documentation](mcp/README.md) - MCP server details
-- [Context Engineering Guide](context-engineering/docs/integration-guide.md) - AI-assisted development
+- [MCP Documentation](mcp/README.md) - MCP server details  
+- [Context Engineering Framework](context-engineering/README.md) - Workspace/DevPod architecture
+- [Workspace Guide](context-engineering/workspace/README.md) - PRP generation workflows
+- [DevPod Guide](context-engineering/devpod/README.md) - Containerized execution

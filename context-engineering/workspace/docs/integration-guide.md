@@ -16,7 +16,7 @@ These commands work seamlessly with the existing polyglot environment structure 
 
 ```bash
 # For a Python feature
-/generate-prp features/user-api.md --env python-env
+/generate-prp features/user-api.md --env dev-env/python
 
 # For a cross-environment feature
 /generate-prp features/monitoring-dashboard.md --env multi
@@ -35,7 +35,7 @@ These commands work seamlessly with the existing polyglot environment structure 
 /execute-prp context-engineering/PRPs/user-api-python.md --monitor
 
 # Execute for specific environment
-/execute-prp context-engineering/PRPs/cli-tool-nushell.md --env nushell-env
+/execute-prp context-engineering/PRPs/cli-tool-nushell.md --env dev-env/nushell
 ```
 
 ## Directory Structure
@@ -81,7 +81,7 @@ Before generating a PRP, create a feature request file describing what you want 
 - Nushell book: https://www.nushell.sh/book/
 
 ## OTHER CONSIDERATIONS:
-- Environment: [python-env|typescript-env|rust-env|go-env|nushell-env|multi]
+- Environment: [dev-env/python|dev-env/typescript|dev-env/rust|dev-env/go|dev-env/nushell|multi]
 - Integration points: [List environments this feature will interact with]
 - Performance requirements: [Any specific performance needs]
 - Security considerations: [Authentication, authorization, data validation]
@@ -96,8 +96,8 @@ Before generating a PRP, create a feature request file describing what you want 
 Build a complete user management REST API with CRUD operations, JWT authentication, and PostgreSQL database integration. The API should include user registration, login, profile management, and admin operations.
 
 ## EXAMPLES:
-- `python-env/src/main.py` - FastAPI application structure
-- `python-env/src/models/` - Existing Pydantic model patterns
+- `dev-env/python/src/main.py` - FastAPI application structure
+- `dev-env/python/src/models/` - Existing Pydantic model patterns
 - Reference the FastAPI documentation patterns for async endpoints
 
 ## DOCUMENTATION:
@@ -106,7 +106,7 @@ Build a complete user management REST API with CRUD operations, JWT authenticati
 - Pydantic v2: https://docs.pydantic.dev/
 
 ## OTHER CONSIDERATIONS:
-- Environment: python-env
+- Environment: dev-env/python
 - Database: PostgreSQL with async SQLAlchemy
 - Authentication: JWT-based with secure password hashing
 - Testing: Comprehensive test coverage with pytest-asyncio
@@ -120,11 +120,11 @@ The system automatically selects the appropriate template based on the target en
 ### Template Selection Logic
 
 1. **Single Environment**: Uses language-specific template
-   - `python-env` → `python_prp.md`
-   - `typescript-env` → `typescript_prp.md`
-   - `rust-env` → `rust_prp.md`
-   - `go-env` → `go_prp.md`
-   - `nushell-env` → `nushell_prp.md`
+   - `dev-env/python` → `python_prp.md`
+   - `dev-env/typescript` → `typescript_prp.md`
+   - `dev-env/rust` → `rust_prp.md`
+   - `dev-env/go` → `go_prp.md`
+   - `dev-env/nushell` → `nushell_prp.md`
 
 2. **Multi-Environment**: Uses base template with cross-environment sections
    - `multi` → `prp_base.md` with polyglot considerations
@@ -220,7 +220,7 @@ nu nushell-env/scripts/validate-all.nu parallel
 
 2. **Generate PRP**
    ```bash
-   /generate-prp features/user-auth.md --env python-env
+   /generate-prp features/user-auth.md --env dev-env/python
    ```
 
 3. **Review and Execute**
@@ -250,7 +250,7 @@ nu nushell-env/scripts/validate-all.nu parallel
 
 1. **Start with Basic PRP**
    ```bash
-   /generate-prp features/basic-api.md --env python-env
+   /generate-prp features/basic-api.md --env dev-env/python
    ```
 
 2. **Execute and Test**
@@ -329,9 +329,9 @@ Test cross-environment integration:
 
 ```bash
 # Generate PRPs for multiple environments
-/generate-prp features/api-backend.md --env python-env
-/generate-prp features/web-frontend.md --env typescript-env
-/generate-prp features/monitoring.md --env nushell-env
+/generate-prp features/api-backend.md --env dev-env/python
+/generate-prp features/web-frontend.md --env dev-env/typescript
+/generate-prp features/monitoring.md --env dev-env/nushell
 
 # Execute in order with dependency management
 /execute-prp context-engineering/PRPs/api-backend-python.md
@@ -368,13 +368,13 @@ Test cross-environment integration:
 ls context-engineering/templates/
 
 # Verify environment setup
-cd python-env && devbox shell && devbox run --version
+cd dev-env/python && devbox shell && devbox run --version
 
 # Test validation commands manually
-cd python-env && devbox run lint && devbox run test
+cd dev-env/python && devbox run lint && devbox run test
 
 # Check cross-environment validation
-nu nushell-env/scripts/validate-all.nu parallel
+nu dev-env/nushell/scripts/validate-all.nu parallel
 ```
 
 ## Contributing

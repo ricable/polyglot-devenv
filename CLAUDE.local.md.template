@@ -14,11 +14,11 @@
 ```bash
 # Add your personal shortcuts here
 # Examples:
-# alias pydev="cd python-env && devbox shell"
-# alias tsdev="cd typescript-env && devbox shell"
-# alias rustdev="cd rust-env && devbox shell"
-# alias godev="cd go-env && devbox shell"
-# alias nudev="cd nushell-env && devbox shell"
+# alias pydev="cd dev-env/python && devbox shell"
+# alias tsdev="cd dev-env/typescript && devbox shell"
+# alias rustdev="cd dev-env/rust && devbox shell"
+# alias godev="cd dev-env/go && devbox shell"
+# alias nudev="cd dev-env/nushell && devbox shell"
 
 # Your custom aliases:
 ```
@@ -28,8 +28,8 @@
 # Personal automation scripts
 # Examples:
 # alias quick-test="devbox run test --verbose"
-# alias full-check="nu nushell-env/scripts/validate-all.nu parallel"
-# alias perf-check="nu nushell-env/scripts/performance-analytics.nu dashboard"
+# alias full-check="nu dev-env/nushell/scripts/validate-all.nu parallel"
+# alias perf-check="nu dev-env/nushell/scripts/performance-analytics.nu dashboard"
 
 # Your custom commands:
 ```
@@ -38,8 +38,8 @@
 ```bash
 # IDE/Editor shortcuts
 # Examples:
-# alias code-py="code python-env/src"
-# alias code-ts="code typescript-env/src"
+# alias code-py="code dev-env/python/src"
+# alias code-ts="code dev-env/typescript/src"
 # alias vim-config="vim ~/.config/nvim/init.vim"
 
 # Your productivity shortcuts:
@@ -125,6 +125,64 @@
 - Common issues and their solutions
 - Debugging techniques that work for me
 - Performance profiling approaches
+```
+
+## Context Engineering Integration
+
+### Workspace vs DevPod Workflows
+
+**Context Engineering** supports two distinct workflows:
+
+```bash
+# Workspace Development (Local PRP Generation)
+# Examples:
+# alias prp-gen="cd context-engineering/workspace && /generate-prp"
+# alias prp-features="code context-engineering/workspace/features"
+# alias prp-templates="code context-engineering/workspace/templates"
+
+# DevPod Execution (Containerized PRP Execution)  
+# Examples:
+# alias prp-exec-py="/devpod-python && /execute-prp"
+# alias prp-exec-ts="/devpod-typescript && /execute-prp"
+# alias prp-exec-rust="/devpod-rust && /execute-prp"
+# alias prp-exec-go="/devpod-go && /execute-prp"
+
+# Your context engineering shortcuts:
+```
+
+### Personal PRP Development Patterns
+
+```bash
+# Create your own PRP workflow function
+# Example:
+# personal-prp-workflow() {
+#     local feature_name=$1
+#     local environment=${2:-python}
+#     
+#     # Generate PRP in workspace
+#     cd context-engineering/workspace
+#     /generate-prp features/$feature_name.md --env dev-env/$environment
+#     
+#     # Execute in DevPod environment
+#     case $environment in
+#         python) /devpod-python && /execute-prp context-engineering/devpod/environments/python/PRPs/$feature_name-python.md ;;
+#         typescript) /devpod-typescript && /execute-prp context-engineering/devpod/environments/typescript/PRPs/$feature_name-typescript.md ;;
+#         # Add other environments as needed
+#     esac
+# }
+
+# Your PRP workflow functions:
+```
+
+### Context Engineering Performance Tracking
+
+```bash
+# Personal performance tracking for PRP workflows
+# Examples:
+# alias prp-perf="nu dev-env/nushell/scripts/performance-analytics.nu report --filter prp-*"
+# alias prp-metrics="nu dev-env/nushell/scripts/performance-analytics.nu optimize --filter prp-*"
+
+# Your PRP performance tracking:
 ```
 
 ## Local Tools & Automation
