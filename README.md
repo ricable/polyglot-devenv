@@ -36,88 +36,6 @@ A comprehensive polyglot development environment supporting Python, TypeScript, 
 
 ## 🚀 Quick Start
 
-### 1. Install Nushell
-
-Nushell is the core automation engine for this project. Install it on your system:
-
-#### 🐧 **Linux**
-
-**Ubuntu/Debian:**
-```bash
-# Option 1: Using cargo (recommended)
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source ~/.cargo/env
-cargo install nu
-
-# Option 2: Using package manager
-sudo apt update
-sudo apt install nu
-
-# Option 3: Using snap
-sudo snap install nushell
-```
-
-**Fedora/RHEL:**
-```bash
-# Using dnf
-sudo dnf install nushell
-
-# Using cargo
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source ~/.cargo/env
-cargo install nu
-```
-
-**Arch Linux:**
-```bash
-# Using pacman
-sudo pacman -S nushell
-
-# Using AUR
-yay -S nushell-bin
-```
-
-#### 🍎 **macOS**
-
-```bash
-# Option 1: Using Homebrew (recommended)
-brew install nushell
-
-# Option 2: Using MacPorts
-sudo port install nushell
-
-# Option 3: Using cargo
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source ~/.cargo/env
-cargo install nu
-```
-
-#### 🪟 **Windows**
-
-**Windows Package Manager:**
-```powershell
-# Using winget
-winget install nushell
-
-# Using Chocolatey
-choco install nushell
-
-# Using Scoop
-scoop install nu
-```
-
-**Manual Installation:**
-1. Download from [Nushell Releases](https://github.com/nushell/nushell/releases)
-2. Extract to a folder (e.g., `C:\nushell`)
-3. Add to PATH: `C:\nushell`
-
-**Using Cargo:**
-```powershell
-# Install Rust first
-winget install Rustlang.Rustup
-# Restart terminal, then:
-cargo install nu
-```
 
 ### 2. Install Dependencies
 
@@ -391,8 +309,8 @@ alias prp-exec-py="/devpod-python && /execute-prp"
 ### Enterprise Features
 
 ```bash
-# Enhanced generation with version control
-python .claude/commands/generate-prp-v2.py features/api.md --env dev-env/python --workers 4
+# Enhanced generation with dynamic templates
+/generate-prp features/api.md --env python-env --include-dojo --verbose
 
 # Enhanced execution with auto-rollback
 python .claude/commands/execute-prp-v2.py context-engineering/devpod/environments/python/PRPs/api-python.md --validate --monitor

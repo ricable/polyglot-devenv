@@ -1,373 +1,511 @@
 # /generate-prp
 
-Generates a comprehensive Product Requirements Prompt (PRP) for polyglot development environments using the Template Method pattern for consistent, maintainable command processing.
+Enhanced PRP generation with dynamic templates, smart dojo integration, and context-aware analysis.
 
 ## Usage
-```
-/generate-prp <feature-file> [--env <environment>] [--template <template>] [--debug]
+
+```bash
+/generate-prp <feature-file> [options]
 ```
 
 ## Arguments
-- `<feature-file>`: Path to the feature requirements file (e.g., `INITIAL.md`, `features/new-api.md`)
-- `--env <environment>`: Target environment (python-env, typescript-env, rust-env, go-env, nushell-env, or multi)
-- `--template <template>`: Template type (full, minimal, validation_only)
-- `--debug`: Enable debug output
 
-## Feature file: $ARGUMENTS
+- `--env, -e`: Target environment Choices: `python-env, typescript-env, rust-env, go-env, nushell-env, multi`
+- `--template, -t`: Template to use (auto-detected if not specified)
+- `--examples`: Examples to include (comma-separated, auto-detected if not specified)
+- `--include-dojo`: Include dojo patterns analysis Default: `auto`
+- `--format`: Output format Default: `markdown` Choices: `markdown, json, yaml`
+- `--output, -o`: Output file (auto-generated if not specified)
+- `--analyze-only`: Only analyze without generating PRP Default: `false`
+- `--verbose, -v`: Enable verbose output Default: `false`
 
-Generate a complete PRP for polyglot feature implementation with thorough research. This command extends the base PRP command template to provide generation-specific functionality.
+## Examples
 
-The AI agent gets the context you provide in the PRP plus training data. Include comprehensive research findings and reference patterns from the polyglot codebase. The Agent has WebSearch capabilities for external documentation.
+- `/generate-prp features/chat-ui.md --env typescript-env --include-dojo`
+- `/generate-prp features/user-api.md --env python-env --examples user-management`
+- `/generate-prp features/multi-agent.md --env multi --verbose`
+- `/generate-prp features/cli-tool.md --analyze-only`
 
-## Command Implementation (Template Method Pattern)
+## Command Implementation
 
 ```bash
-# Source the base command template
-source "$(dirname "$0")/_base_prp_command.md"
+#!/usr/bin/env nu
 
-# Override: Command-specific processing for PRP generation
-execute_command_logic() {
-    debug_log "Starting PRP generation for $FEATURE_FILE"
-    
-    # Detect environment if not specified
-    detect_environment
-    
-    # Research phase
-    echo "🔍 Starting research phase..."
-    perform_codebase_analysis
-    perform_external_research
-    
-    # Analysis phase
-    echo "📊 Analyzing findings..."
-    analyze_patterns_and_requirements
-    
-    # Template composition phase
-    echo "📝 Composing PRP template..."
-    compose_prp_template
-    
-    debug_log "PRP generation logic completed"
+# Source all enhanced utilities
+source /Users/cedric/dev/github.com/polyglot-devenv/context-engineering/shared/utils/argument-parser.nu
+source /Users/cedric/dev/github.com/polyglot-devenv/context-engineering/shared/utils/template-engine.nu
+source /Users/cedric/dev/github.com/polyglot-devenv/context-engineering/shared/utils/dojo-integrator.nu
+
+# Get raw arguments from Claude Code
+let RAW_ARGS = "${ARGUMENTS}"
+
+# Define enhanced command specification
+let command_spec = {
+    name: "generate-prp",
+    description: "Enhanced PRP generation with dynamic templates and smart analysis",
+    arguments: [
+        {
+            name: "env",
+            description: "Target environment",
+            type: "string",
+            short: "e",
+            choices: ["python-env", "typescript-env", "rust-env", "go-env", "nushell-env", "multi"]
+        },
+        {
+            name: "template",
+            description: "Template to use (auto-detected if not specified)",
+            type: "string",
+            short: "t"
+        },
+        {
+            name: "examples",
+            description: "Examples to include (comma-separated, auto-detected if not specified)",
+            type: "list"
+        },
+        {
+            name: "include-dojo",
+            description: "Include dojo patterns analysis",
+            type: "string",
+            default: "auto",
+            choices: ["auto", "yes", "no"]
+        },
+        {
+            name: "format",
+            description: "Output format",
+            type: "string",
+            default: "markdown",
+            choices: ["markdown", "json", "yaml"]
+        },
+        {
+            name: "output",
+            description: "Output file (auto-generated if not specified)",
+            type: "string",
+            short: "o"
+        },
+        {
+            name: "analyze-only",
+            description: "Only analyze without generating PRP",
+            type: "bool",
+            default: false
+        },
+        {
+            name: "verbose",
+            description: "Enable verbose output",
+            type: "bool",
+            default: false,
+            short: "v"
+        }
+    ]
 }
 
-# Override: Generate PRP output
-generate_output() {
-    local output_file="context-engineering/PRPs/${FEATURE_NAME}-${ENV_ARG}.md"
-    
-    echo "💾 Generating PRP: $output_file"
-    
-    # Use the new composite template builder to generate the PRP
-    python3 context-engineering/lib/composite_template_builder.py \
-        "$ENV_ARG" \
-        "$FEATURE_NAME" \
-        --description "$FEATURE_DESCRIPTION" \
-        --template "${TEMPLATE_TYPE:-full}" \
-        --type "${FEATURE_TYPE:-library}" \
-        --complexity "${COMPLEXITY:-medium}" > "$output_file"
-    
-    if [[ $? -eq 0 ]]; then
-        echo "✅ PRP generated successfully: $output_file"
-        echo "📊 Quality score: $(calculate_quality_score "$output_file")/10"
-    else
-        handle_error "GENERATION_FAILED" "Failed to generate PRP"
-    fi
+# Check for help flag
+if (has help flag $RAW_ARGS) {
+    parse arguments $RAW_ARGS $command_spec --help
+    exit 0
 }
 
-# Research implementation
-perform_codebase_analysis() {
-    debug_log "Analyzing codebase for patterns in $ENV_ARG"
-    
-    # Search for similar patterns in target environment
-    if [[ -d "$ENV_ARG" ]]; then
-        echo "  - Analyzing existing code patterns in $ENV_ARG/"
-        # Store findings for template composition
-        EXISTING_PATTERNS=$(find "$ENV_ARG" -name "*.py" -o -name "*.ts" -o -name "*.rs" -o -name "*.go" -o -name "*.nu" | head -10)
-    fi
-    
-    # Review devbox configurations
-    if [[ -f "$ENV_ARG/devbox.json" ]]; then
-        echo "  - Reviewing devbox configuration"
-        DEVBOX_CONFIG=$(cat "$ENV_ARG/devbox.json")
-    fi
-    
-    # Check test patterns
-    if [[ -d "$ENV_ARG/tests" ]]; then
-        echo "  - Analyzing test patterns"
-        TEST_PATTERNS=$(find "$ENV_ARG/tests" -name "*.py" -o -name "*.test.ts" -o -name "*.rs" | head -5)
-    fi
+# Parse arguments with enhanced validation
+let result = (parse arguments $RAW_ARGS $command_spec)
+
+if ($result.help_shown) {
+    exit 0
 }
 
-perform_external_research() {
-    debug_log "Performing external research for similar implementations"
-    
-    # Extract key technologies from feature file
-    TECHNOLOGIES=$(grep -i "fastapi\|react\|rust\|go\|nushell" "$FEATURE_FILE" | head -3)
-    
-    if [[ -n "$TECHNOLOGIES" ]]; then
-        echo "  - Key technologies identified: $TECHNOLOGIES"
-        echo "  - External research will focus on these technologies"
-    fi
+if ($result.error? != null) {
+    print $"❌ Error: ($result.error)"
+    exit 1
 }
 
-analyze_patterns_and_requirements() {
-    debug_log "Analyzing patterns and extracting requirements"
-    
-    # Extract feature name from file
-    FEATURE_NAME=$(basename "$FEATURE_FILE" .md)
-    
-    # Extract feature description
-    FEATURE_DESCRIPTION=$(grep -A 5 "^## FEATURE:" "$FEATURE_FILE" | tail -n +2 | head -3 | tr '\n' ' ')
-    
-    if [[ -z "$FEATURE_DESCRIPTION" ]]; then
-        FEATURE_DESCRIPTION="Feature implementation for $ENV_ARG environment"
-    fi
-    
-    # Auto-detect feature type from content
-    detect_feature_type
-    
-    # Auto-detect complexity from content
-    detect_complexity
-    
-    debug_log "Feature: $FEATURE_NAME"
-    debug_log "Description: $FEATURE_DESCRIPTION"
-    debug_log "Type: $FEATURE_TYPE"
-    debug_log "Complexity: $COMPLEXITY"
+let parsed_args = $result.parsed
+
+# Get positional argument (feature file)
+let feature_file = if ("_positional" in ($parsed_args | columns)) and (($parsed_args._positional | length) > 0) {
+    $parsed_args._positional.0
+} else {
+    print "❌ Feature file is required as first argument"
+    exit 1
 }
 
-# Detect feature type from feature file content
-detect_feature_type() {
-    debug_log "Auto-detecting feature type from content"
-    
-    # Check for API-related keywords
-    if grep -qi "api\|endpoint\|rest\|http\|fastapi\|express\|gin\|axum" "$FEATURE_FILE"; then
-        FEATURE_TYPE="api"
-    
-    # Check for CLI-related keywords
-    elif grep -qi "cli\|command\|terminal\|argparse\|clap\|cobra" "$FEATURE_FILE"; then
-        FEATURE_TYPE="cli"
-    
-    # Check for service-related keywords
-    elif grep -qi "service\|daemon\|background\|worker\|queue\|scheduler" "$FEATURE_FILE"; then
-        FEATURE_TYPE="service"
-    
-    # Default to library for other cases
-    else
-        FEATURE_TYPE="library"
-    fi
-    
-    debug_log "Detected feature type: $FEATURE_TYPE"
+# Validate feature file exists
+if not ($feature_file | path exists) {
+    print $"❌ Feature file not found: ($feature_file)"
+    exit 1
 }
 
-# Detect complexity from feature file content
-detect_complexity() {
-    debug_log "Auto-detecting complexity from content"
-    
-    local content_size=$(wc -l < "$FEATURE_FILE")
-    local requirement_count=$(grep -c "^-\|^*\|^[0-9]" "$FEATURE_FILE")
-    
-    # Check for complexity indicators
-    if grep -qi "simple\|basic\|minimal\|quick" "$FEATURE_FILE"; then
-        COMPLEXITY="simple"
-    elif grep -qi "complex\|advanced\|comprehensive\|enterprise\|scalable" "$FEATURE_FILE" || \
-         [[ $content_size -gt 50 ]] || [[ $requirement_count -gt 20 ]]; then
-        COMPLEXITY="complex"
-    else
-        COMPLEXITY="medium"
-    fi
-    
-    debug_log "Detected complexity: $COMPLEXITY"
+print $"🚀 PRP Generation for: ($feature_file)"
+print $"📊 Using enhanced analysis and dynamic templates..."
+print ""
+
+# Step 1: Read and analyze feature request
+print "📖 Reading feature request..."
+let feature_content = (open $feature_file)
+if ($parsed_args.verbose? | default false) {
+    print $"Feature content length: ($feature_content | str length) characters"
 }
 
-compose_prp_template() {
-    debug_log "Composing PRP template using Template Composer"
-    
-    # Validate that template composer exists
-    if [[ ! -f "context-engineering/lib/template_composer.py" ]]; then
-        handle_error "TEMPLATE_COMPOSER_NOT_FOUND" "Template composer not found"
-    fi
-    
-    # Set template type based on feature complexity
-    if grep -qi "simple\|basic\|minimal" "$FEATURE_FILE"; then
-        TEMPLATE_TYPE="minimal"
-    else
-        TEMPLATE_TYPE="full"
-    fi
-    
-    debug_log "Using template type: $TEMPLATE_TYPE"
+# Step 2: Auto-detect or use specified environment
+let target_env = if ("env" in ($parsed_args | columns)) and ($parsed_args.env != null) {
+    $parsed_args.env
+} else {
+    print "🔍 Auto-detecting target environment..."
+    let detected_env = (auto_detect_environment $feature_content)
+    print $"🎯 Detected environment: ($detected_env)"
+    $detected_env
 }
 
-calculate_quality_score() {
-    local prp_file="$1"
-    local score=5
-    
-    # Check if file was created and has content
-    if [[ -f "$prp_file" ]] && [[ -s "$prp_file" ]]; then
-        score=$((score + 2))
-    fi
-    
-    # Check for key sections
-    if grep -q "## Goal" "$prp_file"; then score=$((score + 1)); fi
-    if grep -q "## Environment Setup" "$prp_file"; then score=$((score + 1)); fi
-    if grep -q "## Validation Gates" "$prp_file"; then score=$((score + 1)); fi
-    
-    echo $score
+# Step 3: Parse dojo patterns if needed
+let dojo_patterns = if (should_include_dojo $parsed_args $feature_content $target_env) {
+    print "🥋 Analyzing dojo patterns..."
+    let patterns = (parse dojo patterns)
+    if ($parsed_args.verbose? | default false) {
+        print $"Found ($patterns.features.defined_features | length) dojo features"
+        print $"Component patterns: ($patterns.components.ui_components | length) UI components"
+    }
+    $patterns
+} else {
+    if ($parsed_args.verbose? | default false) {
+        print "⏭️  Skipping dojo analysis (not applicable)"
+    }
+    {}
 }
 
-# Parse additional arguments specific to generate-prp
-parse_generate_prp_args() {
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            --template)
-                TEMPLATE_TYPE="$2"
-                shift 2
-                ;;
-            --debug)
-                DEBUG="true"
-                shift
-                ;;
-            *)
-                break
-                ;;
-        esac
-    done
+# Step 4: Determine examples to include
+let examples_to_include = (determine_examples $parsed_args $feature_content $target_env $dojo_patterns)
+if (($examples_to_include | length) > 0) {
+    print $"📚 Including examples: ($examples_to_include | str join ', ')"
+} else if ($parsed_args.verbose? | default false) {
+    print "📚 No specific examples identified"
 }
 
-# Main execution with argument parsing
-main() {
-    enable_debug "$@"
-    parse_generate_prp_args "$@"
-    parse_arguments "$@"
-    validate_environment
-    execute_command_logic
-    generate_output
+# Step 5: Generate dynamic template
+print "🏗️  Generating dynamic template..."
+let template_result = (generate dynamic template $target_env $feature_content --examples $examples_to_include)
+
+if ($parsed_args.verbose? | default false) {
+    print $"Template type: ($template_result.analysis.environment)"
+    print $"Capabilities: ($template_result.analysis.capabilities | str join ', ')"
+    print $"Pattern complexity: ($template_result.patterns.complexity)"
 }
 
-# Execute if called directly
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    main "$@"
-fi
+# Step 6: Handle analyze-only mode
+if ($parsed_args.analyze-only? | default false) {
+    print ""
+    print "🔍 Analysis Results:"
+    print "=================="
+    print $"Target Environment: ($target_env)"
+    print $"Feature Type: ($template_result.patterns.feature_type)"
+    print $"Complexity: ($template_result.patterns.complexity)"
+    print $"Examples: ($examples_to_include | str join ', ')"
+    print $"Dojo Integration: (if (($dojo_patterns | columns | length) > 0) { 'Yes' } else { 'No' })"
+    
+    if ($parsed_args.format == "json") {
+        let analysis_json = {
+            environment: $target_env,
+            patterns: $template_result.patterns,
+            examples: $examples_to_include,
+            dojo_available: (($dojo_patterns | columns | length) > 0),
+            template_type: ($template_result.analysis.environment),
+            capabilities: $template_result.analysis.capabilities
+        }
+        print ""
+        print "📋 JSON Analysis:"
+        print ($analysis_json | to json)
+    }
+    
+    exit 0
+}
+
+# Step 7: Enhance template with dojo integration
+let enhanced_template = if (($dojo_patterns | columns | length) > 0) {
+    print "🔗 Integrating dojo patterns..."
+    (integrate_dojo_patterns $template_result.template $dojo_patterns $examples_to_include $target_env)
+} else {
+    $template_result.template
+}
+
+# Step 8: Generate output filename
+let output_file = if ("output" in ($parsed_args | columns)) and ($parsed_args.output != null) {
+    $parsed_args.output
+} else {
+    let base_name = ($feature_file | path parse | get stem)
+    let env_suffix = if ($target_env == "multi") { "multi" } else { ($target_env | str replace "-env" "") }
+    $"context-engineering/PRPs/($base_name)-($env_suffix).md"
+}
+
+# Step 9: Write the enhanced PRP
+print $"💾 Writing enhanced PRP to: ($output_file)"
+
+# Ensure output directory exists
+let output_dir = ($output_file | path dirname)
+if not ($output_dir | path exists) {
+    mkdir $output_dir
+}
+
+# Write based on format
+match ($parsed_args.format) {
+    "json" => {
+        let json_output = {
+            metadata: {
+                generated_by: "generate-prp",
+                timestamp: (date now | format date "%Y-%m-%d %H:%M:%S"),
+                source_file: $feature_file,
+                target_environment: $target_env,
+                examples_included: $examples_to_include,
+                dojo_integration: (($dojo_patterns | columns | length) > 0)
+            },
+            template: $enhanced_template,
+            analysis: $template_result.analysis,
+            patterns: $template_result.patterns
+        }
+        $json_output | to json | save $output_file
+    }
+    "yaml" => {
+        let yaml_output = {
+            metadata: {
+                generated_by: "generate-prp",
+                timestamp: (date now | format date "%Y-%m-%d %H:%M:%S"),
+                source_file: $feature_file,
+                target_environment: $target_env,
+                examples_included: $examples_to_include,
+                dojo_integration: (($dojo_patterns | columns | length) > 0)
+            },
+            template: $enhanced_template
+        }
+        $yaml_output | to yaml | save $output_file
+    }
+    _ => {
+        # Markdown format (default)
+        let markdown_header = $"<!-- Generated by generate-prp -->
+<!-- Timestamp: (date now | format date "%Y-%m-%d %H:%M:%S") -->
+<!-- Source: ($feature_file) -->
+<!-- Environment: ($target_env) -->
+<!-- Examples: ($examples_to_include | str join ', ') -->
+<!-- Dojo Integration: (if (($dojo_patterns | columns | length) > 0) { 'Yes' } else { 'No' }) -->
+
+"
+        ($markdown_header + $enhanced_template) | save $output_file
+    }
+}
+
+print ""
+print "✅ PRP generation completed!"
+print $"📄 Output file: ($output_file)"
+print $"🎯 Environment: ($target_env)"
+print $"📋 Template type: ($template_result.patterns.feature_type)"
+
+if (($examples_to_include | length) > 0) {
+    print $"📚 Examples integrated: ($examples_to_include | str join ', ')"
+}
+
+if (($dojo_patterns | columns | length) > 0) {
+    print $"🥋 Dojo patterns integrated: ($dojo_patterns.features.defined_features | length) features"
+}
+
+print ""
+print "💡 Next steps:"
+print $"   1. Review the generated PRP: ($output_file)"
+print $"   2. Execute with: /execute-prp ($output_file) --validate"
+print $"   3. Or use workflow: /context workflow ($feature_file | path parse | get stem) --env ($target_env) --validate"
+
+# Auto-detect environment from feature content
+def auto_detect_environment [content: string] -> string {
+    let content_lower = ($content | str downcase)
+    
+    if ("python" in $content_lower) or ("fastapi" in $content_lower) or ("django" in $content_lower) {
+        return "python-env"
+    } else if ("typescript" in $content_lower) or ("react" in $content_lower) or ("nextjs" in $content_lower) or ("node" in $content_lower) {
+        return "typescript-env"
+    } else if ("rust" in $content_lower) or ("cargo" in $content_lower) or ("tokio" in $content_lower) {
+        return "rust-env"
+    } else if ("go" in $content_lower) or ("golang" in $content_lower) or ("gin" in $content_lower) {
+        return "go-env"
+    } else if ("nushell" in $content_lower) or ("nu" in $content_lower) or ("script" in $content_lower) {
+        return "nushell-env"
+    } else if ("multi" in $content_lower) or ("cross" in $content_lower) or ("polyglot" in $content_lower) {
+        return "multi"
+    } else {
+        # Default based on common patterns
+        if ("api" in $content_lower) or ("web" in $content_lower) {
+            return "python-env"  # Default for API features
+        } else if ("ui" in $content_lower) or ("component" in $content_lower) or ("frontend" in $content_lower) {
+            return "typescript-env"  # Default for UI features
+        } else {
+            return "python-env"  # Overall default
+        }
+    }
+}
+
+# Determine if dojo patterns should be included
+def should_include_dojo [args: record, content: string, env: string] -> bool {
+    let include_setting = ($args.include-dojo? | default "auto")
+    
+    match $include_setting {
+        "yes" => { return true }
+        "no" => { return false }
+        "auto" => {
+            # Auto-detect based on environment and content
+            if ($env == "typescript-env") {
+                return true  # Always include for TypeScript
+            }
+            
+            let content_lower = ($content | str downcase)
+            if ("ui" in $content_lower) or ("component" in $content_lower) or ("chat" in $content_lower) or ("copilotkit" in $content_lower) {
+                return true
+            }
+            
+            return false
+        }
+        _ => { return false }
+    }
+}
+
+# Determine examples to include based on analysis
+def determine_examples [args: record, content: string, env: string, dojo_patterns: record] -> list {
+    mut examples = []
+    
+    # Add explicitly requested examples
+    if ("examples" in ($args | columns)) and ($args.examples != null) {
+        let requested = (parse list arg $args.examples)
+        $examples = ($examples | append $requested)
+    }
+    
+    # Auto-detect examples based on content
+    let content_lower = ($content | str downcase)
+    
+    # Dojo examples based on feature type
+    if (($dojo_patterns | columns | length) > 0) {
+        if ("chat" in $content_lower) or ("conversation" in $content_lower) {
+            $examples = ($examples | append "dojo/agentic_chat")
+        }
+        if ("ui" in $content_lower) or ("component" in $content_lower) {
+            $examples = ($examples | append "dojo/agentic_generative_ui")
+        }
+        if ("collaboration" in $content_lower) or ("shared" in $content_lower) {
+            $examples = ($examples | append "dojo/shared_state")
+        }
+        if ("human" in $content_lower) or ("approval" in $content_lower) {
+            $examples = ($examples | append "dojo/human_in_the_loop")
+        }
+    }
+    
+    # Environment-specific examples
+    match $env {
+        "python-env" => {
+            if ("api" in $content_lower) or ("rest" in $content_lower) {
+                $examples = ($examples | append "python-api-example")
+            }
+            if ("user" in $content_lower) or ("auth" in $content_lower) {
+                $examples = ($examples | append "user-management")
+            }
+        }
+        "typescript-env" => {
+            if not ("dojo" in $examples) {
+                $examples = ($examples | append "dojo")  # Default for TypeScript
+            }
+        }
+        _ => {}
+    }
+    
+    return ($examples | uniq)
+}
+
+# Integrate dojo patterns into the template
+def integrate_dojo_patterns [template: string, dojo_patterns: record, examples: list, env: string] -> string {
+    
+    mut enhanced_template = $template
+    
+    # Add dojo-specific context section
+    let dojo_section = generate_dojo_context_section $dojo_patterns $examples $env
+    
+    # Insert dojo section after the context section
+    if ($enhanced_template | str contains "## All Needed Context") {
+        let parts = ($enhanced_template | split row "## All Needed Context")
+        if (($parts | length) >= 2) {
+            let before = $parts.0
+            let after = $parts.1
+            
+            # Find the end of the context section
+            let context_parts = ($after | split row "## Implementation Blueprint")
+            if (($context_parts | length) >= 2) {
+                let context_content = $context_parts.0
+                let implementation_content = $context_parts.1
+                
+                $enhanced_template = $before + "## All Needed Context" + $context_content + $dojo_section + "## Implementation Blueprint" + $implementation_content
+            }
+        }
+    }
+    
+    return $enhanced_template
+}
+
+# Generate dojo context section
+def generate_dojo_context_section [dojo_patterns: record, examples: list, env: string] -> string {
+    
+    let relevant_features = ($examples | where ($it | str starts-with "dojo/") | each { |ex| $ex | str replace "dojo/" "" })
+    
+    mut dojo_context = "
+
+### Dojo Integration Context
+
+"
+    
+    if (($relevant_features | length) > 0) {
+        $dojo_context = $dojo_context + "#### Relevant Dojo Features\n"
+        
+        for feature in $relevant_features {
+            if ($feature in ($dojo_patterns.features.feature_patterns | columns)) {
+                let feature_data = ($dojo_patterns.features.feature_patterns | get $feature)
+                $dojo_context = $dojo_context + $"- **($feature)**: "
+                
+                # Add feature description from defined features
+                let feature_info = ($dojo_patterns.features.defined_features | where id == $feature)
+                if (($feature_info | length) > 0) {
+                    $dojo_context = $dojo_context + ($feature_info.0.description? | default "CopilotKit feature pattern")
+                } else {
+                    $dojo_context = $dojo_context + "CopilotKit integration pattern"
+                }
+                
+                $dojo_context = $dojo_context + "\n"
+                
+                # Add component patterns
+                if (($feature_data.components | length) > 0) {
+                    $dojo_context = $dojo_context + $"  - Components: ($feature_data.components | str join ', ')\n"
+                }
+                
+                # Add CopilotKit usage
+                if (($feature_data.copilotkit_usage | length) > 0) {
+                    $dojo_context = $dojo_context + $"  - CopilotKit patterns: ($feature_data.copilotkit_usage | str join ', ')\n"
+                }
+            }
+        }
+    }
+    
+    # Add general dojo patterns
+    if (($dojo_patterns.patterns.react_patterns | length) > 0) {
+        $dojo_context = $dojo_context + "
+#### Dojo React Patterns
+```typescript
+"
+        for pattern in ($dojo_patterns.patterns.react_patterns | uniq) {
+            $dojo_context = $dojo_context + $"// ($pattern)\n"
+        }
+        
+        $dojo_context = $dojo_context + "```
+"
+    }
+    
+    # Add configuration patterns
+    if (($dojo_patterns.configuration.dependencies.prod? | default {} | columns | length) > 0) {
+        $dojo_context = $dojo_context + "
+#### Dojo Dependencies
+```json
+"
+        let deps = ($dojo_patterns.configuration.dependencies.prod | to json)
+        $dojo_context = $dojo_context + $deps + "
 ```
-
-## Research Process
-
-1. **Environment Detection**
-   - Analyze feature file to determine target environment(s)
-   - Check for multi-environment requirements
-   - Identify integration points between environments
-
-2. **Polyglot Codebase Analysis**
-   - Search for similar patterns in target environment(s)
-   - Review devbox configurations and dependencies
-   - Identify existing conventions and styles per language
-   - Check test patterns and validation approaches
-   - Review existing automation scripts and hooks
-
-3. **Cross-Environment Research**
-   - Analyze integration points between environments
-   - Review shared automation scripts in nushell-env/
-   - Check cross-language communication patterns
-   - Identify common dependencies and conflicts
-
-4. **External Research**
-   - Search for similar implementations online
-   - Gather library documentation (include specific URLs)
-   - Find implementation examples and best practices
-   - Identify common gotchas and pitfalls
-
-## PRP Generation
-
-Using context-engineering/templates/prp_base.md as template, adapt for polyglot environment:
-
-### Critical Context to Include
-- **Environment Configuration**: Devbox configs and dependencies
-- **Documentation**: URLs with specific sections
-- **Code Examples**: Real snippets from target environment(s)
-- **Gotchas**: Library quirks, version issues, devbox limitations
-- **Patterns**: Existing approaches from similar environments
-- **Integration Points**: Cross-environment communication patterns
-
-### Implementation Blueprint
-- Start with environment setup commands
-- Reference real files for patterns from target environment(s)
-- Include error handling strategy per language
-- List tasks to be completed in order
-- Include devbox integration steps
-
-### Polyglot-Specific Validation Gates
-**Environment-Specific Validation:**
-```bash
-# Python Environment
-cd python-env && devbox shell
-devbox run format  # ruff format
-devbox run lint    # ruff check && mypy
-devbox run test    # pytest with coverage
-
-# TypeScript Environment
-cd typescript-env && devbox shell
-devbox run format  # prettier
-devbox run lint    # eslint
-devbox run test    # jest
-
-# Rust Environment
-cd rust-env && devbox shell
-devbox run format  # rustfmt
-devbox run lint    # clippy
-devbox run test    # cargo test
-
-# Go Environment
-cd go-env && devbox shell
-devbox run format  # goimports
-devbox run lint    # golangci-lint
-devbox run test    # go test
-
-# Nushell Environment
-cd nushell-env && devbox shell
-devbox run format  # nu fmt
-devbox run check   # syntax validation
-devbox run test    # nu test
+"
+    }
+    
+    return $dojo_context
+}
 ```
-
-**Cross-Environment Validation:**
-```bash
-# Run polyglot validation
-nu nushell-env/scripts/validate-all.nu parallel
-
-# Check environment consistency
-nu nushell-env/scripts/environment-drift.nu check
-
-# Security scan
-nu nushell-env/scripts/security-scanner.nu scan-all
-```
-
-### Intelligence Integration
-Include references to existing intelligence scripts:
-- Performance monitoring: `nushell-env/scripts/performance-analytics.nu`
-- Resource tracking: `nushell-env/scripts/resource-monitor.nu`
-- Security scanning: `nushell-env/scripts/security-scanner.nu`
-- Dependency management: `nushell-env/scripts/dependency-monitor.nu`
-
-*** CRITICAL: RESEARCH POLYGLOT CODEBASE THOROUGHLY BEFORE WRITING PRP ***
-
-*** ANALYZE ENVIRONMENT INTEGRATION POINTS AND PLAN COMPREHENSIVE APPROACH ***
-
-## Output
-Save as: `context-engineering/PRPs/{feature-name}-{environment}.md`
-
-## Quality Checklist
-- [ ] All necessary context included
-- [ ] Environment-specific patterns referenced
-- [ ] Validation gates are executable
-- [ ] Integration points identified
-- [ ] Performance implications considered
-- [ ] Security requirements addressed
-- [ ] Cross-environment compatibility ensured
-
-## Success Metrics
-Score the PRP on confidence level (1-10) for successful one-pass implementation:
-- Completeness of context and documentation
-- Accuracy of environment-specific patterns
-- Executable validation gates
-- Integration with existing polyglot workflows
-- Performance and security considerations
-
-**Target: 8+ confidence score for production-ready PRPs**
-
-Remember: The goal is one-pass implementation success through comprehensive polyglot context.

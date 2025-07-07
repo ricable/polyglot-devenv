@@ -93,4 +93,4 @@ The enhanced system is immediately available with these new capabilities:
 - `/context workflow <feature>` - Complete generate+execute workflow
 - `/context devpod --env <env> --count <n>` - Provision multiple DevPod workspaces
 - `/context analyze --env <env>` - Analyze project structure and patterns
-- `/generate-prp-enhanced <file>` - Advanced PRP generation with all features
+- `/generate-prp <file>` - Advanced PRP generation with all features
