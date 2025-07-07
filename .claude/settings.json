@@ -70,6 +70,42 @@
             "command": "bash -c 'file_path=$(echo \"$0\" | jq -r \".tool_input.file_path // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$file_path\" =~ (api|route|endpoint|app\\.py|main\\.py|\\.ts|\\.js).*$ ]] || [[ \"$file_path\" =~ (devbox\\.json|package\\.json|pyproject\\.toml|Cargo\\.toml|go\\.mod)$ ]]; then echo \"📚 API or config change detected, checking documentation...\" && nu nushell-env/scripts/docs-automation.nu check --quiet 2>/dev/null || echo \"Documentation check completed\"; fi'"
           }
         ]
+      },
+      {
+        "// PRP Lifecycle Management Hook": "Automates PRP workflow with status tracking, execution reports, and integration with context-engineering system",
+        "// Features": "Auto-update PRP status, generate execution reports, auto-generate PRPs from feature files, performance analytics integration",
+        "// Integration": "Works with existing context-engineering infrastructure and performance monitoring systems",
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python /home/cedric/dev/github.com/polyglot-devenv/.claude/hooks/prp-lifecycle-manager.py"
+          }
+        ]
+      },
+      {
+        "// Context Engineering Integration Hook": "Automates PRP generation from feature files, template syncing, and context management",
+        "// Features": "Auto-generate PRPs from feature files, sync templates across environments, validate PRP consistency, update context artifacts",
+        "// Smart Detection": "Automatically detects target environment from file content and generates appropriate PRPs",
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python /home/cedric/dev/github.com/polyglot-devenv/.claude/hooks/context-engineering-integration.py"
+          }
+        ]
+      },
+      {
+        "// Performance Analytics Integration Hook (Post)": "Enhanced performance tracking completion and analysis for polyglot development operations",
+        "// Features": "Operation completion tracking, performance analysis, regression detection, optimization recommendations",
+        "// Integration": "Complements pre-execution tracking and integrates with existing analytics infrastructure",
+        "matcher": "Bash|Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python /home/cedric/dev/github.com/polyglot-devenv/.claude/hooks/performance-analytics-integration.py"
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -117,6 +153,44 @@
           {
             "type": "command",
             "command": "bash -c 'command=$(echo \"$0\" | jq -r \".tool_input.command // \\\"\\\"\" 2>/dev/null || echo \"\"); if [[ \"$command\" =~ devbox.*run.*(build|test|lint) ]]; then nu nushell-env/scripts/resource-monitor.nu record \"devbox_operation\" 2>/dev/null || true; fi'"
+          }
+        ]
+      },
+      {
+        "// Cross-Language Quality Gates Hook": "Enforces polyglot development standards and validates operations before execution",
+        "// Features": "Pre-execution validation, environment-specific quality checks, anti-pattern detection, command optimization suggestions",
+        "// Coverage": "Python, TypeScript, Rust, Go, Nushell environments with specific rules for each language",
+        "// Integration": "Works with existing devbox linting infrastructure and provides actionable improvement suggestions",
+        "matcher": "Bash|Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python /home/cedric/dev/github.com/polyglot-devenv/.claude/hooks/quality-gates-validator.py"
+          }
+        ]
+      },
+      {
+        "// DevPod Resource Management Hook": "Smart container lifecycle management and load balancing for DevPod workspaces",
+        "// Features": "Intelligent provisioning, resource usage monitoring, idle workspace cleanup, load balancing across environments",
+        "// Integration": "Works with existing DevPod automation infrastructure and container management systems",
+        "// Resource Limits": "Max 15 total containers, 5 per environment, automatic cleanup of idle workspaces",
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python /home/cedric/dev/github.com/polyglot-devenv/.claude/hooks/devpod-resource-manager.py"
+          }
+        ]
+      },
+      {
+        "// Performance Analytics Integration Hook (Pre)": "Enhanced performance tracking start for polyglot development operations",
+        "// Features": "Operation start tracking, resource monitoring, performance predictions, optimization suggestions",
+        "// Integration": "Works with existing Nushell analytics infrastructure and provides real-time insights",
+        "matcher": "Bash|Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python /home/cedric/dev/github.com/polyglot-devenv/.claude/hooks/performance-analytics-integration.py"
           }
         ]
       }
