@@ -6,8 +6,7 @@
   ],
   "shell": {
     "init_hook": [
-      "echo 'Go Development Environment'",
-      "go version"
+      "echo 'Go Development Environment'"
     ],
     "scripts": {
       "build": "go build ./...",
@@ -32,6 +31,7 @@
     }
   },
   "env": {
-    "CGO_ENABLED": "0"
+    "CGO_ENABLED": "0",
+    "GOPATH": "$HOME/go"
   }
 }

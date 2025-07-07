@@ -6,7 +6,7 @@ set -e
 # Generate unique workspace name with timestamp (DevPod allows only lowercase, numbers, dashes)
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 WORKSPACE_NAME="polyglot-python-devpod-$TIMESTAMP"
-WORKSPACE_SOURCE="/Users/cedric/dev/github.com/polyglot-devenv/python-env"
+WORKSPACE_SOURCE="/Users/cedric/dev/github.com/polyglot-devenv/dev-env/python"
 
 echo "🐳 Provisioning new Python DevPod workspace..."
 echo "📦 Creating workspace: $WORKSPACE_NAME"

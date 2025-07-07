@@ -6,7 +6,7 @@ set -e
 # Generate unique workspace name with timestamp (DevPod allows only lowercase, numbers, dashes)
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 WORKSPACE_NAME="polyglot-go-devpod-$TIMESTAMP"
-WORKSPACE_SOURCE="/Users/cedric/dev/github.com/polyglot-devenv/go-env"
+WORKSPACE_SOURCE="/Users/cedric/dev/github.com/polyglot-devenv/dev-env/go"
 
 echo "🐳 Provisioning new Go DevPod workspace..."
 echo "📦 Creating workspace: $WORKSPACE_NAME"

@@ -6,7 +6,7 @@ set -e
 # Generate unique workspace name with timestamp (DevPod allows only lowercase, numbers, dashes)
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 WORKSPACE_NAME="polyglot-rust-devpod-$TIMESTAMP"
-WORKSPACE_SOURCE="/Users/cedric/dev/github.com/polyglot-devenv/rust-env"
+WORKSPACE_SOURCE="/Users/cedric/dev/github.com/polyglot-devenv/dev-env/rust"
 
 echo "🐳 Provisioning new Rust DevPod workspace..."
 echo "📦 Creating workspace: $WORKSPACE_NAME"
