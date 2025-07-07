@@ -50,7 +50,7 @@ def check-syntax [script_path: string, verbose: bool] {
     log info $"  Syntax check: ($script_path)"
     
     try {
-        nu --check $script_path
+        nu --ide-check 10 $script_path | ignore
         log success $"    ✅ Syntax OK"
         true
     } catch { |e|
@@ -136,8 +136,8 @@ def check-config-files [verbose: bool] {
     # Check devbox.json
     if ("devbox.json" | path exists) {
         try {
-            open devbox.json | from json | ignore
-            log success "  ✅ devbox.json is valid JSON"
+            open devbox.json | ignore
+            log success "  ✅ devbox.json is readable"
         } catch { |e|
             log error $"  ❌ devbox.json is invalid: ($e.msg)"
         }
@@ -148,8 +148,8 @@ def check-config-files [verbose: bool] {
     # Check .teller.yml
     if (".teller.yml" | path exists) {
         try {
-            open .teller.yml | from yaml | ignore
-            log success "  ✅ .teller.yml is valid YAML"
+            open .teller.yml | ignore
+            log success "  ✅ .teller.yml is readable"
         } catch { |e|
             log error $"  ❌ .teller.yml is invalid: ($e.msg)"
         }

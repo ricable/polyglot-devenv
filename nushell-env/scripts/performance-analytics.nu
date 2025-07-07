@@ -303,7 +303,7 @@ def "perf optimize" [environment?: string] {
         | where status == "failure"
         | group-by event_type
         | transpose event_type failures
-        | where ($failures | length) > 3
+        | where ($it.failures | length) > 3
         | each { |row|
             $"• ($row.event_type): ($row.failures | length) failures - Review error patterns"
         }
@@ -349,10 +349,10 @@ def main [command: string, ...args] {
                 print "Usage: perf measure <event_type> <environment> <command>"
             }
         },
-        "report" => { perf report ...$args },
-        "cleanup" => { perf cleanup ...$args },
+        "report" => { perf report },
+        "cleanup" => { perf cleanup },
         "dashboard" => { perf dashboard },
-        "optimize" => { perf optimize ...$args },
+        "optimize" => { perf optimize },
         _ => {
             print "Performance Analytics System"
             print "Usage:"
