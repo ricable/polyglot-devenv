@@ -8,15 +8,15 @@ use ../common.nu *
 
 def main [
     --parallel = false
-    --env: string = "all"
+    --environment: string = "all"
     --skip: list<string> = []
 ] {
     log info "Starting polyglot environment validation..."
     
     if $parallel {
-        validate-parallel $env $skip
+        validate-parallel $environment $skip
     } else {
-        validate-sequential $env $skip
+        validate-sequential $environment $skip
     }
 }
 
@@ -25,24 +25,24 @@ def validate-sequential [target_env: string, skip: list<string>] {
     mut success_count = 0
     mut total_count = ($environments | length)
     
-    for env in $environments {
-        log info $"Validating ($env.name)..."
+    for environment in $environments {
+        log info $"Validating ($environment.name)..."
         
-        if ($env.dir | path exists) {
-            cd $env.dir
+        if ($environment.dir | path exists) {
+            cd $environment.dir
             
-            let result = validate-environment $env
+            let result = validate-environment $environment
             
             if $result {
-                log success $"✅ ($env.name) validation passed"
+                log success $"✅ ($environment.name) validation passed"
                 $success_count = $success_count + 1
             } else {
-                log error $"❌ ($env.name) validation failed"
+                log error $"❌ ($environment.name) validation failed"
             }
             
             cd ..
         } else {
-            log warn $"⚠️  ($env.name) directory not found: ($env.dir)"
+            log warn $"⚠️  ($environment.name) directory not found: ($environment.dir)"
             $total_count = $total_count - 1
         }
     }
@@ -127,12 +127,12 @@ def get-environments [target_env: string, skip: list<string>] {
     $filtered | where not ($it.dir in $skip)
 }
 
-def validate-environment [env: record] {
-    log info $"  Running commands for ($env.name)..."
+def validate-environment [environment: record] {
+    log info $"  Running commands for ($environment.name)..."
     
     # Check if devbox.json exists
     if not ("devbox.json" | path exists) {
-        log warn $"    No devbox.json found in ($env.dir)"
+        log warn $"    No devbox.json found in ($environment.dir)"
         return false
     }
     
@@ -143,7 +143,7 @@ def validate-environment [env: record] {
     }
     
     # Run each command for the environment
-    for cmd in $env.commands {
+    for cmd in $environment.commands {
         log info $"    Running: devbox run ($cmd)"
         
         let result = try {
@@ -168,16 +168,16 @@ def "main validate-configs" [] {
     
     let environments = ["python-env", "typescript-env", "rust-env", "go-env", "nushell-env"]
     
-    for env in $environments {
-        if ($env | path exists) {
-            log info $"Checking ($env) configuration..."
-            cd $env
+    for environment in $environments {
+        if ($environment | path exists) {
+            log info $"Checking ($environment) configuration..."
+            cd $environment
             
             # Check devbox.json
             if ("devbox.json" | path exists) {
                 try {
-                    open devbox.json | from json | ignore
-                    log success $"  ✅ devbox.json valid"
+                    open devbox.json | ignore
+                    log success $"  ✅ devbox.json readable"
                 } catch {
                     log error $"  ❌ devbox.json invalid"
                 }

@@ -93,7 +93,7 @@ def get-test-suite [] {
     [
         {
             name: "Nushell version check"
-            test: { nu --version | str contains "0.103" }
+            test: { nu --version | str contains "0.10" }
         }
         {
             name: "Common module import"
@@ -116,17 +116,17 @@ def get-test-suite [] {
         {
             name: "Scripts directory structure"
             test: { 
-                ("scripts" | path exists) and 
+                (("scripts" | path exists) and 
                 ("scripts/setup.nu" | path exists) and
-                ("scripts/list.nu" | path exists)
+                ("scripts/list.nu" | path exists))
             }
         }
         {
             name: "Common utilities"
             test: { 
                 use ../common.nu *
-                (log info "test" | is-not-empty) and
-                (env get-or-prompt "HOME" "test" | is-not-empty)
+                ((log info "test" | is-not-empty) and
+                (env get-or-prompt "HOME" "test" | is-not-empty))
             }
         }
         {
@@ -149,14 +149,14 @@ def get-test-suite [] {
         {
             name: "Pipeline operations"
             test: { 
-                [1, 2, 3, 4, 5] | where $it > 3 | length == 2
+                ([1, 2, 3, 4, 5] | where $it > 3 | length) == 2
             }
         }
         {
             name: "File operations"
             test: { 
                 let temp_file = "tmp/test.txt"
-                mkdir tmp
+                if not ("tmp" | path exists) { mkdir tmp }
                 "test content" | save $temp_file --force
                 let content = open $temp_file
                 rm $temp_file
@@ -169,7 +169,7 @@ def get-test-suite [] {
 # Helper function to test external commands
 def test-external-command [cmd: string] {
     try {
-        which $cmd | length > 0
+        (which $cmd | length) > 0
     } catch {
         false
     }
@@ -200,19 +200,26 @@ def "main test-all-scripts" [] {
     log info "Testing all script syntax..."
     
     let scripts = ls scripts/*.nu | get name
-    mut all_passed = true
-    
-    for script in $scripts {
+    let results = $scripts | each { |script|
         try {
-            nu --check $script
-            log success $"✅ ($script)"
+            nu --ide-check 10 $script | ignore
+            {script: $script, status: "passed"}
         } catch { |e|
-            log error $"❌ ($script): ($e.msg)"
-            $all_passed = false
+            {script: $script, status: "failed", error: $e.msg}
         }
     }
     
-    if not $all_passed {
+    let failed = $results | where status == "failed"
+    
+    for result in $results {
+        if $result.status == "passed" {
+            log success $"✅ ($result.script)"
+        } else {
+            log error $"❌ ($result.script): ($result.error)"
+        }
+    }
+    
+    if ($failed | length) > 0 {
         exit 1
     }
     

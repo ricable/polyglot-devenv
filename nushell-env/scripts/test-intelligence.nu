@@ -114,8 +114,8 @@ def "test-intel parse-output" [
     # Parse individual test results
     for line in $lines {
         # Check for passed tests
-        if ($line | str contains --regex $parser.pass_pattern) {
-            let test_name = ($line | parse --regex $".*test ([^\\s]+).*" | get capture0? | first | default "unknown")
+        if ($line | str contains $parser.pass_pattern) {
+            let test_name = ($line | parse --regex ".*test ([^\\s]+).*" | get capture0? | first | default "unknown")
             let duration = (try {
                 $line | parse --regex $parser.duration_pattern | get capture0? | first | into float
             } catch { 0.0 })
@@ -129,8 +129,8 @@ def "test-intel parse-output" [
         }
         
         # Check for failed tests
-        if ($line | str contains --regex $parser.fail_pattern) {
-            let test_name = ($line | parse --regex $".*test ([^\\s]+).*" | get capture0? | first | default "unknown")
+        if ($line | str contains $parser.fail_pattern) {
+            let test_name = ($line | parse --regex ".*test ([^\\s]+).*" | get capture0? | first | default "unknown")
             
             $test_results = ($test_results | append {
                 name: $test_name,
@@ -141,8 +141,8 @@ def "test-intel parse-output" [
         }
         
         # Check for skipped tests
-        if ($line | str contains --regex $parser.skip_pattern) {
-            let test_name = ($line | parse --regex $".*test ([^\\s]+).*" | get capture0? | first | default "unknown")
+        if ($line | str contains $parser.skip_pattern) {
+            let test_name = ($line | parse --regex ".*test ([^\\s]+).*" | get capture0? | first | default "unknown")
             
             $test_results = ($test_results | append {
                 name: $test_name,
@@ -153,7 +153,7 @@ def "test-intel parse-output" [
         }
         
         # Parse summary information
-        if ($line | str contains --regex $parser.summary_pattern) {
+        if ($line | str contains $parser.summary_pattern) {
             $summary = (try {
                 let parsed = ($line | parse --regex $parser.summary_pattern)
                 {
@@ -181,7 +181,7 @@ def "test-intel parse-output" [
 def "test-intel run" [
     environment: string,
     --test-runner: string = "auto",
-    --collect-coverage: bool = false
+    --collect-coverage = false
 ] {
     test-intel init
     
@@ -433,7 +433,7 @@ def "test-intel detect-flaky" [
                 "medium" => "🟡",
                 "low" => "🟢"
             }
-            print $"($severity_emoji) ($test.environment):($test.name) - ($test.failure_rate)% failure rate (($test.failures)/($test.total_runs) runs)"
+            print $"($severity_emoji) ($test.environment):($test.name) - ($test.failure_rate)% failure rate ($test.failures)/($test.total_runs) runs"
         }
     } else {
         print "✅ No flaky tests detected!"
@@ -477,8 +477,8 @@ def "test-intel analyze-trends" [
     
     # Overall suite performance trends
     let suite_durations = ($filtered_data | get total_duration_seconds | sort)
-    let first_half = ($suite_durations | first (($suite_durations | length) / 2))
-    let second_half = ($suite_durations | last (($suite_durations | length) / 2))
+    let first_half = ($suite_durations | first (($suite_durations | length) / 2 | into int))
+    let second_half = ($suite_durations | last (($suite_durations | length) / 2 | into int))
     
     let first_avg = ($first_half | math avg)
     let second_avg = ($second_half | math avg)
@@ -707,15 +707,15 @@ def main [command: string, ...args] {
         "init" => { test-intel init },
         "run" => { 
             if ($args | length) >= 1 {
-                test-intel run $args.0 ...(($args | skip 1))
+                test-intel run $args.0
             } else {
                 print "Usage: test-intel run <environment> [--test-runner runner]"
             }
         },
-        "detect-flaky" => { test-intel detect-flaky ...$args },
-        "analyze-trends" => { test-intel analyze-trends ...$args },
-        "report" => { test-intel report ...$args },
-        "cleanup" => { test-intel cleanup ...$args },
+        "detect-flaky" => { test-intel detect-flaky },
+        "analyze-trends" => { test-intel analyze-trends },
+        "report" => { test-intel report },
+        "cleanup" => { test-intel cleanup },
         _ => {
             print "Test Performance Intelligence and Flaky Test Detection System"
             print "Usage:"

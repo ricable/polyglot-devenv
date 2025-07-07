@@ -9,7 +9,9 @@ def main [] {
     log info "Setting up Nushell development environment..."
     
     # Create necessary directories
-    mkdir -p config tmp .nu-plugins
+    if not ("config" | path exists) { mkdir config }
+    if not ("tmp" | path exists) { mkdir tmp }
+    if not (".nu-plugins" | path exists) { mkdir .nu-plugins }
     
     # Initialize git if not already done
     if not (".git" | path exists) {

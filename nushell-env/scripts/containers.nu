@@ -105,16 +105,16 @@ def build-environment-image [environment: record, push: bool, registry: string] 
     }
 }
 
-def generate-dockerfile [env: record, dockerfile_path: string] {
-    log info $"  Generating Dockerfile for ($env.name)..."
+def generate-dockerfile [environment: record, dockerfile_path: string] {
+    log info $"  Generating Dockerfile for ($environment.name)..."
     
-    let dockerfile_content = match $env.name {
-        "python" => generate-python-dockerfile $env
-        "typescript" => generate-typescript-dockerfile $env
-        "rust" => generate-rust-dockerfile $env
-        "go" => generate-go-dockerfile $env
+    let dockerfile_content = match $environment.name {
+        "python" => (generate-python-dockerfile $environment)
+        "typescript" => (generate-typescript-dockerfile $environment)
+        "rust" => (generate-rust-dockerfile $environment)
+        "go" => (generate-go-dockerfile $environment)
         _ => {
-            log error $"Unknown environment: ($env.name)"
+            log error $"Unknown environment: ($environment.name)"
             return
         }
     }
@@ -123,7 +123,7 @@ def generate-dockerfile [env: record, dockerfile_path: string] {
     log success $"  ✅ Generated Dockerfile"
 }
 
-def generate-python-dockerfile [env: record] {
+def generate-python-dockerfile [environment: record] {
     $"FROM ($env.base_image)
 
 WORKDIR /app
@@ -148,7 +148,7 @@ EXPOSE ($env.port)
 CMD [\"devbox\", \"run\", \"start\"]"
 }
 
-def generate-typescript-dockerfile [env: record] {
+def generate-typescript-dockerfile [environment: record] {
     $"FROM ($env.base_image)
 
 WORKDIR /app
@@ -174,7 +174,7 @@ EXPOSE ($env.port)
 CMD [\"devbox\", \"run\", \"start\"]"
 }
 
-def generate-rust-dockerfile [env: record] {
+def generate-rust-dockerfile [environment: record] {
     $"FROM ($env.base_image)
 
 WORKDIR /app
@@ -200,7 +200,7 @@ EXPOSE ($env.port)
 CMD [\"devbox\", \"run\", \"start\"]"
 }
 
-def generate-go-dockerfile [env: record] {
+def generate-go-dockerfile [environment: record] {
     $"FROM ($env.base_image)
 
 WORKDIR /app
@@ -247,33 +247,33 @@ def push-image [image_name: string] {
 
 # Run containers for development
 def "main run" [
-    --env: string = "all"
+    --environment: string = "all"
     --detach = false
     --port-map = true
 ] {
     log info "Running containers..."
     
-    let environments = get-container-environments $env
+    let environments = get-container-environments $environment
     
     for environment in $environments {
         run-environment-container $environment $detach $port_map
     }
 }
 
-def run-environment-container [env: record, detach: bool, port_map: bool] {
-    let image_name = get-image-name $env.name ""
-    let container_name = $"($env.name)-dev"
+def run-environment-container [environment: record, detach: bool, port_map: bool] {
+    let image_name = get-image-name $environment.name ""
+    let container_name = $"($environment.name)-dev"
     
     # Check if image exists
     let image_exists = try {
-        docker image inspect $image_name | length > 0
+        (docker image inspect $image_name | length) > 0
     } catch {
         false
     }
     
     if not $image_exists {
         log warn $"Image not found: ($image_name). Building..."
-        build-environment-image $env false ""
+        build-environment-image $environment false ""
     }
     
     # Stop existing container
@@ -292,7 +292,7 @@ def run-environment-container [env: record, detach: bool, port_map: bool] {
     }
     
     if $port_map {
-        $run_args = $run_args | append "--publish" | append $"($env.port):($env.port)"
+        $run_args = $run_args | append "--publish" | append $"($environment.port):($environment.port)"
     }
     
     # Add environment variables
@@ -309,7 +309,7 @@ def run-environment-container [env: record, detach: bool, port_map: bool] {
         log success $"✅ Started container: ($container_name)"
         
         if $port_map {
-            log info $"  Access at: http://localhost:($env.port)"
+            log info $"  Access at: http://localhost:($environment.port)"
         }
     } catch { |e|
         log error $"❌ Failed to start container: ($e.msg)"
@@ -378,7 +378,7 @@ def registry-login [registry: string] {
     }
     
     let username = env get-or-prompt "REGISTRY_USER" "Registry username"
-    let password = env get-or-prompt "REGISTRY_PASSWORD" "Registry password" --secret
+    let password = (env get-or-prompt "REGISTRY_PASSWORD" "Registry password" --secret true)
     
     log info $"Logging into registry: ($registry_url)"
     
@@ -395,16 +395,16 @@ def push-all-images [registry: string] {
     
     let environments = get-container-environments "all"
     
-    for env in $environments {
-        let local_image = get-image-name $env.name ""
-        let registry_image = get-image-name $env.name $registry
+    for environment in $environments {
+        let local_image = get-image-name $environment.name ""
+        let registry_image = get-image-name $environment.name $registry
         
         # Tag for registry
         try {
             docker tag $local_image $registry_image
             push-image $registry_image
         } catch { |e|
-            log error $"❌ Failed to push ($env.name): ($e.msg)"
+            log error $"❌ Failed to push ($environment.name): ($e.msg)"
         }
     }
 }
@@ -438,10 +438,10 @@ def generate-compose-file [] {
     
     let environments = get-container-environments "all"
     
-    let services = $environments | reduce -f {} { |env, acc|
-        $acc | upsert $env.name {
-            build: $env.dir
-            ports: [$"($env.port):($env.port)"]
+    let services = $environments | reduce -f {} { |environment, acc|
+        $acc | upsert $environment.name {
+            build: $environment.dir
+            ports: [$"($environment.port):($environment.port)"]
             environment: ["NODE_ENV=development", "PYTHONPATH=/app/src"]
             volumes: [".env:/app/.env:ro"]
             depends_on: []
