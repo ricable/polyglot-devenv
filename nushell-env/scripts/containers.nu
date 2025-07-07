@@ -45,13 +45,13 @@ def show-help [] {
 
 # Build container images for environments
 def "main build" [
-    --env: string = "all"
+    --environment: string = "all"
     --push = false
     --registry: string = ""
 ] {
     log info "Building container images..."
     
-    let environments = get-container-environments $env
+    let environments = get-container-environments $environment
     
     for environment in $environments {
         build-environment-image $environment $push $registry
@@ -73,25 +73,25 @@ def get-container-environments [env_filter: string] {
     }
 }
 
-def build-environment-image [env: record, push: bool, registry: string] {
-    if not ($env.dir | path exists) {
-        log warn $"Environment directory not found: ($env.dir)"
+def build-environment-image [environment: record, push: bool, registry: string] {
+    if not ($environment.dir | path exists) {
+        log warn $"Environment directory not found: ($environment.dir)"
         return
     }
     
-    log info $"Building image for ($env.name)..."
+    log info $"Building image for ($environment.name)..."
     
     # Generate Dockerfile if it doesn't exist
-    let dockerfile_path = $"($env.dir)/Dockerfile"
+    let dockerfile_path = $"($environment.dir)/Dockerfile"
     if not ($dockerfile_path | path exists) {
-        generate-dockerfile $env $dockerfile_path
+        generate-dockerfile $environment $dockerfile_path
     }
     
     # Build image
-    let image_name = get-image-name $env.name $registry
+    let image_name = get-image-name $environment.name $registry
     
     try {
-        cd $env.dir
+        cd $environment.dir
         docker build -t $image_name .
         cd ..
         log success $"✅ Built image: ($image_name)"

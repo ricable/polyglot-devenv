@@ -2,6 +2,8 @@
 # Comprehensive Dependency Monitoring System for Polyglot Development Environment
 # Monitors outdated dependencies, security vulnerabilities, and license compliance
 
+source ../../devpod-automation/config.nu
+
 # Initialize dependency monitoring
 def "deps init" [] {
     if not (".dependencies" | path exists) {
@@ -35,7 +37,7 @@ def "deps init" [] {
 
 # Scan Python dependencies using uv
 def "deps scan-python" [] {
-    let env_path = "python-env"
+    let env_path = $"($config.output_dir)/python-env"
     
     if not ($env_path | path exists) {
         return {
@@ -107,7 +109,7 @@ def "deps scan-python" [] {
 
 # Scan TypeScript dependencies using npm
 def "deps scan-typescript" [] {
-    let env_path = "typescript-env"
+    let env_path = $"($config.output_dir)/typescript-env"
     
     if not ($env_path | path exists) {
         return {
@@ -205,7 +207,7 @@ def "deps scan-typescript" [] {
 
 # Scan Rust dependencies using cargo
 def "deps scan-rust" [] {
-    let env_path = "rust-env"
+    let env_path = $"($config.output_dir)/rust-env"
     
     if not ($env_path | path exists) {
         return {
@@ -265,7 +267,7 @@ def "deps scan-rust" [] {
 
 # Scan Go dependencies
 def "deps scan-go" [] {
-    let env_path = "go-env"
+    let env_path = $"($config.output_dir)/go-env"
     
     if not ($env_path | path exists) {
         return {

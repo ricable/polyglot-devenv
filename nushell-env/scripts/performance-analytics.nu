@@ -255,7 +255,7 @@ def "perf dashboard" [] {
         print "\n📈 Resource Usage:"
         let memory = (sys | get host.memory)
         let memory_pct = ($memory.used / $memory.total * 100 | math round)
-        print $"Memory: ($memory_pct)% used (($memory.used | into string --value) / ($memory.total | into string --value))"
+        print $"Memory: ($memory_pct)% used (($memory.used | into string) / ($memory.total | into string))"
         
         print "\nPress Ctrl+C to exit dashboard"
         sleep 10sec

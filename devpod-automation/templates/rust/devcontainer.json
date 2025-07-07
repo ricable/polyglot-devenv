@@ -1,50 +1,21 @@
 {
     "name": "Polyglot Rust Development Environment",
     "image": "mcr.microsoft.com/devcontainers/rust:1-bullseye",
-    
     "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {
-            "installZsh": true,
-            "username": "vscode",
-            "userUid": "1000",
-            "userGid": "1000"
-        },
-        "ghcr.io/devcontainers/features/git:1": {
-            "version": "latest",
-            "ppa": true
-        },
-        "ghcr.io/devcontainers/features/github-cli:1": {
-            "version": "latest"
-        },
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {
-            "version": "latest",
-            "enableNonRootDocker": true
-        },
         "ghcr.io/devcontainers/features/rust:1": {
             "version": "latest",
             "profile": "default"
         }
     },
-
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-vscode.vscode-json",
-                "github.vscode-github-actions",
-                "github.vscode-pull-request-github",
-                "eamodio.gitlens",
                 "rust-lang.rust-analyzer",
                 "vadimcn.vscode-lldb",
                 "serayuzgur.crates",
-                "tamasfe.even-better-toml",
-                "mkhl.direnv"
+                "tamasfe.even-better-toml"
             ],
             "settings": {
-                "editor.formatOnSave": true,
-                "editor.rulers": [88, 100, 120],
-                "files.trimTrailingWhitespace": true,
-                "git.autofetch": true,
-                "terminal.integrated.defaultProfile.linux": "zsh",
                 "rust-analyzer.cargo.autoreload": true,
                 "rust-analyzer.check.command": "clippy",
                 "rust-analyzer.cargo.features": "all"
@@ -54,21 +25,14 @@
             "prebuildRepository": "ghcr.io/ricable/polyglot-devenv-rust"
         }
     },
-
     "containerEnv": {
-        "TERM": "xterm-256color",
-        "COLORTERM": "truecolor",
         "RUST_BACKTRACE": "1",
         "CARGO_TARGET_DIR": "/workspace/target"
     },
-
     "mounts": [
-        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
-        "type=volume,source=vscode-server-extensions,target=/home/vscode/.vscode-server/extensions",
         "type=volume,source=cargo-cache,target=/home/vscode/.cargo",
         "type=volume,source=cargo-target,target=/workspace/target"
     ],
-
     "forwardPorts": [8000, 3030],
     "portsAttributes": {
         "8000": {
@@ -80,20 +44,11 @@
             "onAutoForward": "notify"
         }
     },
-
     "postCreateCommand": [
         "echo 'Setting up Rust environment...'",
         "cargo fetch",
         "echo 'Rust environment ready'"
     ],
-
     "postStartCommand": "echo 'Rust DevPod ready. Run: cargo run'",
-    
-    "postAttachCommand": "echo 'Welcome to Rust DevPod! 🦀'",
-
-    "workspaceFolder": "/workspace",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-    
-    "remoteUser": "vscode",
-    "updateRemoteUserUID": true
+    "postAttachCommand": "echo 'Welcome to Rust DevPod! 🦀'"
 }
