@@ -50,7 +50,7 @@ def main [command?: string, environment?: string] {
 def provision [environment: string] {
     print $"🚀 Provisioning ($environment) DevPod workspace..."
     
-    let script_path = $"../devpod-automation/scripts/provision-($environment).sh"
+    let script_path = $"../../devpod-automation/scripts/provision-($environment).sh"
     
     if not ($script_path | path exists) {
         error make {

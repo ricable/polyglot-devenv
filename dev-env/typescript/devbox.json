@@ -4,7 +4,6 @@
     "init_hook": [
       "echo 'TypeScript Development Environment'",
       "node --version",
-      "npm --version",
       "tsc --version"
     ],
     "scripts": {
