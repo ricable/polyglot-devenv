@@ -31,12 +31,10 @@
         "@modelcontextprotocol/server-puppeteer"
       ]
     },
-    "ruv-swarm": {
-      "type": "stdio",
-      "command": "../ruv-FANN/ruv-swarm/npm/bin/ruv-swarm-clean.js",
+    "polyglot-dev": {
+      "command": "node",
       "args": [
-        "mcp",
-        "start"
+        "mcp/dist/index.js"
       ],
       "env": {}
     }
