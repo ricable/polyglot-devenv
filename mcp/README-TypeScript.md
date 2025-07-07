@@ -57,7 +57,7 @@ brew install git-secrets  # for enhanced security scanning
 
 ```bash
 # Navigate to the MCP server directory
-cd mcp-ref
+cd mcp
 
 # Install dependencies
 npm install
@@ -75,7 +75,7 @@ npm run start
 
 ```bash
 # Add the MCP server to Claude Code
-claude mcp add polyglot-devenv node /path/to/mcp-ref/dist/index.js stdio
+claude mcp add polyglot-devenv node /path/to/mcp/dist/index.js stdio
 
 # Verify the installation
 claude mcp list
@@ -90,7 +90,7 @@ For active development, you can run the server directly:
 
 ```bash
 # Start the server in development mode
-cd mcp-ref
+cd mcp
 npm run dev
 
 # In another terminal, connect Claude Code
@@ -332,7 +332,7 @@ The server integrates with Claude Code hooks for real-time automation:
 node --version
 
 # Rebuild the server
-cd mcp-ref
+cd mcp
 npm run clean
 npm install
 npm run build
@@ -400,7 +400,7 @@ environment_validate {}
 1. **Fork and Clone**
    ```bash
    git clone <your-fork>
-   cd mcp-ref
+   cd mcp
    ```
 
 2. **Install Dependencies**

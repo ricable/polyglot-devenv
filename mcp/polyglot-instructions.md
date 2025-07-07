@@ -236,7 +236,7 @@ prp_execute {"prp_file": "context-engineering/PRPs/user-api-python.md", "validat
 ### Installation
 ```bash
 # Navigate to the MCP server directory
-cd mcp-ref
+cd mcp
 
 # Install dependencies
 npm install
@@ -251,7 +251,7 @@ npm run start
 ### Claude Code Integration
 ```bash
 # Add the server to Claude Code
-claude mcp add polyglot-devenv nu mcp-ref/dist/index.js stdio
+claude mcp add polyglot-devenv nu mcp/dist/index.js stdio
 
 # Test the integration
 claude mcp test polyglot-devenv
