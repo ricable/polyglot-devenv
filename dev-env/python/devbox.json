@@ -29,13 +29,14 @@
       "sync": "uv sync --dev",
       "run": "uv run",
       "watch": "uv run pytest --cov=src -f",
-      "devpod:provision": "bash ../devpod-automation/scripts/provision-python.sh",
-      "devpod:connect": "echo 'ℹ️  Each provision creates a new workspace. Use devbox run devpod:provision to create and connect.'",
-      "devpod:start": "echo 'ℹ️  Use devbox run devpod:provision to create a new workspace or devpod list to see existing ones.'",
-      "devpod:stop": "bash -c 'echo \"🛑 Available Python workspaces:\"; devpod list | grep polyglot-python-devpod || echo \"No Python workspaces found\"'",
-      "devpod:delete": "bash -c 'echo \"🗑️  Python workspaces to delete:\"; devpod list | grep polyglot-python-devpod || echo \"No Python workspaces found\"'",
-      "devpod:sync": "echo 'Sync: Update devbox.json and rebuild workspace with devbox run devpod:provision'",
-      "devpod:status": "bash -c 'echo \"📊 Python DevPod workspaces:\"; devpod list | grep polyglot-python-devpod || echo \"No Python workspaces found. Run: devbox run devpod:provision\"'"
+      "devpod:provision": "nu ../../host-tooling/devpod-management/manage-devpod.nu provision python",
+      "devpod:connect": "nu ../../host-tooling/devpod-management/manage-devpod.nu connect python",
+      "devpod:start": "nu ../../host-tooling/devpod-management/manage-devpod.nu start python",
+      "devpod:stop": "nu ../../host-tooling/devpod-management/manage-devpod.nu stop python",
+      "devpod:delete": "nu ../../host-tooling/devpod-management/manage-devpod.nu delete python",
+      "devpod:sync": "nu ../../host-tooling/devpod-management/manage-devpod.nu sync python",
+      "devpod:status": "nu ../../host-tooling/devpod-management/manage-devpod.nu status python",
+      "devpod:help": "nu ../../host-tooling/devpod-management/manage-devpod.nu help python"
     }
   },
   "env": {

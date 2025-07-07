@@ -25,6 +25,7 @@ A comprehensive polyglot development environment supporting Python, TypeScript, 
 - **Performance Analytics**: Real-time monitoring and optimization
 
 ### 🐳 **Container Development**
+- **Centralized DevPod Management**: Single script manages all environments (DRY principle) ✅
 - **DevPod Integration**: 1-10 parallel containerized workspaces per environment
 - **VS Code Integration**: Auto-launch with language-specific extensions
 - **Resource Management**: Smart lifecycle with automatic cleanup
@@ -107,6 +108,11 @@ polyglot-devenv/
 │   └── dist/                   # 📦 Compiled server
 ├── scripts/                    # 🔄 Cross-language validation
 │   └── validate-all.nu         # ✅ Parallel validation script
+├── host-tooling/               # 🖥️ Host machine scripts (host/container separation)
+│   ├── devpod-management/       # 🐳 CENTRALIZED DevPod management ✅
+│   ├── installation/            # ⚙️ Host dependency installation
+│   ├── monitoring/              # 📊 Infrastructure access
+│   └── shell-integration/       # 🐚 Host shell integration
 ├── devpod-automation/          # 🐳 Container development
 ├── context-engineering/        # 📝 Context Engineering Framework (REORGANIZED ✅)
 │   ├── workspace/              # 🏗️ Local development & PRP generation
@@ -249,18 +255,22 @@ devbox run format    # Prettier
 # Similar patterns for Rust, Go, Nushell
 ```
 
-### Container Development with DevPod
+### Container Development with DevPod (Centralized Management ✅)
 
 ```bash
-# Single workspace
-make devpod-python
+# From any environment directory (unified interface)
+cd dev-env/python && devbox run devpod:provision    # Create Python workspace
+cd dev-env/typescript && devbox run devpod:status   # Check TypeScript workspaces
+cd dev-env/rust && devbox run devpod:help           # Get Rust DevPod help
 
-# Multiple workspaces (2-10)
-make devpod-typescript COUNT=3
+# Direct centralized management
+nu host-tooling/devpod-management/manage-devpod.nu provision python
+nu host-tooling/devpod-management/manage-devpod.nu status typescript
+nu host-tooling/devpod-management/manage-devpod.nu help rust
 
-# Using commands directly
-/devpod-python 2      # Create 2 Python workspaces
-/devpod-rust 4        # Create 4 Rust workspaces
+# Legacy commands (still supported)
+make devpod-python     # Single workspace via makefile
+/devpod-python 2       # Multiple workspaces via slash commands
 ```
 
 ### Cross-Language Operations

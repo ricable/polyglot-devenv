@@ -18,13 +18,14 @@
       "deploy": "nu scripts/deploy.nu",
       "secrets": "teller scan",
       "env-sync": "nu scripts/env-sync.nu",
-      "devpod:provision": "bash ../devpod-automation/scripts/provision-nushell.sh",
-      "devpod:connect": "echo 'ℹ️  Each provision creates a new workspace. Use devbox run devpod:provision to create and connect.'",
-      "devpod:start": "echo 'ℹ️  Use devbox run devpod:provision to create a new workspace or devpod list to see existing ones.'",
-      "devpod:stop": "bash -c 'echo \"🛑 Available Nushell workspaces:\"; devpod list | grep polyglot-nushell-devpod || echo \"No Nushell workspaces found\"'",
-      "devpod:delete": "bash -c 'echo \"🗑️  Nushell workspaces to delete:\"; devpod list | grep polyglot-nushell-devpod || echo \"No Nushell workspaces found\"'",
-      "devpod:sync": "echo 'Sync: Update devbox.json and rebuild workspace with devbox run devpod:provision'",
-      "devpod:status": "bash -c 'echo \"📊 Nushell DevPod workspaces:\"; devpod list | grep polyglot-nushell-devpod || echo \"No Nushell workspaces found. Run: devbox run devpod:provision\"'"
+      "devpod:provision": "nu ../../host-tooling/devpod-management/manage-devpod.nu provision nushell",
+      "devpod:connect": "nu ../../host-tooling/devpod-management/manage-devpod.nu connect nushell",
+      "devpod:start": "nu ../../host-tooling/devpod-management/manage-devpod.nu start nushell",
+      "devpod:stop": "nu ../../host-tooling/devpod-management/manage-devpod.nu stop nushell",
+      "devpod:delete": "nu ../../host-tooling/devpod-management/manage-devpod.nu delete nushell",
+      "devpod:sync": "nu ../../host-tooling/devpod-management/manage-devpod.nu sync nushell",
+      "devpod:status": "nu ../../host-tooling/devpod-management/manage-devpod.nu status nushell",
+      "devpod:help": "nu ../../host-tooling/devpod-management/manage-devpod.nu help nushell"
     }
   },
   "env": {

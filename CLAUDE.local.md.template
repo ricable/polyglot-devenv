@@ -32,6 +32,16 @@
 # alias perf-check="nu dev-env/nushell/scripts/performance-analytics.nu dashboard"
 
 # Your custom commands:
+
+# DevPod Management (Centralized ✅)
+# Examples for centralized DevPod management:
+# alias devpod-py="nu host-tooling/devpod-management/manage-devpod.nu provision python"
+# alias devpod-ts="nu host-tooling/devpod-management/manage-devpod.nu provision typescript"
+# alias devpod-rust="nu host-tooling/devpod-management/manage-devpod.nu provision rust"
+# alias devpod-go="nu host-tooling/devpod-management/manage-devpod.nu provision go"
+# alias devpod-status-all="for env in [python typescript rust go nushell] { nu host-tooling/devpod-management/manage-devpod.nu status $env }"
+
+# Your DevPod management shortcuts:
 ```
 
 ### Personal Productivity Shortcuts
@@ -140,12 +150,13 @@
 # alias prp-features="code context-engineering/workspace/features"
 # alias prp-templates="code context-engineering/workspace/templates"
 
-# DevPod Execution (Containerized PRP Execution)  
+# DevPod Execution (Centralized Management ✅)  
 # Examples:
-# alias prp-exec-py="/devpod-python && /execute-prp"
-# alias prp-exec-ts="/devpod-typescript && /execute-prp"
-# alias prp-exec-rust="/devpod-rust && /execute-prp"
-# alias prp-exec-go="/devpod-go && /execute-prp"
+# alias prp-exec-py="cd dev-env/python && devbox run devpod:provision && /execute-prp"
+# alias prp-exec-ts="cd dev-env/typescript && devbox run devpod:provision && /execute-prp"
+# alias prp-exec-rust="cd dev-env/rust && devbox run devpod:provision && /execute-prp"
+# alias prp-exec-go="cd dev-env/go && devbox run devpod:provision && /execute-prp"
+# alias devpod-direct="nu host-tooling/devpod-management/manage-devpod.nu"
 
 # Your context engineering shortcuts:
 ```
@@ -163,10 +174,10 @@
 #     cd context-engineering/workspace
 #     /generate-prp features/$feature_name.md --env dev-env/$environment
 #     
-#     # Execute in DevPod environment
+#     # Execute in DevPod environment (centralized management)
 #     case $environment in
-#         python) /devpod-python && /execute-prp context-engineering/devpod/environments/python/PRPs/$feature_name-python.md ;;
-#         typescript) /devpod-typescript && /execute-prp context-engineering/devpod/environments/typescript/PRPs/$feature_name-typescript.md ;;
+#         python) cd dev-env/python && devbox run devpod:provision && /execute-prp context-engineering/devpod/environments/python/PRPs/$feature_name-python.md ;;
+#         typescript) cd dev-env/typescript && devbox run devpod:provision && /execute-prp context-engineering/devpod/environments/typescript/PRPs/$feature_name-typescript.md ;;
 #         # Add other environments as needed
 #     esac
 # }

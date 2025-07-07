@@ -17,18 +17,18 @@ echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc && cd dev-env/python && devbox shel
 
 ### Essential Commands by Environment
 
-| Environment | Enter | Install | Format | Lint | Test | DevPod (Single) | DevPod (Multi) | Context Engineering | Enterprise PRP |
-|-------------|-------|---------|--------|------|------|-----------------|----------------|---------------------|----------------|
-| **Python** | `cd dev-env/python && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-python` | `/devpod-python 3` | `/generate-prp features/api.md --env python-env` | `/generate-prp features/api.md --env python-env` |
-| **TypeScript** | `cd dev-env/typescript && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-typescript` | `/devpod-typescript 2` | `/generate-prp features/ui.md --env typescript-env` | `/generate-prp features/ui.md --env typescript-env` |
-| **Rust** | `cd dev-env/rust && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-rust` | `/devpod-rust 4` | `/generate-prp features/service.md --env rust-env` | `/generate-prp features/service.md --env rust-env` |
-| **Go** | `cd dev-env/go && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `/devpod-go` | `/devpod-go 5` | `/generate-prp features/cli.md --env go-env` | `/generate-prp features/cli.md --env go-env` |
-| **Nushell** | `cd dev-env/nushell && devbox shell` | `devbox run setup` | `devbox run format` | `devbox run check` | `devbox run test` | `devbox run devpod:provision` | *N/A* | `/generate-prp features/script.md --env nushell-env` | `/generate-prp features/script.md --env nushell-env` |
+| Environment | Enter | Install | Format | Lint | Test | DevPod Commands | Context Engineering | Enterprise PRP |
+|-------------|-------|---------|--------|------|------|-----------------|---------------------|----------------|
+| **Python** | `cd dev-env/python && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` • `devbox run devpod:help` | `/generate-prp features/api.md --env python-env` | `/generate-prp features/api.md --env python-env` |
+| **TypeScript** | `cd dev-env/typescript && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` • `devbox run devpod:help` | `/generate-prp features/ui.md --env typescript-env` | `/generate-prp features/ui.md --env typescript-env` |
+| **Rust** | `cd dev-env/rust && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` • `devbox run devpod:help` | `/generate-prp features/service.md --env rust-env` | `/generate-prp features/service.md --env rust-env` |
+| **Go** | `cd dev-env/go && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` • `devbox run devpod:help` | `/generate-prp features/cli.md --env go-env` | `/generate-prp features/cli.md --env go-env` |
+| **Nushell** | `cd dev-env/nushell && devbox shell` | `devbox run setup` | `devbox run format` | `devbox run check` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` • `devbox run devpod:help` | `/generate-prp features/script.md --env nushell-env` | `/generate-prp features/script.md --env nushell-env` |
 
 ### Core Commands
 
 **Devbox**: `devbox init|shell|add|rm|run|install|clean|update` • `devbox generate direnv` (auto-activation)  
-**DevPod**: `/devpod-python [1-10]` • `/devpod-typescript [1-10]` • `/devpod-rust [1-10]` • `/devpod-go [1-10]`  
+**DevPod**: `devbox run devpod:provision|status|help` (from any environment) • `nu host-tooling/devpod-management/manage-devpod.nu <cmd> <env>` (direct)  
 **Validation**: `nu scripts/validate-all.nu [quick|dependencies|structure|--parallel]`  
 **Automation**: `/polyglot-check|clean|commit|docs|tdd|todo` • `/analyze-performance`
 
@@ -51,9 +51,9 @@ echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc && cd dev-env/python && devbox shel
 
 ```
 polyglot-project/
-├── host-tooling/        # HOST MACHINE SCRIPTS (NEW ✅ - Clear Host/Container Separation)
+├── host-tooling/        # HOST MACHINE SCRIPTS (✅ - Clear Host/Container Separation)
 │   ├── installation/    # Host dependency installation (Docker, DevPod, system tools)
-│   ├── devpod-management/ # Container lifecycle management from host
+│   ├── devpod-management/ # CENTRALIZED DevPod management (manage-devpod.nu) ✅
 │   ├── monitoring/      # Infrastructure access (K8s, GitHub, requires host credentials)
 │   └── shell-integration/ # Host shell aliases and environment setup
 ├── dev-env/             # CONTAINER-ONLY development environments
@@ -180,6 +180,13 @@ enter-typescript           # SSH into TypeScript container
 devbox run format          # Format code with container tools
 devbox run test           # Run tests with container frameworks
 devbox run lint           # Lint with container linters
+
+# DevPod management (centralized)
+devbox run devpod:provision    # Create new DevPod workspace
+devbox run devpod:status       # Show workspace status
+devbox run devpod:help         # Show DevPod help
+devbox run devpod:stop         # List/stop workspaces
+devbox run devpod:delete       # List/delete workspaces
 ```
 
 ## Single Source of Truth Configuration ✅
@@ -217,6 +224,48 @@ nu context-engineering/devpod/environments/test-generation.nu
 - **Maintenance**: Single location for all environment changes
 - **Consistency**: Identical environments across all developers
 - **Scalability**: Easy addition of new output formats or environments
+
+## Centralized DevPod Management ✅
+
+**SOLUTION**: Eliminated redundant devpod:* scripts across all five devbox.json files with a single centralized management script.
+
+### Problem Solved
+- **Before**: Identical devpod:* scripts duplicated across 5 devbox.json files (python, typescript, rust, go, nushell)
+- **After**: Single `host-tooling/devpod-management/manage-devpod.nu` script handles all environments
+- **Benefit**: DRY principle, single source of truth, consistent behavior, enhanced functionality
+
+### Architecture
+**Centralized Script**: `host-tooling/devpod-management/manage-devpod.nu`
+- **Commands**: provision, connect, start, stop, delete, sync, status, help
+- **Environments**: python, typescript, rust, go, nushell
+- **Integration**: All devbox.json files call centralized script with environment parameter
+
+**Usage Examples**:
+```bash
+# From any environment directory (e.g., dev-env/python/)
+devbox run devpod:provision   # Calls: nu ../../host-tooling/devpod-management/manage-devpod.nu provision python
+devbox run devpod:status      # Calls: nu ../../host-tooling/devpod-management/manage-devpod.nu status python
+devbox run devpod:help        # Calls: nu ../../host-tooling/devpod-management/manage-devpod.nu help python
+
+# Direct script usage
+nu host-tooling/devpod-management/manage-devpod.nu provision typescript
+nu host-tooling/devpod-management/manage-devpod.nu status rust
+nu host-tooling/devpod-management/manage-devpod.nu help go
+```
+
+### Benefits Achieved
+- **Zero Duplication**: No repeated code across environments
+- **Consistency**: Identical behavior for all environments
+- **Enhanced UX**: Added help command and better error handling
+- **Maintainability**: Single location for devpod workflow changes
+- **Validation**: Proper error handling for invalid commands/environments
+
+### Context Separation ✅
+**Proper Separation Maintained**:
+- **Project Level** (`CLAUDE.md`): Team standards, centralized devpod management documentation
+- **User Level** (`CLAUDE.local.md`): Personal productivity shortcuts for centralized devpod management
+- **Local Level** (`CLAUDE.local.md.template`): Template with examples of centralized devpod aliases
+- **DevPod Deployed**: Centralized script serves all containerized environments consistently
 
 ## Core Systems
 

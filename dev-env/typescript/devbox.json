@@ -17,13 +17,14 @@
       "test-watch": "npm run test -- --watch",
       "clean":      "rm -rf dist node_modules/.cache",
       "type-check": "npm run type-check",
-      "devpod:provision": "bash ../devpod-automation/scripts/provision-typescript.sh",
-      "devpod:connect": "echo 'ℹ️  Each provision creates a new workspace. Use devbox run devpod:provision to create and connect.'",
-      "devpod:start": "echo 'ℹ️  Use devbox run devpod:provision to create a new workspace or devpod list to see existing ones.'",
-      "devpod:stop": "bash -c 'echo \"🛑 Available TypeScript workspaces:\"; devpod list | grep polyglot-typescript-devpod || echo \"No TypeScript workspaces found\"'",
-      "devpod:delete": "bash -c 'echo \"🗑️  TypeScript workspaces to delete:\"; devpod list | grep polyglot-typescript-devpod || echo \"No TypeScript workspaces found\"'",
-      "devpod:sync": "echo 'Sync: Update devbox.json and rebuild workspace with devbox run devpod:provision'",
-      "devpod:status": "bash -c 'echo \"📊 TypeScript DevPod workspaces:\"; devpod list | grep polyglot-typescript-devpod || echo \"No TypeScript workspaces found. Run: devbox run devpod:provision\"'"
+      "devpod:provision": "nu ../../host-tooling/devpod-management/manage-devpod.nu provision typescript",
+      "devpod:connect": "nu ../../host-tooling/devpod-management/manage-devpod.nu connect typescript",
+      "devpod:start": "nu ../../host-tooling/devpod-management/manage-devpod.nu start typescript",
+      "devpod:stop": "nu ../../host-tooling/devpod-management/manage-devpod.nu stop typescript",
+      "devpod:delete": "nu ../../host-tooling/devpod-management/manage-devpod.nu delete typescript",
+      "devpod:sync": "nu ../../host-tooling/devpod-management/manage-devpod.nu sync typescript",
+      "devpod:status": "nu ../../host-tooling/devpod-management/manage-devpod.nu status typescript",
+      "devpod:help": "nu ../../host-tooling/devpod-management/manage-devpod.nu help typescript"
     }
   },
   "env": {

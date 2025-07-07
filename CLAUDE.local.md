@@ -227,17 +227,28 @@ alias monitor = nu scripts/resource-monitor.nu watch --interval 30
 
 **Resources**: `polyglot://[documentation|config|examples|scripts]/*`
 
-### DevPod System
+### DevPod System (Centralized Management ✅)
 **Setup**: `nu devpod-automation/scripts/docker-setup.nu --install --configure --optimize`
 
-**Provisioning**: `/devpod-python [1-10]` • Auto VS Code • SSH access • Language extensions • Complete isolation
-**Limits**: Max 10/command, 15 total, 5/environment • **Tested**: Python 3.12.11+uv, TypeScript 5.8.3+Node.js 20.19.3
+**Centralized Management**: `host-tooling/devpod-management/manage-devpod.nu` • Single script for all environments • Zero duplication
+**From Environment**: `devbox run devpod:provision|status|help` • Auto VS Code • SSH access • Language extensions • Complete isolation
+**Direct Usage**: `nu host-tooling/devpod-management/manage-devpod.nu <command> <environment>`
 
 **Management**:
 ```bash
+# Environment-specific (from any dev-env/<lang>/ directory)
+devbox run devpod:provision    # Create new workspace for current environment
+devbox run devpod:status       # Show workspaces for current environment
+devbox run devpod:help         # Environment-specific help
+
+# Direct centralized management
+nu host-tooling/devpod-management/manage-devpod.nu provision python
+nu host-tooling/devpod-management/manage-devpod.nu status typescript
+nu host-tooling/devpod-management/manage-devpod.nu help rust
+
+# Standard devpod commands
 devpod list|stop|delete <workspace>
 bash devpod-automation/scripts/provision-all.sh [status|clean-all]
-nu devpod-automation/scripts/devpod-manage.nu cleanup --all
 ```
 
 ### Context Engineering Framework
@@ -253,19 +264,24 @@ nu devpod-automation/scripts/devpod-manage.nu cleanup --all
 
 **Templates**: FastAPI+async (Python) • Strict+ES modules (TypeScript) • Tokio+ownership (Rust) • Context+interfaces (Go) • Pipelines+types (Nushell)
 
-### PRP Workflow Aliases
+### PRP Workflow Aliases (Updated for Centralized DevPod)
 ```bash
 # Workspace (Local Generation)
 alias prp-gen="cd context-engineering/workspace && /generate-prp"
 alias prp-features="code context-engineering/workspace/features"
 alias prp-templates="code context-engineering/workspace/templates"
 
-# DevPod Execution
-alias prp-exec-py="/devpod-python && /execute-prp"
-alias prp-exec-ts="/devpod-typescript && /execute-prp"
-alias prp-exec-rust="/devpod-rust && /execute-prp"
-alias prp-exec-go="/devpod-go && /execute-prp"
+# DevPod Execution (Centralized Management)
+alias prp-exec-py="cd dev-env/python && devbox run devpod:provision && /execute-prp"
+alias prp-exec-ts="cd dev-env/typescript && devbox run devpod:provision && /execute-prp"
+alias prp-exec-rust="cd dev-env/rust && devbox run devpod:provision && /execute-prp"
+alias prp-exec-go="cd dev-env/go && devbox run devpod:provision && /execute-prp"
 alias prp-workflow="prp-gen && prp-exec-py"
+
+# Direct centralized DevPod management
+alias devpod-py="nu host-tooling/devpod-management/manage-devpod.nu"
+alias devpod-provision="nu host-tooling/devpod-management/manage-devpod.nu provision"
+alias devpod-status="nu host-tooling/devpod-management/manage-devpod.nu status"
 ```
 
 ### PRP Development Function
@@ -278,11 +294,12 @@ personal-prp-workflow() {
     /generate-prp features/$feature.md --env dev-env/$env
     code context-engineering/workspace/PRPs/$feature-$env.md
     
+    # Use centralized DevPod management
     case $env in
-        python) /devpod-python && /execute-prp context-engineering/devpod/environments/python/PRPs/$feature-python.md ;;
-        typescript) /devpod-typescript && /execute-prp context-engineering/devpod/environments/typescript/PRPs/$feature-typescript.md ;;
-        rust) /devpod-rust && /execute-prp context-engineering/devpod/environments/rust/PRPs/$feature-rust.md ;;
-        go) /devpod-go && /execute-prp context-engineering/devpod/environments/go/PRPs/$feature-go.md ;;
+        python) cd dev-env/python && devbox run devpod:provision && /execute-prp context-engineering/devpod/environments/python/PRPs/$feature-python.md ;;
+        typescript) cd dev-env/typescript && devbox run devpod:provision && /execute-prp context-engineering/devpod/environments/typescript/PRPs/$feature-typescript.md ;;
+        rust) cd dev-env/rust && devbox run devpod:provision && /execute-prp context-engineering/devpod/environments/rust/PRPs/$feature-rust.md ;;
+        go) cd dev-env/go && devbox run devpod:provision && /execute-prp context-engineering/devpod/environments/go/PRPs/$feature-go.md ;;
     esac
     echo "✅ PRP workflow completed"
 }
