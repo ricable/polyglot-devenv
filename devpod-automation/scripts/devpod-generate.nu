@@ -4,6 +4,7 @@
 # Generates devcontainer.json files from devbox environments or templates
 
 use ../../nushell-env/common.nu *
+source ../config.nu
 
 # Main generation command
 def main [
@@ -90,11 +91,11 @@ def generate_from_devbox [language: string] {
 def generate_from_template [language: string] {
     log info "Generating from template..."
     
-    let template_path = $"../templates/($language)/devcontainer.json"
+    let template_path = $"($config.templates)/($language)/devcontainer.json"
     
     if not ($template_path | path exists) {
         log warning $"Template not found: ($template_path), using base template"
-        let template_path = "../templates/base/devcontainer.json"
+        let template_path = $"($config.templates)/base/devcontainer.json"
         
         if not ($template_path | path exists) {
             # Generate base template if it doesn't exist
@@ -109,18 +110,11 @@ def generate_from_template [language: string] {
 
 # Get environment path for language
 def get_env_path [language: string] {
-    match $language {
-        "python" => "../python-env"
-        "typescript" => "../typescript-env"
-        "rust" => "../rust-env"
-        "go" => "../go-env"
-        "nushell" => "../nushell-env"
-        "full-stack" => ".."
-        _ => {
-            log error $"Unknown language: ($language)"
-            exit 1
-        }
+    let base_path = $"($config.output_dir)/($language)-env"
+    if not ($base_path | path exists) {
+        mkdir $base_path
     }
+    $base_path
 }
 
 # Get base image from devbox packages

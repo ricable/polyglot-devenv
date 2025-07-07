@@ -1,0 +1,8 @@
+{
+    "packages": {
+        "devbox": [
+            "ripgrep@13.0.0",
+            "jq@1.6"
+        ]
+    }
+}

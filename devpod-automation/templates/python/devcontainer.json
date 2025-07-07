@@ -1,57 +1,28 @@
 {
     "name": "Polyglot Python Development Environment",
     "image": "mcr.microsoft.com/devcontainers/python:3.12-bullseye",
-    
     "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {
-            "installZsh": true,
-            "username": "vscode",
-            "userUid": "1000",
-            "userGid": "1000"
-        },
-        "ghcr.io/devcontainers/features/git:1": {
-            "version": "latest",
-            "ppa": true
-        },
-        "ghcr.io/devcontainers/features/github-cli:1": {
-            "version": "latest"
-        },
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {
-            "version": "latest",
-            "enableNonRootDocker": true
-        },
         "ghcr.io/devcontainers/features/python:1": {
             "version": "3.12",
             "installTools": true
         }
     },
-
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-vscode.vscode-json",
-                "github.vscode-github-actions",
-                "github.vscode-pull-request-github",
-                "eamodio.gitlens",
                 "ms-python.python",
                 "ms-python.pylint",
                 "ms-python.mypy-type-checker",
                 "charliermarsh.ruff",
-                "ms-python.debugpy",
-                "mkhl.direnv"
+                "ms-python.debugpy"
             ],
             "settings": {
-                "editor.formatOnSave": true,
-                "editor.rulers": [88, 100, 120],
-                "files.trimTrailingWhitespace": true,
-                "git.autofetch": true,
-                "terminal.integrated.defaultProfile.linux": "zsh",
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
                 "python.formatting.provider": "none",
                 "[python]": {
                     "editor.defaultFormatter": "charliermarsh.ruff",
                     "editor.codeActionsOnSave": {
-                        "source.organizeImports": true
+                        "source.organizeImports": "explicit"
                     }
                 }
             }
@@ -60,21 +31,13 @@
             "prebuildRepository": "ghcr.io/ricable/polyglot-devenv-python"
         }
     },
-
     "containerEnv": {
-        "TERM": "xterm-256color",
-        "COLORTERM": "truecolor",
         "PYTHONPATH": "/workspace/src",
-        "UV_CACHE_DIR": "/workspace/.uv-cache",
-        "UV_PYTHON_PREFERENCE": "only-managed"
+        "UV_CACHE_DIR": "/workspace/.uv-cache"
     },
-
     "mounts": [
-        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
-        "type=volume,source=vscode-server-extensions,target=/home/vscode/.vscode-server/extensions",
         "type=volume,source=uv-cache,target=/workspace/.uv-cache"
     ],
-
     "forwardPorts": [8000, 5000],
     "portsAttributes": {
         "8000": {
@@ -86,21 +49,12 @@
             "onAutoForward": "notify"
         }
     },
-
     "postCreateCommand": [
         "echo 'Setting up Python environment...'",
         "pip install uv",
         "uv sync --dev",
         "echo 'Python environment ready'"
     ],
-
     "postStartCommand": "echo 'Python DevPod ready. Run: uv run <script>'",
-    
-    "postAttachCommand": "echo 'Welcome to Python DevPod! 🐍'",
-
-    "workspaceFolder": "/workspace",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-    
-    "remoteUser": "vscode",
-    "updateRemoteUserUID": true
+    "postAttachCommand": "echo 'Welcome to Python DevPod! 🐍'"
 }
