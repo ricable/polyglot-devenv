@@ -4,7 +4,7 @@
 
 # Initialize test intelligence
 def "test-intel init" [] {
-    mkdir -p .testing
+    mkdir .testing
     
     if not (".testing/test_results.jsonl" | path exists) {
         [] | save .testing/test_results.jsonl
