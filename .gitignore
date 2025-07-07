@@ -267,3 +267,12 @@ config/production.json
 
 # Personal development configuration (local only)
 CLAUDE.local.md
+
+# MCP testing artifacts
+test-feature.md
+*_test_result.json
+mcp-test-*.log
+
+# Performance testing data
+performance-metrics-*.json
+benchmark-results-*.txt
