@@ -1,60 +1,49 @@
 {
-    "name": "Polyglot Python Development Environment",
-    "image": "mcr.microsoft.com/devcontainers/python:3.12-bullseye",
-    "features": {
-        "ghcr.io/devcontainers/features/python:1": {
-            "version": "3.12",
-            "installTools": true
+  "name": "Python Development Environment",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12-bullseye",
+  "features": {},
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.pylint",
+        "ms-python.mypy-type-checker",
+        "charliermarsh.ruff",
+        "ms-python.debugpy"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.formatting.provider": "none",
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+          }
         }
+      }
     },
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "ms-python.python",
-                "ms-python.pylint",
-                "ms-python.mypy-type-checker",
-                "charliermarsh.ruff",
-                "ms-python.debugpy"
-            ],
-            "settings": {
-                "python.defaultInterpreterPath": "/usr/local/bin/python",
-                "python.formatting.provider": "none",
-                "[python]": {
-                    "editor.defaultFormatter": "charliermarsh.ruff",
-                    "editor.codeActionsOnSave": {
-                        "source.organizeImports": "explicit"
-                    }
-                }
-            }
-        },
-        "devpod": {
-            "prebuildRepository": "ghcr.io/ricable/polyglot-devenv-python"
-        }
-    },
-    "containerEnv": {
-        "PYTHONPATH": "/workspace/src",
-        "UV_CACHE_DIR": "/workspace/.uv-cache"
-    },
-    "mounts": [
-        "type=volume,source=uv-cache,target=/workspace/.uv-cache"
-    ],
-    "forwardPorts": [8000, 5000],
-    "portsAttributes": {
-        "8000": {
-            "label": "HTTP Server",
-            "onAutoForward": "notify"
-        },
-        "5000": {
-            "label": "Python Web Server",
-            "onAutoForward": "notify"
-        }
-    },
-    "postCreateCommand": [
-        "echo 'Setting up Python environment...'",
-        "pip install uv",
-        "uv sync --dev",
-        "echo 'Python environment ready'"
-    ],
-    "postStartCommand": "echo 'Python DevPod ready. Run: uv run <script>'",
-    "postAttachCommand": "echo 'Welcome to Python DevPod! 🐍'"
+    "devpod": {
+      "prebuildRepository": "ghcr.io/ricable/polyglot-devenv-python"
+    }
+  },
+  "containerEnv": {
+    "PYTHONPATH": "/workspace/src",
+    "UV_CACHE_DIR": "/workspace/.uv-cache"
+  },
+  "mounts": [
+    "type=volume,source=uv-cache,target=/workspace/.uv-cache"
+  ],
+  "forwardPorts": [
+    8000,
+    5000
+  ],
+  "portsAttributes": {},
+  "postCreateCommand": [
+    "echo 'Setting up Python environment...'",
+    "pip install uv",
+    "uv sync --dev",
+    "echo 'Python environment ready'"
+  ],
+  "postStartCommand": "echo 'Python DevPod ready. Run: uv run <script>'",
+  "postAttachCommand": "echo 'Welcome to Python DevPod! 🐍'"
 }

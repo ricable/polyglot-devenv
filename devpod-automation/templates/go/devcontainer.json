@@ -1,50 +1,40 @@
 {
-    "name": "Polyglot Go Development Environment",
-    "image": "mcr.microsoft.com/devcontainers/go:1.22-bullseye",
-    "features": {
-        "ghcr.io/devcontainers/features/go:1": {
-            "version": "1.22"
-        }
+  "name": "Go Development Environment",
+  "image": "mcr.microsoft.com/devcontainers/go:1.22-bullseye",
+  "features": {},
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "golang.go-nightly"
+      ],
+      "settings": {
+        "go.useLanguageServer": true,
+        "go.lintOnSave": "package",
+        "go.formatTool": "goimports"
+      }
     },
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "golang.go",
-                "golang.go-nightly"
-            ],
-            "settings": {
-                "go.useLanguageServer": true,
-                "go.lintOnSave": "package",
-                "go.formatTool": "goimports"
-            }
-        },
-        "devpod": {
-            "prebuildRepository": "ghcr.io/ricable/polyglot-devenv-go"
-        }
-    },
-    "containerEnv": {
-        "GO111MODULE": "on",
-        "GOPROXY": "https://proxy.golang.org,direct"
-    },
-    "mounts": [
-        "type=volume,source=go-cache,target=/home/vscode/go/pkg"
-    ],
-    "forwardPorts": [8080, 3000],
-    "portsAttributes": {
-        "8080": {
-            "label": "API Server",
-            "onAutoForward": "notify"
-        },
-        "3000": {
-            "label": "Frontend Development Server",
-            "onAutoForward": "notify"
-        }
-    },
-    "postCreateCommand": [
-        "echo 'Setting up Go environment...'",
-        "go mod download",
-        "echo 'Go environment ready'"
-    ],
-    "postStartCommand": "echo 'Go DevPod ready. Run: go run ./cmd'",
-    "postAttachCommand": "echo 'Welcome to Go DevPod! 🐹'"
+    "devpod": {
+      "prebuildRepository": "ghcr.io/ricable/polyglot-devenv-go"
+    }
+  },
+  "containerEnv": {
+    "GO111MODULE": "on",
+    "GOPROXY": "https://proxy.golang.org,direct"
+  },
+  "mounts": [
+    "type=volume,source=go-cache,target=/home/vscode/go/pkg"
+  ],
+  "forwardPorts": [
+    8080,
+    3000
+  ],
+  "portsAttributes": {},
+  "postCreateCommand": [
+    "echo 'Setting up Go environment...'",
+    "go mod download",
+    "echo 'Go environment ready'"
+  ],
+  "postStartCommand": "echo 'Go DevPod ready. Run: go run ./cmd'",
+  "postAttachCommand": "echo 'Welcome to Go DevPod! 🐹'"
 }
