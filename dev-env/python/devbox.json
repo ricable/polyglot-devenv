@@ -1,5 +1,11 @@
 {
-  "packages": ["python@3.12", "uv", "ruff", "mypy", "nushell"],
+  "packages": [
+    "python@3.12",
+    "uv",
+    "ruff",
+    "mypy",
+    "nushell"
+  ],
   "shell": {
     "init_hook": [
       "echo 'Python Development Environment'",
@@ -10,7 +16,7 @@
       "setup": "uv sync --dev",
       "install": "uv sync --dev",
       "add": "uv add",
-      "remove": "uv remove", 
+      "remove": "uv remove",
       "format": "uv run ruff format .",
       "lint": "uv run ruff check . --fix",
       "type-check": "uv run mypy .",
