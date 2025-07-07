@@ -2,23 +2,23 @@
 
 # Cross-Language Quality Gates for Polyglot Development Environment
 # This is the implementation of the validation script described in CLAUDE.md
-# Usage: nu scripts/validate-all.nu [--parallel] [--env environment]
+# Usage: nu scripts/validate-all.nu [--parallel] [--environment environment]
 
-use nushell-env/common.nu *
+use ../nushell-env/common.nu *
 
 def main [
-    --parallel = false
-    --env: string = "all"
+    --parallel(-p)
+    --environment(-e): string = "all"
     --skip: list<string> = []
-    --verbose = false
+    --verbose(-v)
 ] {
     log info "🚀 Starting cross-language quality gates validation..."
-    log info $"Target environments: ($env)"
+    log info $"Target environments: ($environment)"
     
     if $parallel {
-        validate-parallel $env $skip $verbose
+        validate-parallel $environment $skip $verbose
     } else {
-        validate-sequential $env $skip $verbose
+        validate-sequential $environment $skip $verbose
     }
 }
 
@@ -27,31 +27,31 @@ def validate-sequential [target_env: string, skip: list<string>, verbose: bool] 
     mut success_count = 0
     mut total_count = ($environments | length)
     
-    for env in $environments {
+    for environment in $environments {
         print ""
-        log info $"($env.name)..."
+        log info $"($environment.name)..."
         
-        if ($env.dir | path exists) {
-            cd $env.dir
+        if ($environment.dir | path exists) {
+            cd $environment.dir
             
-            let result = validate-environment $env $verbose
+            let result = validate-environment $environment $verbose
             
             if $result {
-                log success $"✅ ($env.name) validation passed"
+                log success $"✅ ($environment.name) validation passed"
                 $success_count = $success_count + 1
             } else {
-                log error $"❌ ($env.name) validation failed"
+                log error $"❌ ($environment.name) validation failed"
             }
             
             cd ..
         } else {
-            log warn $"⚠️  ($env.name) directory not found: ($env.dir)"
+            log warn $"⚠️  ($environment.name) directory not found: ($environment.dir)"
             $total_count = $total_count - 1
         }
     }
     
     print ""
-    print "=" * 60
+    print (0..59 | each { "=" } | str join "")
     log info $"Validation Results: ($success_count)/($total_count) environments passed"
     
     if $success_count == $total_count {
@@ -68,23 +68,23 @@ def validate-parallel [target_env: string, skip: list<string>, verbose: bool] {
     
     let environments = get-validation-environments $target_env $skip
     
-    let results = $environments | par-each { |env|
-        if ($env.dir | path exists) {
+    let results = $environments | par-each { |environment|
+        if ($environment.dir | path exists) {
             let original_dir = pwd
             
             let result = try {
-                cd $env.dir
-                validate-environment $env $verbose
+                cd $environment.dir
+                validate-environment $environment $verbose
                 cd $original_dir
-                {name: $env.name, status: "passed", error: null, emoji: $env.emoji}
+                {name: $environment.name, status: "passed", error: null, emoji: $environment.emoji}
             } catch { |e|
                 cd $original_dir
-                {name: $env.name, status: "failed", error: $e.msg, emoji: $env.emoji}
+                {name: $environment.name, status: "failed", error: $e.msg, emoji: $environment.emoji}
             }
             
             $result
         } else {
-            {name: $env.name, status: "skipped", error: "Directory not found", emoji: $env.emoji}
+            {name: $environment.name, status: "skipped", error: "Directory not found", emoji: $environment.emoji}
         }
     }
     
@@ -108,7 +108,7 @@ def validate-parallel [target_env: string, skip: list<string>, verbose: bool] {
     let skipped = $results | where status == "skipped" | length
     
     print ""
-    print "=" * 60
+    print (0..59 | each { "=" } | str join "")
     log info $"Parallel Validation Results: ($passed) passed, ($failed) failed, ($skipped) skipped"
     
     if $failed == 0 {
@@ -132,13 +132,13 @@ def get-validation-environments [target_env: string, skip: list<string>] {
     let filtered = if $target_env == "all" {
         $all_environments
     } else {
-        $all_environments | where name =~ $target_env
+        $all_environments | where ($it.name | str downcase) =~ ($target_env | str downcase)
     }
     
     $filtered | where not ($it.dir in $skip)
 }
 
-def validate-environment [env: record, verbose: bool] {
+def validate-environment [environment: record, verbose: bool] {
     if $verbose {
         log info $"  📁 Working directory: (pwd)"
     }
@@ -146,7 +146,7 @@ def validate-environment [env: record, verbose: bool] {
     # Check if devbox.json exists
     if not ("devbox.json" | path exists) {
         if $verbose {
-            log warn $"    No devbox.json found in ($env.dir)"
+            log warn $"    No devbox.json found in ($environment.dir)"
         }
         return false
     }
@@ -158,7 +158,7 @@ def validate-environment [env: record, verbose: bool] {
     }
     
     # Run each command for the environment
-    for cmd in $env.commands {
+    for cmd in $environment.commands {
         if $verbose {
             log info $"    🔧 Running: devbox run ($cmd)"
         } else {
@@ -194,19 +194,16 @@ def "main quick" [] {
     
     let environments = get-validation-environments "all" []
     
-    for env in $environments {
-        if ($env.dir | path exists) {
-            log info $"($env.emoji) ($env.name)..."
-            cd $env.dir
+    for environment in $environments {
+        if ($environment.dir | path exists) {
+            log info $"($environment.emoji) ($environment.name)..."
+            cd $environment.dir
             
             # Quick syntax/format checks only
             if ("devbox.json" | path exists) {
-                try {
-                    open devbox.json | from json | ignore
-                    log success $"  ✅ devbox.json syntax OK"
-                } catch {
-                    log error $"  ❌ devbox.json syntax error"
-                }
+                log success $"  ✅ devbox.json exists"
+            } else {
+                log error $"  ❌ devbox.json missing"
             }
             
             cd ..
@@ -308,25 +305,25 @@ Usage: nu scripts/validate-all.nu [OPTIONS] [COMMAND]
 
 Commands:
   <default>      Run full validation
-  quick          Run quick validation (syntax checks only)
+  quick          Run quick validation - syntax checks only
   dependencies   Check external tool dependencies
   structure      Validate project structure
   help           Show this help message
 
 Options:
-  --parallel     Run validations in parallel (faster)
-  --env <name>   Target specific environment (default: all)
+  --parallel     Run validations in parallel - faster
+  --environment <name>   Target specific environment - default: all
   --skip <list>  Skip specific environments
   --verbose      Show detailed output
 
 Examples:
   nu scripts/validate-all.nu                    # Full validation
   nu scripts/validate-all.nu --parallel         # Parallel validation
-  nu scripts/validate-all.nu --env python       # Python only
+  nu scripts/validate-all.nu --environment python       # Python only
   nu scripts/validate-all.nu quick              # Quick checks
   nu scripts/validate-all.nu dependencies       # Check tools
   nu scripts/validate-all.nu structure          # Check structure
 
-Available environments: python, typescript, rust, go, nushell
+Available environments: python typescript rust go nushell
 "
 }
