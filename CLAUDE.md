@@ -23,24 +23,26 @@ echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc && cd dev-env/python && devbox shel
 
 ### Essential Commands by Environment
 
-| Environment | Enter | Install | Format | Lint | Test | DevPod Commands | Claude-Flow Commands | AG-UI Commands | Docker MCP Commands | Context Engineering |
+| Environment | Enter | Install | Format | Lint | Test | DevPod Commands | Claude-Flow SPARC Commands | AG-UI Commands | Docker MCP Commands | Context Engineering |
 |-------------|-------|---------|--------|------|------|-----------------|---------------------|----------------|---------------------|---------------------|
-| **Python** | `cd dev-env/python && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `./claude-flow sparc tdd "feature"` • `devbox run claude-flow:wizard` • `./claude-flow memory store|query` | `mcp tool agui_provision '{"environment": "agentic-python"}'` • `mcp tool claude_flow_init '{"environment": "dev-env/python"}'` • `mcp tool enhanced_hook_context_triggers '{"action": "trigger"}'` | `docker mcp gateway run` • `.claude/start-mcp-gateway.sh` • `mcp tool docker_mcp_gateway_start '{"port": 8080}'` | `/generate-prp features/api.md --env python-env` • `/sparc` |
-| **TypeScript** | `cd dev-env/typescript && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `./claude-flow sparc run code "task"` • `devbox run claude-flow:start` • `./claude-flow sparc modes` | `mcp tool agui_provision '{"environment": "agentic-typescript"}'` | `python3 .claude/mcp-http-bridge.py` • `docker mcp tools` | `/generate-prp features/ui.md --env typescript-env` • `/sparc-architect` |
-| **Rust** | `cd dev-env/rust && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `./claude-flow sparc run architect "design"` • `devbox run claude-flow:monitor` • `./claude-flow status` | `mcp tool agui_provision '{"environment": "agentic-rust"}'` | `docker mcp client ls` • `docker mcp server list` | `/generate-prp features/service.md --env rust-env` • `/sparc-security-review` |
-| **Go** | `cd dev-env/go && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `./claude-flow sparc run debug "issue"` • `devbox run claude-flow:spawn` • `./claude-flow help sparc` | `mcp tool agui_provision '{"environment": "agentic-go"}'` | `python3 .claude/gemini-mcp-config.py` | `/generate-prp features/cli.md --env go-env` • `/sparc-integration` |
-| **Nushell** | `cd dev-env/nushell && devbox shell` | `devbox run setup` | `devbox run format` | `devbox run check` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `./claude-flow sparc run devops \"deploy\"` • `devbox run claude-flow:logs` • `./claude-flow sparc info <mode>` | `mcp tool agui_provision '{"environment": "agentic-nushell"}'` | `python3 .claude/test-mcp-integration.py` | `/generate-prp features/script.md --env nushell-env` • `/sparc-docs-writer` |
+| **Python** | `cd dev-env/python && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `/sparc-analyst` • `/sparc-architect` • `/sparc-tdd` • `/sparc-coder` • `./claude-flow sparc modes` • `./claude-flow memory store|query` | `mcp tool agui_provision '{"environment": "agentic-python"}'` • `mcp tool claude_flow_init '{"environment": "dev-env/python"}'` • `mcp tool enhanced_hook_context_triggers '{"action": "trigger"}'` | `docker mcp gateway run` • `.claude/start-mcp-gateway.sh` • `mcp tool docker_mcp_gateway_start '{"port": 8080}'` | `/generate-prp features/api.md --env python-env` • `/sparc` |
+| **TypeScript** | `cd dev-env/typescript && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `/sparc-designer` • `/sparc-coder` • `/sparc-tester` • `/sparc-reviewer` • `./claude-flow sparc modes` | `mcp tool agui_provision '{"environment": "agentic-typescript"}'` | `python3 .claude/mcp-http-bridge.py` • `docker mcp tools` | `/generate-prp features/ui.md --env typescript-env` • `/sparc-architect` |
+| **Rust** | `cd dev-env/rust && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `/sparc-architect` • `/sparc-optimizer` • `/sparc-debugger` • `/sparc-reviewer` • `./claude-flow status` | `mcp tool agui_provision '{"environment": "agentic-rust"}'` | `docker mcp client ls` • `docker mcp server list` | `/generate-prp features/service.md --env rust-env` • `/sparc-security-review` |
+| **Go** | `cd dev-env/go && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `/sparc-debugger` • `/sparc-tester` • `/sparc-orchestrator` • `/sparc-memory-manager` • `./claude-flow help sparc` | `mcp tool agui_provision '{"environment": "agentic-go"}'` | `python3 .claude/gemini-mcp-config.py` | `/generate-prp features/cli.md --env go-env` • `/sparc-integration` |
+| **Nushell** | `cd dev-env/nushell && devbox shell` | `devbox run setup` | `devbox run format` | `devbox run check` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `/sparc-researcher` • `/sparc-documenter` • `/sparc-workflow-manager` • `/sparc-swarm-coordinator` • `./claude-flow sparc info <mode>` | `mcp tool agui_provision '{"environment": "agentic-nushell"}'` | `python3 .claude/test-mcp-integration.py` | `/generate-prp features/script.md --env nushell-env` • `/sparc-docs-writer` |
 
 ### Core Commands
 
 **Devbox**: `devbox init|shell|add|rm|run|install|clean|update` • `devbox generate direnv` (auto-activation)  
 **DevPod**: `devbox run devpod:provision|status|help` (from any environment) • `nu host-tooling/devpod-management/manage-devpod.nu <cmd> <env>` (direct)  
 **Claude-Flow SPARC**: `./claude-flow sparc tdd "<feature>"` • `./claude-flow sparc run <mode> "<task>"` • `./claude-flow sparc modes` • `./claude-flow memory store|query|export`  
+**SPARC Slash Commands**: `/sparc-analyst` • `/sparc-architect` • `/sparc-coder` • `/sparc-tester` • `/sparc-reviewer` • `/sparc-debugger` • `/sparc-optimizer` • `/sparc-documenter` • `/sparc-researcher` • `/sparc-designer` • `/sparc-innovator` • `/sparc-orchestrator` • `/sparc-memory-manager` • `/sparc-workflow-manager` • `/sparc-swarm-coordinator` • `/sparc-batch-executor` • `/sparc-tdd` • `/sparc-modes`  
 **Claude-Flow Management**: `devbox run claude-flow:wizard|start|status|monitor|stop` • `npx claude-flow@alpha hive-mind spawn "<task>" --claude`  
 **AG-UI**: `mcp tool agui_provision|agent_create|chat|generate_ui|status` • `nu host-tooling/devpod-management/manage-devpod.nu provision agentic-<env>`  
 **Docker MCP**: `docker mcp gateway run|tools|client ls|server list` • `.claude/start-mcp-gateway.sh` • HTTP/SSE transport via `.claude/mcp-http-bridge.py`  
 **Validation**: `nu scripts/validate-all.nu [quick|dependencies|structure|--parallel]`  
-**Automation**: `/polyglot-check|clean|commit|docs|tdd|todo` • `/analyze-performance` • `/sparc` • `/sparc-<mode>`  
+**Automation**: `/polyglot-check|clean|commit|docs|tdd|todo` • `/analyze-performance` • `/sparc` • All 18 `/sparc-<mode>` commands  
+**Swarm Commands**: `/swarm-analysis` • `/swarm-development` • `/swarm-testing` • `/swarm-research` • `/swarm-optimization` • `/swarm-maintenance` • `/swarm-examples`  
 **🚀 AI Hooks**: Auto-active on file edits • Context engineering auto-triggers • Intelligent error resolution • Smart environment orchestration • Cross-environment dependency tracking  
 **🤖 Advanced Multi-Agent System**: `enhanced-task-coordinator.nu` • AI-powered task orchestration • Cross-environment testing matrix • Production-ready development automation
 
@@ -487,7 +489,36 @@ devbox run claude-flow:logs
 4. **Refinement (TDD)**: `./claude-flow sparc tdd "implement feature"` - Red-Green-Refactor cycle with minimal code implementation
 5. **Completion**: `./claude-flow sparc run integration "integrate components"` - End-to-end testing, documentation, validation
 
-#### SPARC Commands & Modes
+#### SPARC Slash Commands (18 Specialized Modes)
+**Analysis & Planning**:
+- `/sparc-analyst` - Requirements analysis, stakeholder research, problem decomposition
+- `/sparc-researcher` - Technical research, best practices, documentation gathering
+- `/sparc-architect` - System design, architecture patterns, component relationships
+
+**Development & Implementation**:
+- `/sparc-designer` - UI/UX design, interface planning, user experience optimization
+- `/sparc-coder` - Code implementation, refactoring, optimization
+- `/sparc-tdd` - Test-driven development, red-green-refactor cycles
+- `/sparc-innovator` - Creative solutions, experimental approaches, novel implementations
+
+**Quality & Testing**:
+- `/sparc-tester` - Test strategy, quality assurance, validation frameworks
+- `/sparc-reviewer` - Code review, security analysis, best practice compliance
+- `/sparc-debugger` - Issue diagnosis, error resolution, performance troubleshooting
+- `/sparc-optimizer` - Performance optimization, resource efficiency, scalability
+
+**Documentation & Coordination**:
+- `/sparc-documenter` - Technical documentation, API docs, user guides
+- `/sparc-orchestrator` - Project coordination, milestone planning, resource allocation
+- `/sparc-memory-manager` - Knowledge management, session persistence, context maintenance
+- `/sparc-workflow-manager` - Process optimization, automation, CI/CD coordination
+
+**Advanced Coordination**:
+- `/sparc-swarm-coordinator` - Multi-agent coordination, parallel task distribution
+- `/sparc-batch-executor` - Bulk operations, automated workflows, batch processing
+- `/sparc-modes` - List all available SPARC modes with descriptions
+
+#### Core SPARC Commands
 - **Core**: `./claude-flow sparc modes` (list all), `./claude-flow sparc info <mode>` (detailed mode info)
 - **Development**: `architect`, `code`, `tdd`, `spec-pseudocode`, `integration`
 - **Quality**: `debug`, `security-review`, `refinement-optimization-mode`
@@ -507,6 +538,35 @@ devbox run claude-flow:logs
 ./claude-flow sparc run debug "token expiration issue"
 ./claude-flow sparc run tdd "token refresh tests"
 ./claude-flow sparc run code "fix token refresh mechanism"
+
+# Using Slash Commands
+/sparc-analyst "Define user authentication requirements"
+/sparc-architect "Design JWT token system architecture"
+/sparc-tdd "Implement login functionality with tests"
+/sparc-reviewer "Security review of authentication flow"
+/sparc-documenter "Create API documentation for auth endpoints"
+```
+
+#### Swarm Coordination Commands (7 Specialized Workflows)
+**Multi-Agent Task Distribution**:
+- `/swarm-development` - Parallel development across multiple environments
+- `/swarm-testing` - Comprehensive testing orchestration across languages
+- `/swarm-analysis` - Multi-perspective analysis and research coordination
+- `/swarm-research` - Distributed research and knowledge gathering
+- `/swarm-optimization` - Performance optimization across environments
+- `/swarm-maintenance` - System maintenance and update coordination
+- `/swarm-examples` - Example workflows and best practice demonstrations
+
+#### Memory & Session Management
+```bash
+# Memory Management
+./claude-flow memory store "project-context" "Authentication system requirements"
+./claude-flow memory query "authentication"
+./claude-flow memory export "project-backup-$(date +%Y%m%d).json"
+
+# Session Management with SPARC
+/sparc-memory-manager "Save current development session"
+/sparc-workflow-manager "Resume authentication project"
 ```
 
 ### Style Standards
