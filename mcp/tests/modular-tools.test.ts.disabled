@@ -10,7 +10,7 @@ import {
   handleClaudeFlowLogs,
   handleClaudeFlowHiveMind,
   handleClaudeFlowTerminalMgmt,
-} from '../modules/claude-flow';
+} from '../dist/modules/claude-flow.js';
 import {
   handleEnhancedHookContextTriggers,
   handleEnhancedHookErrorResolution,
@@ -20,7 +20,7 @@ import {
   handleEnhancedHookQualityGates,
   handleEnhancedHookDevpodManager,
   handleEnhancedHookPrpLifecycle,
-} from '../modules/enhanced-hooks';
+} from '../dist/modules/enhanced-hooks.js';
 import {
   handleDockerMcpGatewayStart,
   handleDockerMcpGatewayStatus,
@@ -37,7 +37,7 @@ import {
   handleDockerMcpSignatureVerify,
   handleDockerMcpLogs,
   handleDockerMcpCleanup,
-} from '../modules/docker-mcp';
+} from '../dist/modules/docker-mcp.js';
 
 describe('Modular MCP Tools', () => {
   

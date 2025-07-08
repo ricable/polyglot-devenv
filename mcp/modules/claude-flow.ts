@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { executeCommand, getWorkspaceRoot, isValidEnvironment } from "../polyglot-utils.js";
-import type { CommandResult } from "../polyglot-types.js";
+import { executeCommand, getWorkspaceRoot, isValidEnvironment } from "../polyglot-utils";
+import type { CommandResult } from "../polyglot-types";
 
 // Claude-Flow Tool Schemas
 export const ClaudeFlowInitSchema = z.object({

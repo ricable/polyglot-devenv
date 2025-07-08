@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { executeCommand, getWorkspaceRoot } from "../polyglot-utils.js";
-import type { CommandResult } from "../polyglot-types.js";
+import { executeCommand, getWorkspaceRoot } from "../polyglot-utils";
+import type { CommandResult } from "../polyglot-types";
 
 // Docker MCP Tool Schemas
 export const DockerMcpGatewayStartSchema = z.object({
@@ -89,77 +89,77 @@ export const dockerMcpTools: Tool[] = [
   {
     name: "docker_mcp_gateway_start",
     description: "Start Docker MCP gateway for centralized tool execution",
-    inputSchema: zodToJsonSchema(DockerMcpGatewayStartSchema),
+    inputSchema: zodToJsonSchema(DockerMcpGatewayStartSchema) as any,
   },
   {
     name: "docker_mcp_gateway_status",
     description: "Check Docker MCP gateway status and health",
-    inputSchema: zodToJsonSchema(DockerMcpGatewayStatusSchema),
+    inputSchema: zodToJsonSchema(DockerMcpGatewayStatusSchema) as any,
   },
   {
     name: "docker_mcp_tools_list",
     description: "List available containerized MCP tools",
-    inputSchema: zodToJsonSchema(DockerMcpToolsListSchema),
+    inputSchema: zodToJsonSchema(DockerMcpToolsListSchema) as any,
   },
   {
     name: "docker_mcp_http_bridge",
     description: "Start HTTP/SSE bridge for web integration",
-    inputSchema: zodToJsonSchema(DockerMcpHttpBridgeSchema),
+    inputSchema: zodToJsonSchema(DockerMcpHttpBridgeSchema) as any,
   },
   {
     name: "docker_mcp_client_list",
     description: "List connected MCP clients",
-    inputSchema: zodToJsonSchema(DockerMcpClientListSchema),
+    inputSchema: zodToJsonSchema(DockerMcpClientListSchema) as any,
   },
   {
     name: "docker_mcp_server_list",
     description: "List running MCP servers",
-    inputSchema: zodToJsonSchema(DockerMcpServerListSchema),
+    inputSchema: zodToJsonSchema(DockerMcpServerListSchema) as any,
   },
   {
     name: "docker_mcp_gemini_config",
     description: "Configure Gemini AI integration",
-    inputSchema: zodToJsonSchema(DockerMcpGeminiConfigSchema),
+    inputSchema: zodToJsonSchema(DockerMcpGeminiConfigSchema) as any,
   },
   {
     name: "docker_mcp_test",
     description: "Run Docker MCP integration tests",
-    inputSchema: zodToJsonSchema(DockerMcpTestSchema),
+    inputSchema: zodToJsonSchema(DockerMcpTestSchema) as any,
   },
   {
     name: "docker_mcp_demo",
     description: "Run Docker MCP demonstration scenarios",
-    inputSchema: zodToJsonSchema(DockerMcpDemoSchema),
+    inputSchema: zodToJsonSchema(DockerMcpDemoSchema) as any,
   },
   {
     name: "docker_mcp_security_scan",
     description: "Scan Docker MCP components for security vulnerabilities",
-    inputSchema: zodToJsonSchema(DockerMcpSecurityScanSchema),
+    inputSchema: zodToJsonSchema(DockerMcpSecurityScanSchema) as any,
   },
   {
     name: "docker_mcp_resource_limits",
     description: "Manage container resource limits and quotas",
-    inputSchema: zodToJsonSchema(DockerMcpResourceLimitsSchema),
+    inputSchema: zodToJsonSchema(DockerMcpResourceLimitsSchema) as any,
   },
   {
     name: "docker_mcp_network_isolation",
     description: "Configure network isolation for secure execution",
-    inputSchema: zodToJsonSchema(DockerMcpNetworkIsolationSchema),
+    inputSchema: zodToJsonSchema(DockerMcpNetworkIsolationSchema) as any,
   },
   {
     name: "docker_mcp_signature_verify",
     description: "Verify cryptographic signatures of Docker images",
-    inputSchema: zodToJsonSchema(DockerMcpSignatureVerifySchema),
+    inputSchema: zodToJsonSchema(DockerMcpSignatureVerifySchema) as any,
   },
   {
     name: "docker_mcp_logs",
     description: "Access Docker MCP component logs",
-    inputSchema: zodToJsonSchema(DockerMcpLogsSchema),
+    inputSchema: zodToJsonSchema(DockerMcpLogsSchema) as any,
   },
   {
     name: "docker_mcp_cleanup",
     description: "Clean up Docker MCP resources and containers",
-    inputSchema: zodToJsonSchema(DockerMcpCleanupSchema),
+    inputSchema: zodToJsonSchema(DockerMcpCleanupSchema) as any,
   },
 ];
 
@@ -180,12 +180,17 @@ export async function handleDockerMcpGatewayStart(args: z.infer<typeof DockerMcp
       success: result.success,
       output: result.output || `Docker MCP gateway started on port ${port}`,
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to start Docker MCP gateway: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -205,12 +210,17 @@ export async function handleDockerMcpGatewayStatus(args: z.infer<typeof DockerMc
       success: result.success,
       output: result.output || "Docker MCP gateway status retrieved",
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to get gateway status: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -234,12 +244,17 @@ export async function handleDockerMcpToolsList(args: z.infer<typeof DockerMcpToo
       success: result.success,
       output: result.output || "Docker MCP tools listed",
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to list tools: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -262,12 +277,17 @@ export async function handleDockerMcpHttpBridge(args: z.infer<typeof DockerMcpHt
       success: result.success,
       output: result.output || `HTTP/SSE bridge started on ${host}:${port}`,
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to start HTTP bridge: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -287,12 +307,17 @@ export async function handleDockerMcpClientList(args: z.infer<typeof DockerMcpCl
       success: result.success,
       output: result.output || "MCP clients listed",
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to list clients: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -312,12 +337,17 @@ export async function handleDockerMcpServerList(args: z.infer<typeof DockerMcpSe
       success: result.success,
       output: result.output || "MCP servers listed",
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to list servers: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -343,12 +373,17 @@ export async function handleDockerMcpGeminiConfig(args: z.infer<typeof DockerMcp
       success: result.success,
       output: result.output || `Gemini integration configured with model ${model}`,
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to configure Gemini: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -371,12 +406,17 @@ export async function handleDockerMcpTest(args: z.infer<typeof DockerMcpTestSche
       success: result.success,
       output: result.output || `Docker MCP test suite '${suite}' completed`,
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to run tests: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -399,12 +439,17 @@ export async function handleDockerMcpDemo(args: z.infer<typeof DockerMcpDemoSche
       success: result.success,
       output: result.output || `Docker MCP demo '${scenario}' completed`,
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to run demo: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -425,12 +470,17 @@ export async function handleDockerMcpSecurityScan(args: z.infer<typeof DockerMcp
       success: result.success,
       output: result.output || `Security scan completed for ${target}`,
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to run security scan: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -457,12 +507,17 @@ export async function handleDockerMcpResourceLimits(args: z.infer<typeof DockerM
       success: result.success,
       output: result.output || `Resource limits ${action} completed`,
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to manage resource limits: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -483,12 +538,17 @@ export async function handleDockerMcpNetworkIsolation(args: z.infer<typeof Docke
       success: result.success,
       output: result.output || `Network isolation ${action} completed`,
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to configure network isolation: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -509,12 +569,17 @@ export async function handleDockerMcpSignatureVerify(args: z.infer<typeof Docker
       success: result.success,
       output: result.output || `Image signature verification completed for ${image}`,
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to verify image signature: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -542,12 +607,17 @@ export async function handleDockerMcpLogs(args: z.infer<typeof DockerMcpLogsSche
       success: result.success,
       output: result.output || `Logs retrieved for ${component}`,
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to get logs: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }
@@ -571,12 +641,17 @@ export async function handleDockerMcpCleanup(args: z.infer<typeof DockerMcpClean
       success: result.success,
       output: result.output || `Docker MCP cleanup completed for ${target}`,
       error: result.error,
+      exitCode: result.success ? 0 : 1,
+      duration: 0,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
       success: false,
+      output: "",
       error: `Failed to cleanup resources: ${error instanceof Error ? error.message : String(error)}`,
+      exitCode: 1,
+      duration: 0,
       timestamp: new Date(),
     };
   }

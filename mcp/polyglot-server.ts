@@ -40,8 +40,7 @@ import {
 } from "./polyglot-utils.js";
 import type { EnvironmentInfo, CommandResult, ValidationResult } from "./polyglot-types.js";
 
-// Import modular tool definitions and handlers - TEMPORARILY DISABLED FOR TESTING
-/*
+// Import modular tool definitions and handlers
 import { 
   claudeFlowTools,
   handleClaudeFlowInit,
@@ -86,7 +85,63 @@ import {
   handleDockerMcpLogs,
   handleDockerMcpCleanup,
 } from "./modules/docker-mcp.js";
-*/
+
+import {
+  hostContainerTools,
+  handleHostInstallation,
+  handleHostInfrastructure,
+  handleHostCredential,
+  handleHostShellIntegration,
+  handleContainerIsolation,
+  handleContainerTools,
+  handleHostContainerBridge,
+  handleSecurityBoundary,
+} from "./modules/host-container.js";
+
+import {
+  nushellAutomationTools,
+  handleNushellScript,
+  handleNushellValidation,
+  handleNushellOrchestration,
+  handleNushellDataProcessing,
+  handleNushellAutomation,
+  handleNushellPipeline,
+  handleNushellConfig,
+  handleNushellPerformance,
+  handleNushellDebug,
+  handleNushellIntegration,
+  handleNushellTesting,
+  handleNushellDocumentation,
+  handleNushellEnvironment,
+  handleNushellDeployment,
+  handleNushellMonitoring,
+  handleNushellSecurity,
+  handleNushellBackup,
+  handleNushellMigration,
+  handleNushellOptimization,
+  handleNushellWorkflow,
+} from "./modules/nushell-automation.js";
+
+import {
+  configManagementTools,
+  handleConfigGeneration,
+  handleConfigSync,
+  handleConfigValidation,
+  handleConfigBackup,
+  handleConfigTemplate,
+} from "./modules/config-management.js";
+
+import {
+  advancedAnalyticsTools,
+  handlePerformanceAnalytics,
+  handleResourceMonitoring,
+  handleIntelligenceSystem,
+  handleTrendAnalysis,
+  handleUsageAnalytics,
+  handleAnomalyDetection,
+  handlePredictiveAnalytics,
+  handleBusinessIntelligence,
+} from "./modules/advanced-analytics.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -344,10 +399,14 @@ export const createServer = () => {
   // Tool Registry
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     const tools: Tool[] = [
-      // Include all modular tools - TEMPORARILY DISABLED FOR TESTING
-      // ...claudeFlowTools,
-      // ...enhancedHooksTools,
-      // ...dockerMcpTools,
+      // Include all modular tools
+      ...claudeFlowTools,
+      ...enhancedHooksTools,
+      ...dockerMcpTools,
+      ...hostContainerTools,
+      ...nushellAutomationTools,
+      ...configManagementTools,
+      ...advancedAnalyticsTools,
       // Environment Tools
       {
         name: ToolName.ENVIRONMENT_DETECT,
@@ -537,8 +596,7 @@ export const createServer = () => {
 
     try {
       switch (name) {
-        // Claude-Flow Tools - TEMPORARILY DISABLED FOR TESTING
-        /*
+        // Claude-Flow Tools
         case "claude_flow_init":
           return { content: [{ type: "text", text: JSON.stringify(await handleClaudeFlowInit(args as any), null, 2) }] };
         case "claude_flow_wizard":
@@ -609,7 +667,96 @@ export const createServer = () => {
           return { content: [{ type: "text", text: JSON.stringify(await handleDockerMcpLogs(args as any), null, 2) }] };
         case "docker_mcp_cleanup":
           return { content: [{ type: "text", text: JSON.stringify(await handleDockerMcpCleanup(args as any), null, 2) }] };
-        */
+
+        // Host/Container Separation Tools
+        case "host_installation":
+          return { content: [{ type: "text", text: JSON.stringify(await handleHostInstallation(args as any), null, 2) }] };
+        case "host_infrastructure":
+          return { content: [{ type: "text", text: JSON.stringify(await handleHostInfrastructure(args as any), null, 2) }] };
+        case "host_credential":
+          return { content: [{ type: "text", text: JSON.stringify(await handleHostCredential(args as any), null, 2) }] };
+        case "host_shell_integration":
+          return { content: [{ type: "text", text: JSON.stringify(await handleHostShellIntegration(args as any), null, 2) }] };
+        case "container_isolation":
+          return { content: [{ type: "text", text: JSON.stringify(await handleContainerIsolation(args as any), null, 2) }] };
+        case "container_tools":
+          return { content: [{ type: "text", text: JSON.stringify(await handleContainerTools(args as any), null, 2) }] };
+        case "host_container_bridge":
+          return { content: [{ type: "text", text: JSON.stringify(await handleHostContainerBridge(args as any), null, 2) }] };
+        case "security_boundary":
+          return { content: [{ type: "text", text: JSON.stringify(await handleSecurityBoundary(args as any), null, 2) }] };
+
+        // Nushell Automation Tools
+        case "nushell_script":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellScript(args as any), null, 2) }] };
+        case "nushell_validation":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellValidation(args as any), null, 2) }] };
+        case "nushell_orchestration":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellOrchestration(args as any), null, 2) }] };
+        case "nushell_data_processing":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellDataProcessing(args as any), null, 2) }] };
+        case "nushell_automation":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellAutomation(args as any), null, 2) }] };
+        case "nushell_pipeline":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellPipeline(args as any), null, 2) }] };
+        case "nushell_config":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellConfig(args as any), null, 2) }] };
+        case "nushell_performance":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellPerformance(args as any), null, 2) }] };
+        case "nushell_debug":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellDebug(args as any), null, 2) }] };
+        case "nushell_integration":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellIntegration(args as any), null, 2) }] };
+        case "nushell_testing":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellTesting(args as any), null, 2) }] };
+        case "nushell_documentation":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellDocumentation(args as any), null, 2) }] };
+        case "nushell_environment":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellEnvironment(args as any), null, 2) }] };
+        case "nushell_deployment":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellDeployment(args as any), null, 2) }] };
+        case "nushell_monitoring":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellMonitoring(args as any), null, 2) }] };
+        case "nushell_security":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellSecurity(args as any), null, 2) }] };
+        case "nushell_backup":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellBackup(args as any), null, 2) }] };
+        case "nushell_migration":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellMigration(args as any), null, 2) }] };
+        case "nushell_optimization":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellOptimization(args as any), null, 2) }] };
+        case "nushell_workflow":
+          return { content: [{ type: "text", text: JSON.stringify(await handleNushellWorkflow(args as any), null, 2) }] };
+
+        // Configuration Management Tools
+        case "config_generation":
+          return { content: [{ type: "text", text: JSON.stringify(await handleConfigGeneration(args as any), null, 2) }] };
+        case "config_sync":
+          return { content: [{ type: "text", text: JSON.stringify(await handleConfigSync(args as any), null, 2) }] };
+        case "config_validation":
+          return { content: [{ type: "text", text: JSON.stringify(await handleConfigValidation(args as any), null, 2) }] };
+        case "config_backup":
+          return { content: [{ type: "text", text: JSON.stringify(await handleConfigBackup(args as any), null, 2) }] };
+        case "config_template":
+          return { content: [{ type: "text", text: JSON.stringify(await handleConfigTemplate(args as any), null, 2) }] };
+
+        // Advanced Analytics Tools
+        case "performance_analytics":
+          return { content: [{ type: "text", text: JSON.stringify(await handlePerformanceAnalytics(args as any), null, 2) }] };
+        case "resource_monitoring":
+          return { content: [{ type: "text", text: JSON.stringify(await handleResourceMonitoring(args as any), null, 2) }] };
+        case "intelligence_system":
+          return { content: [{ type: "text", text: JSON.stringify(await handleIntelligenceSystem(args as any), null, 2) }] };
+        case "trend_analysis":
+          return { content: [{ type: "text", text: JSON.stringify(await handleTrendAnalysis(args as any), null, 2) }] };
+        case "usage_analytics":
+          return { content: [{ type: "text", text: JSON.stringify(await handleUsageAnalytics(args as any), null, 2) }] };
+        case "anomaly_detection":
+          return { content: [{ type: "text", text: JSON.stringify(await handleAnomalyDetection(args as any), null, 2) }] };
+        case "predictive_analytics":
+          return { content: [{ type: "text", text: JSON.stringify(await handlePredictiveAnalytics(args as any), null, 2) }] };
+        case "business_intelligence":
+          return { content: [{ type: "text", text: JSON.stringify(await handleBusinessIntelligence(args as any), null, 2) }] };
 
         // Environment Tools
         case ToolName.ENVIRONMENT_DETECT:
