@@ -60,12 +60,32 @@
         "curl -fsSL https://get.jetify.com/devbox | bash",
         "curl -s https://api.github.com/repos/nushell/nushell/releases/latest | grep browser_download_url | grep x86_64-unknown-linux-gnu.tar.gz | cut -d '\"' -f 4 | xargs -I {} curl -L {} | tar -xz -C /tmp",
         "sudo mv /tmp/nu* /usr/local/bin/",
-        "echo 'Nushell environment ready'"
+        "echo 'Installing Node.js for claude-flow...'",
+        "curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -",
+        "sudo apt-get install -y nodejs",
+        "echo 'Installing claude-flow...'",
+        "npm install -g claude-flow@alpha",
+        "echo 'Nushell environment with claude-flow ready'"
     ],
 
-    "postStartCommand": "echo 'Nushell DevPod ready. Scripts available in: scripts/'",
+    "postStartCommand": [
+        "echo 'Nushell DevPod ready. Scripts available in: scripts/'",
+        "echo 'Initializing claude-flow...'",
+        "npx --yes claude-flow@alpha init --force",
+        "echo 'Starting claude-flow hive-mind wizard...'",
+        "npx --yes claude-flow@alpha hive-mind wizard",
+        "echo 'Spawning snake game task...'",
+        "npx --yes claude-flow@alpha hive-mind spawn \"create a snake game in the language of your devpod dev env\" --claude"
+    ],
     
-    "postAttachCommand": "echo 'Welcome to Nushell DevPod! 🐚'",
+    "postAttachCommand": [
+        "echo 'Welcome to Nushell DevPod! 🐚'",
+        "echo 'Claude-flow commands available:'",
+        "echo '  npx claude-flow@alpha --help'",
+        "echo '  npx claude-flow@alpha status'",
+        "echo '  npx claude-flow@alpha hive-mind wizard'",
+        "echo '  npx claude-flow@alpha hive-mind spawn \"<task>\" --claude'"
+    ],
 
     "workspaceFolder": "/workspace",
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",

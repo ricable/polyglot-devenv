@@ -26,6 +26,7 @@ export interface CommandResult {
   error?: string;
   exitCode: number;
   duration: number;
+  timestamp?: Date;
 }
 
 export interface PerformanceMetric {

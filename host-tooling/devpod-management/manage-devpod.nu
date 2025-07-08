@@ -1,8 +1,11 @@
 #!/usr/bin/env nu
 
 # Centralized DevPod Management Script
-# Handles all DevPod operations for any environment (python, typescript, rust, go, nushell)
+# Handles all DevPod operations for any environment (python, typescript, rust, go, nushell, agentic variants)
 # Usage: nu manage-devpod.nu <command> <environment>
+# Supports: Standard environments (python, typescript, rust, go, nushell)
+#          Agentic environments (agentic-python, agentic-typescript, agentic-rust, agentic-go, agentic-nushell)
+#          Evaluation environments (agentic-eval-*)
 
 def main [command?: string, environment?: string] {
     # Show usage if no arguments provided
@@ -17,7 +20,7 @@ def main [command?: string, environment?: string] {
             help: "Usage: nu manage-devpod.nu <command> <environment>"
         }
     }
-    let valid_environments = ["python", "typescript", "rust", "go", "nushell", "agentic-eval-unified", "agentic-eval-claude", "agentic-eval-gemini", "agentic-eval-results"]
+    let valid_environments = ["python", "typescript", "rust", "go", "nushell", "agentic-eval-unified", "agentic-eval-claude", "agentic-eval-gemini", "agentic-eval-results", "agentic-python", "agentic-typescript", "agentic-rust", "agentic-go", "agentic-nushell"]
     let valid_commands = ["provision", "connect", "start", "stop", "delete", "sync", "status", "help", "provision-eval"]
     
     if $environment not-in $valid_environments {
@@ -54,6 +57,12 @@ def provision [environment: string] {
     # Handle agentic evaluation environments
     if ($environment | str starts-with "agentic-eval-") {
         provision_agentic_eval $environment
+        return
+    }
+    
+    # Handle agentic environments (agentic-python, agentic-typescript, etc.)
+    if ($environment | str starts-with "agentic-") and not ($environment | str starts-with "agentic-eval-") {
+        provision_agentic $environment
         return
     }
     
@@ -153,6 +162,98 @@ def provision_agentic_eval [environment: string, count?: int] {
             print "  - Compare Claude vs Gemini performance metrics"
         }
     }
+}
+
+def provision_agentic [environment: string, count?: int] {
+    let workspace_count = if ($count | is-empty) { 1 } else { $count }
+    print $"🤖 Setting up ($workspace_count) agentic workspace(s) for ($environment)..."
+    
+    # Validate agentic environment types
+    let valid_agentic_environments = ["agentic-python", "agentic-typescript", "agentic-rust", "agentic-go", "agentic-nushell"]
+    if $environment not-in $valid_agentic_environments {
+        error make {
+            msg: $"Invalid agentic environment: ($environment)"
+            help: $"Valid agentic environments: ($valid_agentic_environments | str join ', ')"
+        }
+    }
+    
+    # Check if DevPod is available
+    let devpod_available = try {
+        bash -c "command -v devpod"
+        true
+    } catch {
+        false
+    }
+    
+    if not $devpod_available {
+        error make {
+            msg: "DevPod is not installed or not in PATH"
+            help: "Please install DevPod first: https://devpod.sh/docs/getting-started/install"
+        }
+    }
+    
+    # Check if template exists
+    let template_path = $"../../devpod-automation/templates/($environment)"
+    if not ($template_path | path exists) {
+        error make {
+            msg: $"Template not found: ($template_path)"
+            help: "Make sure the agentic AG-UI templates are properly set up"
+        }
+    }
+    
+    # Create workspaces
+    for i in 1..$workspace_count {
+        let workspace_name = $"polyglot-($environment)-workspace-($i)"
+        print $"🔧 Creating workspace ($i)/($workspace_count): ($workspace_name)"
+        
+        try {
+            bash -c $"devpod up ($workspace_name) --ide vscode --devcontainer-path ($template_path)/devcontainer.json"
+            print $"✅ Successfully created workspace: ($workspace_name)"
+        } catch {
+            print $"❌ Failed to create workspace: ($workspace_name)"
+        }
+    }
+    
+    print $"🎉 Agentic environment setup complete!"
+    print $"📊 Environment: ($environment)"
+    print $"🔢 Workspaces created: ($workspace_count)"
+    print ""
+    print "🚀 Next steps:"
+    match $environment {
+        "agentic-python" => {
+            print "  - FastAPI agent server with AG-UI protocol support"
+            print "  - Access agent development at /workspace/src/agents/"
+            print "  - Start server: uv run uvicorn src.main:app --reload --host 0.0.0.0 --port 8000"
+        }
+        "agentic-typescript" => {
+            print "  - Next.js with CopilotKit integration"
+            print "  - Access agent development at /workspace/src/agents/"
+            print "  - Start development: npm run dev"
+        }
+        "agentic-rust" => {
+            print "  - Tokio-based async agent server"
+            print "  - Access agent development at /workspace/src/agents/"
+            print "  - Start server: cargo run --bin agent-server"
+        }
+        "agentic-go" => {
+            print "  - Go HTTP server with agent middleware"
+            print "  - Access agent development at /workspace/internal/agents/"
+            print "  - Start server: go run cmd/agent-server/main.go"
+        }
+        "agentic-nushell" => {
+            print "  - Pipeline-based agent orchestration"
+            print "  - Access agent development at /workspace/scripts/agents/"
+            print "  - Start server: nu scripts/agents/start-agent.nu"
+        }
+    }
+    print ""
+    print "🎛️ AG-UI Features available:"
+    print "  • Agentic chat with CopilotKit"
+    print "  • Generative UI components"
+    print "  • Human-in-the-loop workflows"
+    print "  • Shared state management"
+    print "  • Tool-based generative UI"
+    print "  • Predictive state updates"
 }
 
 def connect [environment: string] {
