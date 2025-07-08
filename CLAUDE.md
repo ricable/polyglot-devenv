@@ -4,7 +4,13 @@
 
 **Principles**: Isolated Environments • Type Safety First • Test-Driven Development • Intelligence-Driven Development  
 **Repository**: https://github.com/ricable/polyglot-devenv | **Issues**: GitHub Issues  
-**Personal Config**: Copy `CLAUDE.local.md.template` to `CLAUDE.local.md` for individual customizations
+## Documentation Structure
+
+**📋 This File (CLAUDE.md)**: Project standards, architecture, core workflows, setup instructions  
+**👤 Personal Config**: [`CLAUDE.local.md`](CLAUDE.local.md) - Individual aliases, IDE settings, local tools, troubleshooting  
+**🔧 MCP Technical**: [`mcp/CLAUDE.md`](mcp/CLAUDE.md) - Complete tool reference, development guidelines, advanced features
+
+**Personal Setup**: Copy `CLAUDE.local.md.template` → `CLAUDE.local.md` for individual productivity enhancements
 
 **Quick Setup**:
 ```bash
@@ -19,21 +25,22 @@ echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc && cd dev-env/python && devbox shel
 
 | Environment | Enter | Install | Format | Lint | Test | DevPod Commands | Claude-Flow Commands | AG-UI Commands | Docker MCP Commands | Context Engineering |
 |-------------|-------|---------|--------|------|------|-----------------|---------------------|----------------|---------------------|---------------------|
-| **Python** | `cd dev-env/python && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `devbox run claude-flow:wizard` • `devbox run claude-flow:start` | `mcp tool agui_provision '{"environment": "agentic-python"}'` • `mcp tool claude_flow_init '{"environment": "dev-env/python"}'` • `mcp tool enhanced_hook_context_triggers '{"action": "trigger"}'` | `docker mcp gateway run` • `.claude/start-mcp-gateway.sh` • `mcp tool docker_mcp_gateway_start '{"port": 8080}'` | `/generate-prp features/api.md --env python-env` |
-| **TypeScript** | `cd dev-env/typescript && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `devbox run claude-flow:wizard` • `devbox run claude-flow:start` | `mcp tool agui_provision '{"environment": "agentic-typescript"}'` | `python3 .claude/mcp-http-bridge.py` • `docker mcp tools` | `/generate-prp features/ui.md --env typescript-env` |
-| **Rust** | `cd dev-env/rust && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `devbox run claude-flow:wizard` • `devbox run claude-flow:start` | `mcp tool agui_provision '{"environment": "agentic-rust"}'` | `docker mcp client ls` • `docker mcp server list` | `/generate-prp features/service.md --env rust-env` |
-| **Go** | `cd dev-env/go && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `devbox run claude-flow:wizard` • `devbox run claude-flow:start` | `mcp tool agui_provision '{"environment": "agentic-go"}'` | `python3 .claude/gemini-mcp-config.py` | `/generate-prp features/cli.md --env go-env` |
-| **Nushell** | `cd dev-env/nushell && devbox shell` | `devbox run setup` | `devbox run format` | `devbox run check` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `devbox run claude-flow:wizard` • `devbox run claude-flow:start` | `mcp tool agui_provision '{"environment": "agentic-nushell"}'` | `python3 .claude/test-mcp-integration.py` | `/generate-prp features/script.md --env nushell-env` |
+| **Python** | `cd dev-env/python && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `./claude-flow sparc tdd "feature"` • `devbox run claude-flow:wizard` • `./claude-flow memory store|query` | `mcp tool agui_provision '{"environment": "agentic-python"}'` • `mcp tool claude_flow_init '{"environment": "dev-env/python"}'` • `mcp tool enhanced_hook_context_triggers '{"action": "trigger"}'` | `docker mcp gateway run` • `.claude/start-mcp-gateway.sh` • `mcp tool docker_mcp_gateway_start '{"port": 8080}'` | `/generate-prp features/api.md --env python-env` • `/sparc` |
+| **TypeScript** | `cd dev-env/typescript && devbox shell` | `devbox run install` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `./claude-flow sparc run code "task"` • `devbox run claude-flow:start` • `./claude-flow sparc modes` | `mcp tool agui_provision '{"environment": "agentic-typescript"}'` | `python3 .claude/mcp-http-bridge.py` • `docker mcp tools` | `/generate-prp features/ui.md --env typescript-env` • `/sparc-architect` |
+| **Rust** | `cd dev-env/rust && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `./claude-flow sparc run architect "design"` • `devbox run claude-flow:monitor` • `./claude-flow status` | `mcp tool agui_provision '{"environment": "agentic-rust"}'` | `docker mcp client ls` • `docker mcp server list` | `/generate-prp features/service.md --env rust-env` • `/sparc-security-review` |
+| **Go** | `cd dev-env/go && devbox shell` | `devbox run build` | `devbox run format` | `devbox run lint` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `./claude-flow sparc run debug "issue"` • `devbox run claude-flow:spawn` • `./claude-flow help sparc` | `mcp tool agui_provision '{"environment": "agentic-go"}'` | `python3 .claude/gemini-mcp-config.py` | `/generate-prp features/cli.md --env go-env` • `/sparc-integration` |
+| **Nushell** | `cd dev-env/nushell && devbox shell` | `devbox run setup` | `devbox run format` | `devbox run check` | `devbox run test` | `devbox run devpod:provision` • `devbox run devpod:status` | `./claude-flow sparc run devops \"deploy\"` • `devbox run claude-flow:logs` • `./claude-flow sparc info <mode>` | `mcp tool agui_provision '{"environment": "agentic-nushell"}'` | `python3 .claude/test-mcp-integration.py` | `/generate-prp features/script.md --env nushell-env` • `/sparc-docs-writer` |
 
 ### Core Commands
 
 **Devbox**: `devbox init|shell|add|rm|run|install|clean|update` • `devbox generate direnv` (auto-activation)  
 **DevPod**: `devbox run devpod:provision|status|help` (from any environment) • `nu host-tooling/devpod-management/manage-devpod.nu <cmd> <env>` (direct)  
-**Claude-Flow**: `devbox run claude-flow:wizard|start|status|monitor|stop` • `npx claude-flow@alpha hive-mind spawn "<task>" --claude`  
+**Claude-Flow SPARC**: `./claude-flow sparc tdd "<feature>"` • `./claude-flow sparc run <mode> "<task>"` • `./claude-flow sparc modes` • `./claude-flow memory store|query|export`  
+**Claude-Flow Management**: `devbox run claude-flow:wizard|start|status|monitor|stop` • `npx claude-flow@alpha hive-mind spawn "<task>" --claude`  
 **AG-UI**: `mcp tool agui_provision|agent_create|chat|generate_ui|status` • `nu host-tooling/devpod-management/manage-devpod.nu provision agentic-<env>`  
 **Docker MCP**: `docker mcp gateway run|tools|client ls|server list` • `.claude/start-mcp-gateway.sh` • HTTP/SSE transport via `.claude/mcp-http-bridge.py`  
 **Validation**: `nu scripts/validate-all.nu [quick|dependencies|structure|--parallel]`  
-**Automation**: `/polyglot-check|clean|commit|docs|tdd|todo` • `/analyze-performance`  
+**Automation**: `/polyglot-check|clean|commit|docs|tdd|todo` • `/analyze-performance` • `/sparc` • `/sparc-<mode>`  
 **🚀 AI Hooks**: Auto-active on file edits • Context engineering auto-triggers • Intelligent error resolution • Smart environment orchestration • Cross-environment dependency tracking  
 **🤖 Advanced Multi-Agent System**: `enhanced-task-coordinator.nu` • AI-powered task orchestration • Cross-environment testing matrix • Production-ready development automation
 
@@ -43,7 +50,8 @@ echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc && cd dev-env/python && devbox shel
 **MCP Server**: `npm run build|start|watch` • `mcp tool environment_detect|devpod_provision|polyglot_validate|agui_provision|claude_flow_init|enhanced_hook_context_triggers|docker_mcp_gateway_start`  
 **Docker MCP Integration**: `docker mcp gateway run` • `python3 .claude/mcp-http-bridge.py` • `python3 .claude/gemini-mcp-config.py` • 34+ tools with HTTP/SSE transport  
 **AG-UI Protocol**: `mcp tool agui_chat|generate_ui|shared_state|workflow` • Full CopilotKit integration • Agent orchestration  
-**Claude-Flow Integration**: `npx claude-flow@alpha init|start|hive-mind wizard|spawn` • AI agent orchestration • Multi-terminal management  
+**Claude-Flow Integration**: `npx claude-flow@alpha init --sparc|start|hive-mind wizard|spawn` • AI agent orchestration • Multi-terminal management • SPARC methodology  
+**Claude-Flow SPARC**: `./claude-flow sparc tdd|run <mode> "<task>"|modes|info <mode>` • `./claude-flow memory store|query|export` • Systematic TDD with AI assistance  
 **DevPod .claude/ Integration**: Auto-installation of AI hooks in containers • Container-adapted paths • Zero-configuration setup  
 **Context Engineering**: `/generate-prp features/api.md --env dev-env/python` → `/execute-prp`  
 **Enhanced**: `/generate-prp features/api.md --env python-env --include-dojo --verbose` (dynamic templates, dojo integration)  
@@ -317,191 +325,33 @@ nu host-tooling/devpod-management/manage-devpod.nu help go
 ## Core Systems
 
 ### MCP Integration (Production ✅)
-**JSON-RPC 2.0 server** with 112 tools, 100+ resources, environment detection, progress tracking, auto-completion  
-**Categories**: Environment, DevBox, DevPod (1-10 workspaces), Cross-Language, Performance, Security, Hooks, PRP, Claude-Flow, Enhanced AI Hooks, Docker MCP, Host/Container, Nushell Automation, Configuration Management, Advanced Analytics  
-**Resources**: `polyglot://[documentation|config|examples|scripts]/*`
+**Complete AI-powered development environment** with 112 tools across 15 categories, supporting all languages and workflows.
 
-#### 🚀 **Complete MCP Tool Implementation (112 total tools)**
-**Phase 1 - AI Integration (34 tools):**
-- **Claude-Flow Integration** (10 tools): AI agent orchestration, hive-mind coordination, terminal management
-- **Enhanced AI Hooks** (8 tools): Context engineering auto-triggers, intelligent error resolution, smart environment orchestration
-- **Docker MCP Integration** (16 tools): Secure containerized execution, HTTP/SSE transport, comprehensive security scanning
+**Quick Reference**:
+- **112 tools** including Claude-Flow (AI orchestration), Enhanced AI Hooks (intelligent automation), Docker MCP (secure execution)
+- **15 categories**: Environment, DevBox, DevPod, Claude-Flow, Enhanced Hooks, Docker MCP, AG-UI, Host/Container, Nushell, Configuration, Analytics
+- **100+ resources**: `polyglot://[documentation|config|examples|scripts]/*`
+- **All languages supported**: Python, TypeScript, Rust, Go, Nushell + agentic variants
 
-**Phase 2 - Infrastructure & Automation (31 tools):**
-- **Host/Container Separation** (8 tools): Security boundaries, credential isolation, infrastructure access control
-- **Nushell Automation** (23 tools): Cross-language orchestration, data processing, performance monitoring, testing
-
-**Phase 3 - Intelligence & Configuration (15 tools):**
-- **Configuration Management** (7 tools): Zero-drift configuration, automated synchronization, template management
-- **Advanced Analytics** (8 tools): ML-based performance analytics, predictive insights, business intelligence
-
-**Core Foundation (32 tools):**
-- Environment, DevBox, DevPod, Cross-Language, Performance, Security, Hooks, PRP, AG-UI tools
-
-#### **Complete MCP Tool Reference**
-
-##### **Claude-Flow Integration Tools**
+**Essential MCP Commands**:
 ```bash
+# Environment & DevPod
+mcp tool environment_detect '{}'
+mcp tool devpod_provision '{"environment": "dev-env/python", "count": 1}'
+
 # AI Agent Orchestration
-mcp tool claude_flow_init '{"environment": "dev-env/python", "force": false}'
-mcp tool claude_flow_wizard '{"environment": "dev-env/typescript", "interactive": false}'
-mcp tool claude_flow_spawn '{"environment": "dev-env/python", "task": "Create FastAPI app", "claude": true}'
-mcp tool claude_flow_hive_mind '{"environment": "dev-env/typescript", "command": "spawn", "task": "Build dashboard"}'
-
-# System Management
-mcp tool claude_flow_start '{"environment": "dev-env/rust", "background": true}'
-mcp tool claude_flow_stop '{"environment": "dev-env/go", "force": false}'
-mcp tool claude_flow_status '{"environment": "dev-env/python", "detailed": true}'
-mcp tool claude_flow_monitor '{"environment": "dev-env/typescript", "duration": 300}'
-mcp tool claude_flow_logs '{"environment": "dev-env/rust", "lines": 100}'
-mcp tool claude_flow_terminal_mgmt '{"environment": "dev-env/go", "action": "create"}'
-```
-
-##### **Enhanced AI Hooks Tools**
-```bash
-# Context Engineering Automation
-mcp tool enhanced_hook_context_triggers '{"action": "trigger", "feature_file": "features/auth.md"}'
-mcp tool enhanced_hook_prp_lifecycle '{"action": "track", "status": "executing", "days": 7}'
-
-# Intelligent Error Resolution
-mcp tool enhanced_hook_error_resolution '{"action": "analyze", "error_text": "ImportError", "environment": "dev-env/python"}'
-mcp tool enhanced_hook_quality_gates '{"action": "validate", "environment": "dev-env/typescript"}'
-
-# Environment & Resource Management
-mcp tool enhanced_hook_env_orchestration '{"action": "switch", "target_environment": "dev-env/rust"}'
-mcp tool enhanced_hook_devpod_manager '{"action": "optimize", "resource_limits": {"max_containers": 5}}'
-
-# Performance & Security
-mcp tool enhanced_hook_performance_integration '{"action": "measure", "command": "npm run build"}'
-mcp tool enhanced_hook_dependency_tracking '{"action": "scan", "security_check": true}'
-```
-
-##### **Docker MCP Integration Tools**
-```bash
-# Gateway Management
-mcp tool docker_mcp_gateway_start '{"port": 8080, "background": true}'
-mcp tool docker_mcp_gateway_status '{"detailed": true}'
-mcp tool docker_mcp_logs '{"component": "gateway", "lines": 100}'
-
-# Tool & Client Management
-mcp tool docker_mcp_tools_list '{"category": "filesystem", "verbose": true}'
-mcp tool docker_mcp_client_list '{"active_only": true}'
-mcp tool docker_mcp_server_list '{"running_only": true}'
-
-# Transport & Integration
-mcp tool docker_mcp_http_bridge '{"port": 8080, "cors": true}'
-mcp tool docker_mcp_gemini_config '{"model": "gemini-pro", "test": true}'
-
-# Testing & Security
-mcp tool docker_mcp_test '{"suite": "security", "verbose": true}'
-mcp tool docker_mcp_demo '{"scenario": "ai-integration"}'
-mcp tool docker_mcp_security_scan '{"target": "containers", "detailed": true}'
-mcp tool docker_mcp_resource_limits '{"action": "set", "cpu_limit": "1.0"}'
-mcp tool docker_mcp_network_isolation '{"action": "enable"}'
-mcp tool docker_mcp_signature_verify '{"image": "mcp-tool:latest"}'
-mcp tool docker_mcp_cleanup '{"target": "containers", "unused_only": true}'
-```
-
-##### **Host/Container Separation Tools**
-```bash
-# Host machine management
-mcp tool host_installation '{"component": "docker", "configure": true, "optimize": true}'
-mcp tool host_infrastructure '{"action": "status", "service": "kubernetes", "credentials": false}'
-mcp tool host_credential '{"action": "list", "service": "github", "credential_type": "api-token"}'
-mcp tool host_shell_integration '{"action": "install", "shell_type": "zsh", "aliases": true}'
-
-# Container security and isolation
-mcp tool container_isolation '{"action": "validate", "environment": "python", "security_level": "strict"}'
-mcp tool security_boundary '{"action": "validate", "boundary_type": "credential", "strict_mode": true}'
-mcp tool host_container_bridge '{"action": "setup", "bridge_type": "filesystem", "bidirectional": true}'
-```
-
-##### **Nushell Automation Tools**
-```bash
-# Cross-environment orchestration
-mcp tool nushell_orchestration '{"action": "parallel", "environments": ["python", "typescript", "rust"], "task": "test"}'
-mcp tool nushell_data_processing '{"action": "transform", "input_source": "file", "output_format": "chart"}'
-mcp tool nushell_pipeline '{"action": "create", "pipeline_type": "build", "stages": ["lint", "test", "compile"]}'
-
-# Performance and monitoring
-mcp tool nushell_performance '{"action": "benchmark", "target": "script", "iterations": 10}'
-mcp tool nushell_monitoring '{"action": "monitor", "metrics": ["cpu", "memory", "disk"], "duration": 300}'
-mcp tool nushell_testing '{"action": "run", "test_type": "integration", "coverage_threshold": 80}'
-
-# Development workflow
-mcp tool nushell_debug '{"action": "trace", "script_path": "scripts/deployment.nu", "debug_level": "detailed"}'
-mcp tool nushell_documentation '{"action": "generate", "doc_type": "api", "output_format": "markdown"}'
-```
-
-##### **Configuration Management Tools**
-```bash
-# Zero-drift configuration management
-mcp tool config_generation '{"action": "generate", "target": "devbox", "environment": "python", "dry_run": false}'
-mcp tool config_sync '{"action": "sync", "source": "canonical", "target": "all", "conflict_resolution": "auto"}'
-mcp tool config_validation '{"action": "validate", "scope": "cross-env", "config_type": "all", "strict_mode": true}'
-mcp tool config_backup '{"action": "backup", "backup_name": "pre-upgrade", "compression": true}'
-mcp tool config_template '{"action": "create", "template_name": "python-base", "template_type": "devbox"}'
-```
-
-##### **Advanced Analytics Tools**
-```bash
-# ML-based performance analytics
-mcp tool performance_analytics '{"action": "analyze", "metrics": ["cpu", "memory"], "time_range": "week", "export_format": "dashboard"}'
-mcp tool resource_monitoring '{"action": "monitor", "resource_type": "memory", "threshold_type": "ml-based", "duration": 300}'
-mcp tool intelligence_system '{"action": "predict", "system_type": "failure-prediction", "model_type": "ml"}'
-
-# Predictive and trend analysis
-mcp tool trend_analysis '{"action": "forecast", "data_type": "performance", "forecast_horizon": 7}'
-mcp tool predictive_analytics '{"action": "predict", "prediction_type": "capacity", "prediction_horizon": 24}'
-mcp tool anomaly_detection '{"action": "detect", "detection_type": "hybrid", "sensitivity": "medium"}'
-
-# Business intelligence
-mcp tool usage_analytics '{"action": "analyze", "entity_type": "tools", "time_window": "weekly"}'
-mcp tool business_intelligence '{"action": "dashboard", "report_type": "executive", "output_format": "interactive"}'
-```
-
-#### **Multi-Tool Workflow Examples**
-
-##### **Complete AI-Powered Development Workflow**
-```bash
-# 1. Initialize AI orchestration
 mcp tool claude_flow_init '{"environment": "dev-env/python"}'
-mcp tool claude_flow_wizard '{"environment": "dev-env/python", "interactive": false}'
+mcp tool agui_provision '{"environment": "agentic-python"}'
 
-# 2. Start Docker MCP for secure tool execution
-mcp tool docker_mcp_gateway_start '{"port": 8080, "background": true}'
-
-# 3. Provision agentic environments
-mcp tool agui_provision '{"environment": "agentic-python", "features": ["agentic_chat", "shared_state"]}'
-
-# 4. Spawn AI agent for development
-mcp tool claude_flow_spawn '{"environment": "dev-env/python", "task": "Create FastAPI microservice with auth"}'
-
-# 5. Monitor with enhanced hooks
-mcp tool enhanced_hook_performance_integration '{"action": "track", "metrics": ["cpu", "memory"]}'
-mcp tool enhanced_hook_dependency_tracking '{"action": "scan", "security_check": true}'
-
-# 6. Smart error resolution
-mcp tool enhanced_hook_error_resolution '{"action": "analyze", "error_text": "Module not found"}'
-```
-
-##### **Cross-Environment Polyglot Development**
-```bash
-# 1. Smart environment orchestration
+# Enhanced Automation
 mcp tool enhanced_hook_env_orchestration '{"action": "switch", "target_environment": "dev-env/typescript"}'
 
-# 2. Provision multiple agentic environments
-mcp tool agui_provision '{"environment": "agentic-python", "count": 2}'
-mcp tool agui_provision '{"environment": "agentic-typescript", "count": 1}'
-
-# 3. Create coordinated agents
-mcp tool agui_agent_create '{"name": "BackendAgent", "type": "data_processor", "environment": "agentic-python"}'
-mcp tool agui_agent_create '{"name": "FrontendAgent", "type": "generative_ui", "environment": "agentic-typescript"}'
-
-# 4. Execute coordinated workflow
-mcp tool agui_workflow '{"environment": "agentic-typescript", "workflow_type": "agent_chat"}'
-mcp tool claude_flow_hive_mind '{"environment": "dev-env/python", "command": "coordinate"}'
+# Security & Performance
+mcp tool docker_mcp_gateway_start '{"port": 8080}'
+mcp tool performance_analytics '{"action": "analyze", "time_range": "week"}'
 ```
+
+**📖 Detailed Documentation**: See [`mcp/CLAUDE.md`](mcp/CLAUDE.md) for complete tool reference, usage examples, and technical details.
 
 ### DevPod Containerized Development ✅  
 **Setup**: `nu devpod-automation/scripts/docker-setup.nu --install`  
@@ -511,52 +361,22 @@ mcp tool claude_flow_hive_mind '{"environment": "dev-env/python", "command": "co
 
 ### Docker MCP Toolkit Integration ✅ 🐳
 
-**Complete Docker MCP integration with HTTP/SSE transport for Claude Code and Gemini clients**
+**Secure containerized AI tool execution** with HTTP/SSE transport and comprehensive security.
 
-#### Core Components
-- **Docker MCP Gateway**: Central hub for tool execution via `docker mcp gateway run`
-- **HTTP/SSE Bridge**: FastAPI server providing HTTP and Server-Sent Events transport 
-- **Claude Code Integration**: Automatic configuration via `.claude/settings.json`
-- **Gemini Client**: Python client with Google Generative AI integration
-- **Security Layer**: Resource limits, secret blocking, signature verification
-
-#### Available Tools (34+ total)
-**Filesystem**: File operations, directory management • **Web & HTTP**: Fetch URLs, web scraping, Brave search  
-**AI & Context**: Context7 docs, memory storage, Perplexity research • **Automation**: Docker operations, Puppeteer browser control  
-**Media**: YouTube transcripts, Firecrawl web extraction
-
-#### Quick Start Commands
+**Quick Start**:
 ```bash
 # Start Docker MCP Gateway
 ./.claude/start-mcp-gateway.sh
 
-# Start HTTP/SSE Bridge (port 8080)
+# Start HTTP/SSE Bridge
 python3 .claude/mcp-http-bridge.py --port 8080
 
-# Test Gemini Integration
-export GEMINI_API_KEY='your-key'
-python3 .claude/gemini-mcp-config.py
-
-# Run integration tests
+# Test integration
 python3 .claude/test-mcp-integration.py
-
-# Monitor and manage
-docker mcp client ls
-docker mcp tools
-tail -f /tmp/docker-mcp-gateway.log
 ```
 
-#### Transport Protocols
-- **STDIO**: Direct process communication (Claude Code default)
-- **HTTP**: RESTful API for tool execution with CORS support
-- **SSE**: Server-Sent Events for real-time bidirectional communication
-
-#### Security Features
-- **Resource Limits**: 1 CPU, 2GB memory per container
-- **Secret Blocking**: Prevents sensitive data exposure
-- **Image Verification**: Cryptographic signature validation
-- **Network Isolation**: Containers run in isolated networks
-- **Filesystem Access**: No host access unless explicitly granted
+**Features**: 34+ containerized tools, HTTP/SSE transport, resource limits, signature verification  
+**📖 Complete Documentation**: See [`mcp/CLAUDE.md`](mcp/CLAUDE.md) for detailed setup, security features, and usage examples.
 
 ### Context Engineering Framework
 **Architecture**: Workspace (local PRP generation) • DevPod (containerized execution) • Shared (utilities) • Archive (history)  
@@ -566,146 +386,84 @@ tail -f /tmp/docker-mcp-gateway.log
 
 ### AG-UI (Agentic UI) Protocol Integration ✅ 🤖
 
-**Full integration of dojo app's AG-UI protocol with MCP server and DevPod environments**
+**AI agent orchestration** with CopilotKit integration and generative UI components.
 
-#### Agentic Environment Templates
-- **agentic-python**: FastAPI + async agents + CopilotKit integration + MCP client
-- **agentic-typescript**: Next.js + CopilotKit + agent UI components + AG-UI protocol  
-- **agentic-rust**: Tokio + high-performance agents + async processing + AG-UI support
-- **agentic-go**: HTTP server + agent middleware + microservices + AG-UI integration
-- **agentic-nushell**: Pipeline-based agents + automation scripting + agent orchestration
+**Agentic Environments**: agentic-python, agentic-typescript, agentic-rust, agentic-go, agentic-nushell  
+**Key Features**: Agent lifecycle, real-time chat, generative UI, shared state, human-in-the-loop workflows
 
-#### AG-UI MCP Tools (9 New Tools)
-**Agent Management**: `agui_agent_create|list|invoke` • Create, manage, and interact with AI agents  
-**Workflows**: `agui_chat|generate_ui|shared_state|workflow` • Execute complete AG-UI workflows  
-**Environment**: `agui_provision|status` • Provision and monitor agentic environments
-
-#### Quick Start Commands
+**Quick Start**:
 ```bash
-# Provision agentic environment with AG-UI support
-mcp tool agui_provision '{"environment": "agentic-python", "count": 1, "features": ["agentic_chat", "shared_state"]}'
-nu host-tooling/devpod-management/manage-devpod.nu provision agentic-typescript
+# Provision agentic environment
+mcp tool agui_provision '{"environment": "agentic-python", "features": ["agentic_chat", "shared_state"]}'
 
 # Create and manage agents
 mcp tool agui_agent_create '{"name": "DataBot", "type": "data_processor", "environment": "agentic-python"}'
-mcp tool agui_agent_invoke '{"agent_id": "agent-123", "message": {"content": "Hello", "role": "user"}}'
 
-# Generate UI components and execute workflows
-mcp tool agui_generate_ui '{"environment": "agentic-typescript", "prompt": "Create dashboard", "component_type": "dashboard"}'
-mcp tool agui_workflow '{"environment": "agentic-go", "workflow_type": "human_in_loop", "agents": ["agent-1"]}'
+# Generate UI components
+mcp tool agui_generate_ui '{"environment": "agentic-typescript", "prompt": "Create dashboard"}'
 ```
 
-#### AG-UI Features Available
-- **Agentic Chat**: Real-time conversation with AI agents via CopilotKit
-- **Generative UI**: AI-powered component generation and dynamic interfaces  
-- **Human-in-the-Loop**: Interactive approval workflows and collaborative planning
-- **Shared State**: Real-time state synchronization between agents and UI components
-- **Tool-Based UI**: Dynamic tool interface generation and integration
-- **Predictive Updates**: Anticipatory state management and updates
+**📖 Complete Guide**: See [`mcp/CLAUDE.md`](mcp/CLAUDE.md) for detailed AG-UI features, agent management, and workflow examples.
 
 ### Claude-Flow AI Agent Orchestration ✅ 🤖
 
-**Complete integration of claude-flow@alpha with all development environments for sophisticated AI agent coordination**
+**Sophisticated AI agent coordination** with hive-mind architecture and automated task spawning.
 
-#### Core Components
-- **Hive-Mind Architecture**: Multi-agent coordination with distributed task management
-- **Terminal Orchestration**: Automated terminal session management across environments
-- **Task Spawning**: AI-powered task generation and distribution based on context
-- **Environment Integration**: Seamless integration with all 5 language environments (Python, TypeScript, Rust, Go, Nushell)
-- **Container Support**: Full compatibility with DevPod containerized environments
+**Core Features**: Multi-agent coordination, terminal orchestration, context-aware task generation, persistent memory  
+**Environment Support**: All 5 languages + agentic variants with auto-installation in DevPod containers
 
-#### Available Claude-Flow Commands
-**Initialization**: `devbox run claude-flow:init` • `devbox run claude-flow:wizard`  
-**Orchestration**: `devbox run claude-flow:start` • `devbox run claude-flow:status` • `devbox run claude-flow:stop`  
-**Monitoring**: `devbox run claude-flow:monitor` • `devbox run claude-flow:logs`  
-**Task Management**: `devbox run claude-flow:spawn` • Direct spawning with context-aware prompts
-
-#### Quick Start Commands
+**Quick Commands**:
 ```bash
-# Initialize Claude-Flow in current environment
+# Initialize and start
 devbox run claude-flow:init
-
-# Start interactive wizard (auto-runs in devbox init_hook)
 devbox run claude-flow:wizard
-
-# Start claude-flow daemon
 devbox run claude-flow:start
 
-# Spawn context-aware task (auto-detects environment)
+# Spawn AI agents with context
 devbox run claude-flow:spawn
 
-# Monitor agent status and activity
+# Monitor and manage
 devbox run claude-flow:monitor
-
-# Check logs for debugging
 devbox run claude-flow:logs
 ```
 
-#### Container Integration Features
-- **Auto-Installation**: Claude-Flow automatically installs during DevPod container creation
-- **Environment Detection**: Automatically detects container environment (Python/TypeScript/Rust/Go/Nushell)
-- **Context-Aware Tasks**: Spawns language-specific tasks (e.g., "create a snake game in Python" when in Python container)
-- **VS Code Integration**: Seamless integration with VS Code terminals in containers
-- **Zero Configuration**: Works out-of-the-box with no additional setup required
-
-#### Hive-Mind Capabilities
-- **Multi-Agent Coordination**: Orchestrates multiple AI agents across different environments
-- **Task Distribution**: Intelligently distributes tasks based on environment capabilities
-- **Cross-Environment Communication**: Agents can coordinate across Python, TypeScript, Rust, Go, and Nushell
-- **Persistent Memory**: Maintains context and learning across sessions
-- **Intelligent Spawning**: Context-aware task creation based on current files and environment
+**📖 Advanced Usage**: See [`mcp/CLAUDE.md`](mcp/CLAUDE.md) for hive-mind workflows, container integration, and AI coordination examples.
 
 #### DevPod .claude/ Auto-Installation ✅
 
-**Sophisticated AI automation automatically deployed to containerized environments**
+**Zero-configuration AI automation with Claude-Flow SPARC** deployed automatically to all DevPod containers.
 
-#### Core Features
-- **Zero-Configuration Setup**: AI hooks auto-install during DevPod container creation
-- **Container-Adapted Paths**: All configurations automatically adapted for `/workspace` mount points
-- **Hook Compatibility**: Full hook functionality preserved in containerized environments
-- **Environment Detection**: Container-aware environment detection using `DEVBOX_ENV` variable
+**Core Features**: AI hooks auto-install, container-adapted paths, environment detection, performance analytics  
+**Claude-Flow Integration**: SPARC methodology, hive-mind coordination, memory persistence, agent spawning  
+**Components**: Enhanced AI hooks, Claude-Flow SPARC tools, Docker MCP support, DevPod commands  
+**Benefits**: Instant SPARC development, zero setup, consistent AI workflows, TDD acceleration
 
-#### Auto-Installed Components
-**Essential AI Hooks**: Context engineering auto-triggers • Intelligent error resolution • Smart environment orchestration • Cross-environment dependency tracking  
-**DevPod Commands**: Container-optimized DevPod management commands with environment integration  
-**Claude-Flow Integration**: Automatic claude-flow initialization and hive-mind setup  
-**Docker MCP Support**: Full Docker MCP toolkit integration with container networking  
-**Performance Analytics**: Container-aware performance monitoring and optimization
+**Template Structure**: `.claude-core/` with settings, hooks, commands, Claude-Flow SPARC config, and MCP integration files  
+**Auto-Deployment**: Container creation → template copy → path adaptation → hook activation → Claude-Flow SPARC init
 
-#### Container Template Structure
-```
-devpod-automation/templates/.claude-core/
-├── settings.json                    # Container-adapted hooks configuration
-├── hooks/                          # AI automation scripts (container-compatible)
-│   ├── context-engineering-auto-triggers.py
-│   ├── intelligent-error-resolution.py
-│   ├── smart-environment-orchestration.py
-│   └── cross-environment-dependency-tracking.py
-├── commands/                       # DevPod management commands
-│   ├── devpod-python.md
-│   ├── devpod-typescript.md
-│   ├── devpod-rust.md
-│   └── devpod-go.md
-└── docker-mcp/                    # Docker MCP integration files
-    ├── mcp-http-bridge.py
-    ├── gemini-mcp-config.py
-    └── test-mcp-integration.py
+#### Claude-Flow SPARC Auto-Installation Process
+```bash
+# Automatic deployment sequence in every DevPod container:
+1. Container provisioning → Copy .claude-core/ template
+2. Path adaptation → Adjust container-specific paths  
+3. Claude-Flow installation → npx claude-flow@latest init --sparc
+4. SPARC mode setup → .roomodes file creation with 17 modes
+5. Memory initialization → ./claude-flow memory init
+6. Hook activation → Enhanced AI hooks with SPARC triggers
+7. MCP integration → Claude-Flow MCP tools registration
+8. Agent coordination → Hive-mind wizard auto-setup
 ```
 
-#### Deployment Process
-1. **DevPod Creation**: Container provisions with standard environment tools
-2. **Auto-Installation**: `.claude-core/` template automatically copied to `/workspace/.claude/`
-3. **Path Adaptation**: All host-specific paths automatically converted to container paths
-4. **Environment Setup**: `DEVBOX_ENV` variable configured for environment detection
-5. **Hook Activation**: AI hooks immediately active with container-compatible configuration
-6. **Claude-Flow Init**: Automatic claude-flow initialization and hive-mind setup
+#### SPARC-Enabled DevPod Commands
+**Automatic integration in all environment devbox.json files**:
+- `devbox run claude-flow:init` → Initialize SPARC in container
+- `devbox run claude-flow:wizard` → Interactive SPARC setup
+- `devbox run claude-flow:sparc` → Quick SPARC mode execution  
+- `devbox run claude-flow:tdd` → SPARC TDD workflow
+- `devbox run claude-flow:memory` → Memory management
+- `devbox run claude-flow:status` → SPARC system status
 
-#### Benefits Achieved
-- **Instant AI Automation**: Full AI-powered development workflow available immediately in new containers
-- **Zero Manual Setup**: No configuration required - everything works out-of-the-box
-- **Environment Consistency**: Identical AI automation across all development environments
-- **Container Optimization**: Hooks optimized for container filesystem structure and networking
-- **Development Acceleration**: Sophisticated AI assistance available from first container startup
+**📖 Technical Details**: See [`mcp/CLAUDE.md`](mcp/CLAUDE.md) for complete deployment process and container optimization features.
 
 ## Workflows & Standards
 
@@ -715,8 +473,41 @@ devpod-automation/templates/.claude-core/
 **Docker MCP**: `docker mcp gateway run` (unified AI tools, HTTP/SSE transport, secure execution)  
 **Agentic**: `mcp tool agui_provision` (AI agents, CopilotKit, AG-UI workflows)  
 **Claude-Flow**: `devbox run claude-flow:wizard` (AI agent orchestration, hive-mind coordination, automated task spawning)  
+**SPARC Methodology**: `./claude-flow sparc tdd "feature"` (systematic Test-Driven Development with AI assistance)  
 **AI-Assisted**: `/generate-prp` → `/execute-prp` (comprehensive context, validation)  
 **Enhanced**: `/generate-prp` with dynamic templates, dojo integration, and smart analysis
+
+### SPARC Development Methodology
+**Complete Test-Driven Development with AI assistance through Claude-Flow orchestration**
+
+#### SPARC Workflow Phases
+1. **Specification**: `./claude-flow sparc run spec-pseudocode "Define requirements"` - Clear functional requirements, user stories, constraints
+2. **Pseudocode**: `./claude-flow sparc run spec-pseudocode "Create algorithm logic"` - Break down logic, define data structures, plan error handling
+3. **Architecture**: `./claude-flow sparc run architect "Design system architecture"` - Component relationships, API contracts, security patterns
+4. **Refinement (TDD)**: `./claude-flow sparc tdd "implement feature"` - Red-Green-Refactor cycle with minimal code implementation
+5. **Completion**: `./claude-flow sparc run integration "integrate components"` - End-to-end testing, documentation, validation
+
+#### SPARC Commands & Modes
+- **Core**: `./claude-flow sparc modes` (list all), `./claude-flow sparc info <mode>` (detailed mode info)
+- **Development**: `architect`, `code`, `tdd`, `spec-pseudocode`, `integration`
+- **Quality**: `debug`, `security-review`, `refinement-optimization-mode`
+- **Support**: `docs-writer`, `devops`, `mcp`, `swarm`
+- **Memory**: `./claude-flow memory store|query|export` (persistent state across sessions)
+
+#### SPARC Integration Examples
+```bash
+# Feature Development Workflow
+./claude-flow sparc run spec-pseudocode "User authentication system"
+./claude-flow sparc run architect "Auth service with JWT tokens"
+./claude-flow sparc tdd "user login and registration"
+./claude-flow sparc run security-review "authentication security"
+./claude-flow sparc run integration "auth system integration"
+
+# Bug Fix Workflow
+./claude-flow sparc run debug "token expiration issue"
+./claude-flow sparc run tdd "token refresh tests"
+./claude-flow sparc run code "fix token refresh mechanism"
+```
 
 ### Style Standards
 **Python**: uv, type hints, 88 chars, snake_case, Google docstrings  
@@ -740,7 +531,7 @@ devpod-automation/templates/.claude-core/
 **MCP Server**: JSON-RPC 2.0 compliance • 64+ tools across 12 categories (including 9 AG-UI, 10 Claude-Flow, 8 Enhanced AI Hooks, 15 Docker MCP tools) • 100+ resources • Real-time progress tracking  
 **Docker MCP Integration**: 34+ containerized tools • HTTP/SSE transport • Claude Code + Gemini clients • Secure execution with resource limits  
 **AG-UI Integration**: 5 agentic environment templates • Full CopilotKit support • Agent lifecycle management • Cross-environment communication  
-**Claude-Flow Integration**: AI agent orchestration • Hive-mind spawning • Multi-terminal coordination • Auto-initialization in all environments  
+**Claude-Flow Integration**: AI agent orchestration • Hive-mind spawning • Multi-terminal coordination • Auto-initialization in all environments • SPARC methodology integration  
 **DevPod .claude/ Auto-Installation**: Zero-configuration AI hooks deployment • Container-adapted paths • 32-file template with 376KB AI infrastructure  
 **🚀 Enhanced AI Hooks**: 4 production-ready hooks • Context engineering auto-triggers • Intelligent error resolution • Smart environment orchestration • Cross-environment dependency tracking  
 **🤖 Advanced Multi-Agent System**: Comprehensive development guide in `CODING_AGENT_PROMPT.md` • 3-phase implementation plan • Integration with all existing infrastructure • Production-ready automation workflows
@@ -749,7 +540,7 @@ devpod-automation/templates/.claude-core/
 **Environment Detection**: ~200ms • **DevBox Start**: ~4s • **DevPod Provisioning**: ~5s/workspace  
 **Cross-Language Validation**: 18.9s parallel • **Test Execution**: 1.1s (Python) • **Enterprise PRP**: 275% faster  
 **Docker MCP**: Gateway startup ~3-5s • Tool execution ~100-500ms • HTTP bridge ~50ms overhead • 50+ concurrent clients  
-**Claude-Flow**: Initialization ~2-3s • Hive-mind wizard ~5-8s • Task spawning ~1-2s • Agent coordination ~500ms  
+**Claude-Flow**: Initialization ~2-3s • Hive-mind wizard ~5-8s • Task spawning ~1-2s • Agent coordination ~500ms • SPARC mode execution ~1-3s per phase  
 **DevPod .claude/ Auto-Installation**: Template deployment ~1-2s • Hook activation ~500ms • Container integration <1s  
 **🚀 Enhanced AI Hooks**: Context engineering auto-trigger ~2-3s • Error analysis ~500ms • Environment orchestration ~1-2s • Dependency tracking ~200ms  
 **🤖 Advanced Multi-Agent System**: Task coordination < 500ms • Testing orchestration < 2min • 3x development velocity • 95%+ automated task completion
@@ -771,31 +562,45 @@ devpod-automation/templates/.claude-core/
 **TypeScript**: `tsconfig.json` (target="ES2022", strict=true, noImplicitAny=true)  
 **Validation**: `scripts/validate-all.nu` (parallel execution across all environments)
 
-### Docker MCP Setup
+### MCP Server Setup
 ```bash
-# One-time setup
-./.claude/setup-mcp-integration.sh
+# Build and start MCP server
+cd mcp && npm run build && npm run start
 
-# Start Docker MCP Gateway
+# Docker MCP Gateway (optional)
 ./.claude/start-mcp-gateway.sh
 
-# Start HTTP/SSE Bridge
-python3 .claude/mcp-http-bridge.py --port 8080
-
-# Test Gemini Integration
-export GEMINI_API_KEY='your-api-key'
-python3 .claude/gemini-mcp-config.py
-
-# Validate Integration
+# Test integration
 python3 .claude/test-mcp-integration.py
-./.claude/demo-mcp-integration.sh
 ```
 
-## Personal Configuration System
+### Claude-Flow SPARC Setup
+```bash
+# Initialize SPARC development environment
+npx claude-flow@latest init --sparc
 
-**Two-file approach**: CLAUDE.md (project standards) + CLAUDE.local.md (personal customizations)  
-**Setup**: `cp CLAUDE.local.md.template CLAUDE.local.md` → customize for individual productivity  
-**Benefits**: Consistent onboarding, individual flexibility, reduced conflicts, maintainable standards
+# Start Claude-Flow with UI
+./claude-flow start --ui
+
+# Verify SPARC modes installation
+./claude-flow sparc modes
+
+# Test SPARC workflow
+./claude-flow sparc tdd "test feature"
+
+# Initialize memory system
+./claude-flow memory init
+
+# Verify integration with DevPod (auto-installed in containers)
+devbox run claude-flow:status
+```
+
+**📖 Complete Setup Guide**: See [`mcp/CLAUDE.md`](mcp/CLAUDE.md) for detailed installation, configuration, and testing procedures.
+
+## Personal Configuration
+
+**Individual Setup**: Copy `CLAUDE.local.md.template` → `CLAUDE.local.md` for personal productivity enhancements  
+**📋 Personal Workflows**: See [`CLAUDE.local.md`](CLAUDE.local.md) for aliases, IDE config, local tools, and troubleshooting
 
 ## 🚀 Enhanced AI Hooks System (January 2025)
 
@@ -962,12 +767,13 @@ mcp tool workflow_optimization '{"performance_analytics": true, "resource_effici
 
 Use descriptive names and clear context • Include concrete examples and anti-patterns • Explicit types and interfaces • Structure code in logical, predictable patterns
 
-### Docker MCP Best Practices
-**Tool Selection**: Use filesystem for local operations, fetch for web content, memory for persistence, context7 for documentation  
-**Security**: Never expose secrets via tool arguments • Use environment variables for sensitive configuration  
-**Performance**: Batch related operations • Monitor with `docker mcp tools --verbose` • Use `--keep` for container reuse  
-**Transport**: STDIO for local clients • HTTP for web integration • SSE for real-time applications  
-**Monitoring**: Track tool usage via gateway logs • Monitor resource consumption • Use test suite for validation
+### MCP Development Best Practices
+**Tool Usage**: environment_detect for setup • devpod_provision for containers • claude_flow_init for AI orchestration  
+**Security**: Input validation • Environment variable secrets • Resource limits • Container isolation  
+**Performance**: Batch operations • Monitor with MCP tools • Use async patterns • Cache resources  
+**Integration**: STDIO for Claude Code • HTTP for web clients • SSE for real-time apps  
+
+**📖 Advanced Practices**: See [`mcp/CLAUDE.md`](mcp/CLAUDE.md) for comprehensive development guidelines and optimization techniques.
 
 ---
 

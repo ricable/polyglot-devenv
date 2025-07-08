@@ -6,7 +6,7 @@ import { spawn } from "cross-spawn";
 import pkg from "fs-extra";
 const { readFile, pathExists, readdir, stat } = pkg;
 import { join, basename } from "path";
-import { CommandResult, EnvironmentInfo, DevboxConfig, ValidationResult, ValidationCheck, SecurityFinding } from "./polyglot-types.js";
+import { CommandResult, ToolExecutionResult, EnvironmentInfo, DevboxConfig, ValidationResult, ValidationCheck, SecurityFinding } from "./polyglot-types.js";
 
 // Workspace root - detect from current working directory
 export function getWorkspaceRoot(): string {
@@ -27,16 +27,54 @@ export function getEnvironmentPath(environment: string): string {
 }
 
 export function isValidEnvironment(environment: string): environment is typeof ENVIRONMENTS[number] {
-  return ENVIRONMENTS.includes(environment as typeof ENVIRONMENTS[number]);
+  // Standard environments
+  if (ENVIRONMENTS.includes(environment as typeof ENVIRONMENTS[number])) {
+    return true;
+  }
+  
+  // Agentic environments
+  const agenticEnvironments = [
+    "agentic-python", "agentic-typescript", "agentic-rust", "agentic-go", "agentic-nushell"
+  ];
+  if (agenticEnvironments.includes(environment)) {
+    return true;
+  }
+  
+  // Evaluation environments
+  const evalEnvironments = [
+    "agentic-eval-unified", "agentic-eval-claude", "agentic-eval-gemini", "agentic-eval-results"
+  ];
+  if (evalEnvironments.includes(environment)) {
+    return true;
+  }
+  
+  return false;
 }
 
-// Execute commands with proper error handling
+// Enhanced command execution with monitoring and timeout handling
+export interface ExecuteOptions {
+  cwd?: string;
+  timeout?: number;
+  onProgress?: (output: string) => void;
+  onStderr?: (error: string) => void;
+  killSignal?: NodeJS.Signals;
+  maxOutputSize?: number;
+  monitoringId?: string;
+}
+
+// Execute commands with proper error handling and monitoring
 export async function executeCommand(
   command: string,
   args: string[] = [],
-  options: { cwd?: string; timeout?: number } = {}
+  options: ExecuteOptions = {}
 ): Promise<CommandResult> {
   const startTime = Date.now();
+  const monitoringId = options.monitoringId || `cmd-${startTime}`;
+  
+  // Log command execution start for monitoring
+  if (options.monitoringId) {
+    console.log(`[${monitoringId}] Starting command: ${command} ${args.join(' ')}`);
+  }
   
   return new Promise((resolve) => {
     const child = spawn(command, args, {
@@ -48,32 +86,86 @@ export async function executeCommand(
     let stdout = "";
     let stderr = "";
     let killed = false;
+    let outputSize = 0;
+    const maxOutputSize = options.maxOutputSize || 10 * 1024 * 1024; // 10MB default
 
-    // Timeout handling
+    // Enhanced timeout handling
     const timeout = options.timeout || 30000; // 30 seconds default
     const timeoutId = setTimeout(() => {
+      if (options.monitoringId) {
+        console.log(`[${monitoringId}] Command timed out after ${timeout}ms`);
+      }
       killed = true;
-      child.kill("SIGKILL");
+      child.kill(options.killSignal || "SIGKILL");
     }, timeout);
 
     child.stdout?.on("data", (data) => {
-      stdout += data.toString();
+      const output = data.toString();
+      stdout += output;
+      outputSize += output.length;
+      
+      // Check for output size limits
+      if (outputSize > maxOutputSize) {
+        if (options.monitoringId) {
+          console.log(`[${monitoringId}] Output size exceeded limit, terminating`);
+        }
+        killed = true;
+        child.kill(options.killSignal || "SIGKILL");
+        return;
+      }
+      
+      // Call progress callback if provided
+      if (options.onProgress) {
+        options.onProgress(output);
+      }
     });
 
     child.stderr?.on("data", (data) => {
-      stderr += data.toString();
+      const error = data.toString();
+      stderr += error;
+      outputSize += error.length;
+      
+      // Check for output size limits
+      if (outputSize > maxOutputSize) {
+        if (options.monitoringId) {
+          console.log(`[${monitoringId}] Error output size exceeded limit, terminating`);
+        }
+        killed = true;
+        child.kill(options.killSignal || "SIGKILL");
+        return;
+      }
+      
+      // Call stderr callback if provided
+      if (options.onStderr) {
+        options.onStderr(error);
+      }
     });
 
     child.on("close", (code) => {
       clearTimeout(timeoutId);
       const duration = Date.now() - startTime;
       
+      if (options.monitoringId) {
+        console.log(`[${monitoringId}] Command completed in ${duration}ms with exit code ${code || 0}`);
+      }
+      
+      const success = code === 0 && !killed;
+      const exitCode = killed ? -1 : (code || 0);
+      
       resolve({
-        success: code === 0 && !killed,
+        success,
         output: stdout,
         error: stderr,
-        exitCode: killed ? -1 : (code || 0),
+        exitCode,
         duration,
+        timestamp: new Date(),
+        metadata: {
+          monitoringId,
+          killed,
+          outputSize,
+          timeout: timeout,
+          actualDuration: duration,
+        },
       });
     });
 
@@ -81,12 +173,25 @@ export async function executeCommand(
       clearTimeout(timeoutId);
       const duration = Date.now() - startTime;
       
+      if (options.monitoringId) {
+        console.log(`[${monitoringId}] Command errored after ${duration}ms: ${error.message}`);
+      }
+      
       resolve({
         success: false,
-        output: "",
+        output: stdout,
         error: error.message,
         exitCode: -1,
         duration,
+        timestamp: new Date(),
+        metadata: {
+          monitoringId,
+          killed,
+          outputSize,
+          timeout: timeout,
+          actualDuration: duration,
+          errorType: 'spawn_error',
+        },
       });
     });
   });
@@ -413,4 +518,185 @@ export async function scanForSecrets(filePath: string): Promise<SecurityFinding[
   }
   
   return findings;
+}
+
+// Standardized Result Creation Utilities
+export function createSuccessResult(
+  output: string, 
+  options: {
+    exitCode?: number;
+    duration?: number;
+    metadata?: Record<string, unknown>;
+  } = {}
+): CommandResult {
+  return {
+    success: true,
+    output,
+    exitCode: options.exitCode ?? 0,
+    duration: options.duration ?? 0,
+    timestamp: new Date(),
+    metadata: options.metadata,
+  };
+}
+
+export function createErrorResult(
+  error: string,
+  options: {
+    exitCode?: number;
+    duration?: number;
+    output?: string;
+    metadata?: Record<string, unknown>;
+  } = {}
+): CommandResult {
+  return {
+    success: false,
+    output: options.output ?? "",
+    error,
+    exitCode: options.exitCode ?? 1,
+    duration: options.duration ?? 0,
+    timestamp: new Date(),
+    metadata: options.metadata,
+  };
+}
+
+export function createToolResult(
+  toolName: string,
+  operation: string,
+  result: CommandResult,
+  options: {
+    environment?: string;
+    progress?: number;
+    stage?: string;
+    estimatedTimeRemaining?: number;
+  } = {}
+): CommandResult {
+  return {
+    ...result,
+    metadata: {
+      ...result.metadata,
+      toolName,
+      operation,
+      environment: options.environment,
+      progress: options.progress,
+      stage: options.stage,
+      estimatedTimeRemaining: options.estimatedTimeRemaining,
+    },
+  };
+}
+
+// Enhanced validation with timeout and path checking
+export async function validateToolExecution(
+  toolName: string,
+  environment?: string,
+  requiredPaths?: string[]
+): Promise<CommandResult | null> {
+  // Check if environment is valid
+  if (environment && !isValidEnvironment(environment)) {
+    return createErrorResult(
+      `Invalid environment: ${environment}`,
+      { metadata: { toolName, operation: "validation" } }
+    );
+  }
+
+  // Check required paths exist
+  if (requiredPaths) {
+    for (const path of requiredPaths) {
+      if (!(await pathExists(path))) {
+        return createErrorResult(
+          `Required path not found: ${path}`,
+          { metadata: { toolName, operation: "path-validation" } }
+        );
+      }
+    }
+  }
+
+  // Check if DevBox is available in environment
+  if (environment) {
+    const envPath = getEnvironmentPath(environment);
+    const devboxPath = join(envPath, "devbox.json");
+    if (!(await pathExists(devboxPath))) {
+      return createErrorResult(
+        `DevBox configuration not found: ${devboxPath}`,
+        { metadata: { toolName, operation: "devbox-validation" } }
+      );
+    }
+  }
+
+  return null; // No validation errors
+}
+
+// Path detection for better error handling
+export async function findExecutablePath(executable: string): Promise<string | null> {
+  try {
+    const result = await executeCommand("which", [executable]);
+    if (result.success && result.output.trim()) {
+      return result.output.trim();
+    }
+  } catch {
+    // which command failed, try other methods
+  }
+
+  // Try common paths
+  const commonPaths = [
+    `/usr/local/bin/${executable}`,
+    `/usr/bin/${executable}`,
+    `/opt/homebrew/bin/${executable}`,
+    `./node_modules/.bin/${executable}`,
+  ];
+
+  for (const path of commonPaths) {
+    if (await pathExists(path)) {
+      return path;
+    }
+  }
+
+  return null;
+}
+
+// Environment detection with fallback mechanisms
+export async function detectEnvironmentType(filePath: string): Promise<string | null> {
+  const filename = basename(filePath);
+  const extension = filename.split('.').pop()?.toLowerCase();
+
+  // File extension mapping
+  const extensionMap: Record<string, string> = {
+    'py': 'dev-env/python',
+    'ts': 'dev-env/typescript',
+    'js': 'dev-env/typescript',
+    'jsx': 'dev-env/typescript',
+    'tsx': 'dev-env/typescript',
+    'rs': 'dev-env/rust',
+    'go': 'dev-env/go',
+    'nu': 'dev-env/nushell',
+  };
+
+  if (extension && extensionMap[extension]) {
+    return extensionMap[extension];
+  }
+
+  // File name mapping
+  const nameMap: Record<string, string> = {
+    'package.json': 'dev-env/typescript',
+    'tsconfig.json': 'dev-env/typescript',
+    'cargo.toml': 'dev-env/rust',
+    'go.mod': 'dev-env/go',
+    'pyproject.toml': 'dev-env/python',
+    'requirements.txt': 'dev-env/python',
+    'devbox.json': 'auto-detect',
+  };
+
+  if (nameMap[filename]) {
+    return nameMap[filename];
+  }
+
+  // Path-based detection
+  if (filePath.includes('dev-env/')) {
+    for (const env of ENVIRONMENTS) {
+      if (filePath.includes(env)) {
+        return env;
+      }
+    }
+  }
+
+  return null;
 }

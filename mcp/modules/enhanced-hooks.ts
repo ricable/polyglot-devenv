@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { executeCommand, getWorkspaceRoot } from "../polyglot-utils";
-import type { CommandResult } from "../polyglot-types";
+import { executeCommand, getWorkspaceRoot, createErrorResult, createSuccessResult, validateToolExecution } from "../polyglot-utils.js";
+import type { CommandResult } from "../polyglot-types.js";
 
 // Enhanced AI Hooks Tool Schemas
 export const EnhancedHookContextTriggersSchema = z.object({

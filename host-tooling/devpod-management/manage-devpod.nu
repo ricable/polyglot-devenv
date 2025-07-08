@@ -124,7 +124,9 @@ def provision_agentic_eval [environment: string, count?: int] {
     
     # Create workspaces
     for i in 1..$workspace_count {
-        let workspace_name = $"polyglot-($environment)-workspace-($i)"
+        let timestamp = (date now | format date "%Y%m%d-%H%M%S")
+        let random_suffix = (random uuid | str substring 0..7)
+        let workspace_name = $"polyglot-($environment)-($timestamp)-($random_suffix)"
         print $"🔧 Creating workspace ($i)/($workspace_count): ($workspace_name)"
         
         try {
@@ -203,7 +205,9 @@ def provision_agentic [environment: string, count?: int] {
     
     # Create workspaces
     for i in 1..$workspace_count {
-        let workspace_name = $"polyglot-($environment)-workspace-($i)"
+        let timestamp = (date now | format date "%Y%m%d-%H%M%S")
+        let random_suffix = (random uuid | str substring 0..7)
+        let workspace_name = $"polyglot-($environment)-($timestamp)-($random_suffix)"
         print $"🔧 Creating workspace ($i)/($workspace_count): ($workspace_name)"
         
         try {
@@ -272,11 +276,7 @@ def stop [environment: string] {
     print $"🛑 Available ($environment) workspaces:"
     
     # Determine search pattern based on environment type
-    let search_pattern = if ($environment | str starts-with "agentic-eval-") {
-        $"polyglot-($environment)-workspace"
-    } else {
-        $"polyglot-($environment)-devpod"
-    }
+    let search_pattern = $"polyglot-($environment)-"
     
     let workspaces = try {
         bash -c $"devpod list | grep ($search_pattern)"
@@ -297,11 +297,7 @@ def delete [environment: string] {
     print $"🗑️  ($environment) workspaces to delete:"
     
     # Determine search pattern based on environment type
-    let search_pattern = if ($environment | str starts-with "agentic-eval-") {
-        $"polyglot-($environment)-workspace"
-    } else {
-        $"polyglot-($environment)-devpod"
-    }
+    let search_pattern = $"polyglot-($environment)-"
     
     let workspaces = try {
         bash -c $"devpod list | grep ($search_pattern)"
@@ -328,11 +324,7 @@ def status [environment: string] {
     print $"📊 ($environment) DevPod workspaces:"
     
     # Determine search pattern based on environment type
-    let search_pattern = if ($environment | str starts-with "agentic-eval-") {
-        $"polyglot-($environment)-workspace"
-    } else {
-        $"polyglot-($environment)-devpod"
-    }
+    let search_pattern = $"polyglot-($environment)-"
     
     let workspaces = try {
         bash -c $"devpod list | grep ($search_pattern)"

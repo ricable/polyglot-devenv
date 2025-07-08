@@ -26,7 +26,17 @@ export interface CommandResult {
   error?: string;
   exitCode: number;
   duration: number;
-  timestamp?: Date;
+  timestamp: Date;
+  metadata?: Record<string, unknown>;
+}
+
+export interface ToolExecutionResult extends CommandResult {
+  toolName: string;
+  environment?: string;
+  operation?: string;
+  progress?: number;
+  stage?: string;
+  estimatedTimeRemaining?: number;
 }
 
 export interface PerformanceMetric {

@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { executeCommand, getWorkspaceRoot, isValidEnvironment } from "../polyglot-utils";
-import type { CommandResult } from "../polyglot-types";
+import { executeCommand, getWorkspaceRoot, isValidEnvironment, createErrorResult, createSuccessResult, findExecutablePath, validateToolExecution } from "../polyglot-utils.js";
+import type { CommandResult } from "../polyglot-types.js";
 
 // Claude-Flow Tool Schemas
 export const ClaudeFlowInitSchema = z.object({
@@ -117,93 +117,109 @@ export const claudeFlowTools: Tool[] = [
   },
 ];
 
-// Claude-Flow Tool Handlers
-export async function handleClaudeFlowInit(args: z.infer<typeof ClaudeFlowInitSchema>): Promise<CommandResult> {
-  const { environment, force } = args;
-  
-  if (!isValidEnvironment(environment)) {
-    return {
-      success: false,
-      output: "",
-      error: `Invalid environment: ${environment}`,
-      exitCode: 1,
-      duration: 0,
-      timestamp: new Date(),
-    };
+// Claude-Flow Validation Utilities
+async function validateClaudeFlowEnvironment(environment: string): Promise<CommandResult | null> {
+  // Basic environment validation
+  const basicValidation = await validateToolExecution("claude_flow", environment);
+  if (basicValidation) return basicValidation;
+
+  // Check if Claude-Flow is available globally or locally
+  const claudeFlowPaths = [
+    await findExecutablePath("claude-flow"),
+    "./claude-flow",
+    "./node_modules/.bin/claude-flow",
+    `${getWorkspaceRoot()}/claude-flow`,
+  ];
+
+  let claudeFlowPath = null;
+  for (const path of claudeFlowPaths) {
+    if (path) {
+      claudeFlowPath = path;
+      break;
+    }
   }
+
+  if (!claudeFlowPath) {
+    return createErrorResult(
+      "Claude-Flow not found. Please install with: npm install -g claude-flow@latest",
+      { metadata: { toolName: "claude_flow", operation: "path-detection" } }
+    );
+  }
+
+  return null; // Validation passed
+}
+
+async function executeClaudeFlowCommand(environment: string, command: string): Promise<CommandResult> {
+  // Validate environment first
+  const validation = await validateClaudeFlowEnvironment(environment);
+  if (validation) return validation;
 
   const workspaceRoot = getWorkspaceRoot();
   const envPath = `${workspaceRoot}/${environment}`;
   
   try {
-    const command = force 
-      ? `cd ${envPath} && devbox run claude-flow:init --force`
-      : `cd ${envPath} && devbox run claude-flow:init`;
-    
-    const result = await executeCommand(command);
-    
-    return {
-      success: result.success,
-      output: result.output || `Claude-Flow initialized in ${environment}`,
-      error: result.error,
-      exitCode: result.success ? 0 : 1,
-      duration: 0,
-      timestamp: new Date(),
-    };
+    // Try devbox run first (if available)
+    const devboxResult = await executeCommand(`cd ${envPath} && devbox run ${command}`);
+    if (devboxResult.success) {
+      return devboxResult;
+    }
+
+    // Fallback to direct execution
+    const directResult = await executeCommand(`cd ${envPath} && ${command}`);
+    return directResult;
   } catch (error) {
-    return {
-      success: false,
-      output: "",
-      error: `Failed to initialize Claude-Flow: ${error instanceof Error ? error.message : String(error)}`,
-      exitCode: 1,
-      duration: 0,
-      timestamp: new Date(),
-    };
+    return createErrorResult(
+      `Failed to execute Claude-Flow command: ${error instanceof Error ? error.message : String(error)}`,
+      { metadata: { toolName: "claude_flow", operation: "command-execution" } }
+    );
   }
+}
+
+// Claude-Flow Tool Handlers
+export async function handleClaudeFlowInit(args: z.infer<typeof ClaudeFlowInitSchema>): Promise<CommandResult> {
+  const { environment, force } = args;
+  
+  if (!isValidEnvironment(environment)) {
+    return createErrorResult(`Invalid environment: ${environment}`);
+  }
+
+  const command = force 
+    ? `claude-flow:init --force`
+    : `claude-flow:init`;
+  
+  const result = await executeClaudeFlowCommand(environment, command);
+  
+  if (result.success) {
+    return createSuccessResult(
+      result.output || `Claude-Flow initialized in ${environment}`,
+      { duration: result.duration, metadata: { toolName: "claude_flow_init", environment } }
+    );
+  }
+  
+  return result;
 }
 
 export async function handleClaudeFlowWizard(args: z.infer<typeof ClaudeFlowWizardSchema>): Promise<CommandResult> {
   const { environment, interactive } = args;
   
   if (!isValidEnvironment(environment)) {
-    return {
-      success: false,
-      output: "",
-      error: `Invalid environment: ${environment}`,
-      exitCode: 1,
-      duration: 0,
-      timestamp: new Date(),
-    };
+    return createErrorResult(`Invalid environment: ${environment}`);
   }
 
-  const workspaceRoot = getWorkspaceRoot();
-  const envPath = `${workspaceRoot}/${environment}`;
+  const command = interactive
+    ? `claude-flow:wizard`
+    : `claude-flow:wizard --no-interactive`;
   
-  try {
-    const command = interactive
-      ? `cd ${envPath} && devbox run claude-flow:wizard`
-      : `cd ${envPath} && devbox run claude-flow:wizard --no-interactive`;
-    
-    const result = await executeCommand(command);
-    
-    return {
-      success: result.success,
-      output: result.output || `Claude-Flow wizard completed in ${environment}`,
-      error: result.error,
-      exitCode: result.success ? 0 : 1,
-      duration: 0,
-      timestamp: new Date(),
-    };
-  } catch (error) {
-    return {
-      success: false,
-      output: "",
-      error: `Failed to run Claude-Flow wizard: ${error instanceof Error ? error.message : String(error)}`,
-      exitCode: 1,
-      duration: 0,
-      timestamp: new Date(),
-    };
+  const result = await executeClaudeFlowCommand(environment, command);
+  
+  if (result.success) {
+    return createSuccessResult(
+      result.output || `Claude-Flow wizard completed in ${environment}`,
+      { duration: result.duration, metadata: { toolName: "claude_flow_wizard", environment } }
+    );
   }
+  
+  return result;
 }
 
 export async function handleClaudeFlowStart(args: z.infer<typeof ClaudeFlowStartSchema>): Promise<CommandResult> {

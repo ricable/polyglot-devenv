@@ -4,7 +4,7 @@
 
 # Initialize resource monitoring
 def "resource init" [] {
-    mkdir -p .performance
+    mkdir .performance
     
     if not (".performance/resource_usage.jsonl" | path exists) {
         [] | save .performance/resource_usage.jsonl

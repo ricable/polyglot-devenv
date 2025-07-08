@@ -31,15 +31,39 @@
 # alias full-check="nu dev-env/nushell/scripts/validate-all.nu parallel"
 # alias perf-check="nu dev-env/nushell/scripts/performance-analytics.nu dashboard"
 
+# Claude-Flow SPARC Development Examples:
+# alias sparc-init="./claude-flow init --sparc && echo '🚀 SPARC environment initialized'"
+# alias sparc-modes="./claude-flow sparc modes"
+# alias sparc-tdd="./claude-flow sparc tdd"
+# alias sparc-arch="./claude-flow sparc run architect"
+# alias sparc-code="./claude-flow sparc run code"
+# alias sparc-debug="./claude-flow sparc run debug"
+# alias sparc-security="./claude-flow sparc run security-review"
+# alias sparc-docs="./claude-flow sparc run docs-writer"
+# alias sparc-status="./claude-flow status && ./claude-flow memory stats"
+
+# Claude-Flow Agent Management Examples:
+# alias cf-wizard="./claude-flow start --ui && ./claude-flow hive-mind wizard"
+# alias cf-spawn="./claude-flow hive-mind spawn"
+# alias cf-monitor="./claude-flow monitor"
+# alias cf-logs="./claude-flow logs"
+# alias cf-memory="./claude-flow memory"
+
 # Your custom commands:
 
-# DevPod Management (Centralized ✅)
+# DevPod Management (Centralized ✅) with Claude-Flow Auto-Setup
 # Examples for centralized DevPod management:
 # alias devpod-py="nu host-tooling/devpod-management/manage-devpod.nu provision python"
 # alias devpod-ts="nu host-tooling/devpod-management/manage-devpod.nu provision typescript"
 # alias devpod-rust="nu host-tooling/devpod-management/manage-devpod.nu provision rust"
 # alias devpod-go="nu host-tooling/devpod-management/manage-devpod.nu provision go"
 # alias devpod-status-all="for env in [python typescript rust go nushell] { nu host-tooling/devpod-management/manage-devpod.nu status $env }"
+
+# DevPod + Claude-Flow Integration Examples:
+# alias devpod-sparc-py="devpod-py && cd dev-env/python && devbox run claude-flow:init && sparc-init"
+# alias devpod-sparc-ts="devpod-ts && cd dev-env/typescript && devbox run claude-flow:init && sparc-init"
+# alias devpod-sparc-rust="devpod-rust && cd dev-env/rust && devbox run claude-flow:init && sparc-init"
+# alias devpod-sparc-go="devpod-go && cd dev-env/go && devbox run claude-flow:init && sparc-init"
 
 # Your DevPod management shortcuts:
 ```
@@ -137,63 +161,109 @@
 - Performance profiling approaches
 ```
 
-## Context Engineering Integration
+## Context Engineering + Claude-Flow SPARC Integration
 
-### Workspace vs DevPod Workflows
+### Enhanced Workflows: PRP + SPARC Methodology
 
-**Context Engineering** supports two distinct workflows:
+**Context Engineering + Claude-Flow** provides systematic TDD with AI assistance:
 
 ```bash
-# Workspace Development (Local PRP Generation)
+# SPARC + PRP Workspace Development (Enhanced Generation)
 # Examples:
-# alias prp-gen="cd context-engineering/workspace && /generate-prp"
-# alias prp-features="code context-engineering/workspace/features"
-# alias prp-templates="code context-engineering/workspace/templates"
+# alias sparc-prp-gen="./claude-flow sparc run spec-pseudocode && cd context-engineering/workspace && /generate-prp"
+# alias sparc-features="./claude-flow sparc run architect && code context-engineering/workspace/features"
+# alias sparc-templates="./claude-flow sparc modes && code context-engineering/workspace/templates"
 
-# DevPod Execution (Centralized Management ✅)  
+# SPARC + DevPod Execution (Centralized Management ✅)  
 # Examples:
-# alias prp-exec-py="cd dev-env/python && devbox run devpod:provision && /execute-prp"
-# alias prp-exec-ts="cd dev-env/typescript && devbox run devpod:provision && /execute-prp"
-# alias prp-exec-rust="cd dev-env/rust && devbox run devpod:provision && /execute-prp"
-# alias prp-exec-go="cd dev-env/go && devbox run devpod:provision && /execute-prp"
-# alias devpod-direct="nu host-tooling/devpod-management/manage-devpod.nu"
+# alias sparc-exec-py="./claude-flow sparc tdd && cd dev-env/python && devbox run devpod:provision && devbox run claude-flow:init && /execute-prp"
+# alias sparc-exec-ts="./claude-flow sparc run code && cd dev-env/typescript && devbox run devpod:provision && devbox run claude-flow:init && /execute-prp"
+# alias sparc-exec-rust="./claude-flow sparc run architect && cd dev-env/rust && devbox run devpod:provision && devbox run claude-flow:init && /execute-prp"
+# alias sparc-exec-go="./claude-flow sparc run debug && cd dev-env/go && devbox run devpod:provision && devbox run claude-flow:init && /execute-prp"
 
-# Your context engineering shortcuts:
+# SPARC Memory Management Examples:
+# alias sparc-save="./claude-flow memory export project-$(date +%Y%m%d).json"
+# alias sparc-load="./claude-flow memory import"
+# alias sparc-query="./claude-flow memory query"
+
+# Your enhanced context engineering + SPARC shortcuts:
 ```
 
-### Personal PRP Development Patterns
+### Personal SPARC + PRP Development Patterns
 
 ```bash
-# Create your own PRP workflow function
+# Create your own enhanced SPARC + PRP workflow function
 # Example:
-# personal-prp-workflow() {
+# personal-sparc-prp-workflow() {
 #     local feature_name=$1
 #     local environment=${2:-python}
 #     
-#     # Generate PRP in workspace
-#     cd context-engineering/workspace
-#     /generate-prp features/$feature_name.md --env dev-env/$environment
+#     echo "🎯 Starting Enhanced SPARC + PRP workflow for $feature_name in $environment"
 #     
-#     # Execute in DevPod environment (centralized management)
+#     # Phase 1: SPARC Specification + PRP Generation
+#     ./claude-flow sparc run spec-pseudocode "Define $feature_name requirements"
+#     ./claude-flow memory store "spec_$feature_name" "Requirements and constraints for $feature_name"
+#     
+#     cd context-engineering/workspace
+#     /generate-prp features/$feature_name.md --env dev-env/$environment --include-dojo --verbose
+#     
+#     # Phase 2: SPARC Architecture + DevPod Provisioning
+#     ./claude-flow sparc run architect "Design $feature_name architecture"
+#     
+#     # Execute in DevPod environment with Claude-Flow (centralized management)
 #     case $environment in
-#         python) cd dev-env/python && devbox run devpod:provision && /execute-prp context-engineering/devpod/environments/python/PRPs/$feature_name-python.md ;;
-#         typescript) cd dev-env/typescript && devbox run devpod:provision && /execute-prp context-engineering/devpod/environments/typescript/PRPs/$feature_name-typescript.md ;;
-#         # Add other environments as needed
+#         python) cd dev-env/python && devbox run devpod:provision && devbox run claude-flow:init && /execute-prp context-engineering/devpod/environments/python/PRPs/$feature_name-python.md ;;
+#         typescript) cd dev-env/typescript && devbox run devpod:provision && devbox run claude-flow:init && /execute-prp context-engineering/devpod/environments/typescript/PRPs/$feature_name-typescript.md ;;
+#         rust) cd dev-env/rust && devbox run devpod:provision && devbox run claude-flow:init && /execute-prp context-engineering/devpod/environments/rust/PRPs/$feature_name-rust.md ;;
+#         go) cd dev-env/go && devbox run devpod:provision && devbox run claude-flow:init && /execute-prp context-engineering/devpod/environments/go/PRPs/$feature_name-go.md ;;
 #     esac
+#     
+#     # Phase 3: SPARC TDD + Memory Storage
+#     ./claude-flow sparc tdd "implement $feature_name with TDD"
+#     ./claude-flow memory export "$feature_name-complete-$(date +%Y%m%d).json"
+#     
+#     echo "✅ Enhanced SPARC + PRP workflow completed for $feature_name"
 # }
 
-# Your PRP workflow functions:
+# Quick SPARC workflow shortcuts examples:
+# alias quick-sparc-py="personal-sparc-prp-workflow"
+# alias quick-sparc-ts="personal-sparc-prp-workflow \$1 typescript"
+# alias quick-sparc-rust="personal-sparc-prp-workflow \$1 rust"
+# alias quick-sparc-go="personal-sparc-prp-workflow \$1 go"
+
+# Your enhanced SPARC + PRP workflow functions:
 ```
 
-### Context Engineering Performance Tracking
+### Enhanced SPARC + PRP Performance Tracking
 
 ```bash
-# Personal performance tracking for PRP workflows
+# Personal performance tracking for enhanced SPARC + PRP workflows
 # Examples:
 # alias prp-perf="nu dev-env/nushell/scripts/performance-analytics.nu report --filter prp-*"
 # alias prp-metrics="nu dev-env/nushell/scripts/performance-analytics.nu optimize --filter prp-*"
+# alias sparc-perf="nu dev-env/nushell/scripts/performance-analytics.nu report --filter sparc-*"
+# alias sparc-metrics="nu dev-env/nushell/scripts/performance-analytics.nu optimize --filter sparc-*"
 
-# Your PRP performance tracking:
+# Enhanced SPARC + PRP performance tracking function example:
+# track-sparc-prp-performance() {
+#     local feature_name=$1 env=$2
+#     echo "📊 Tracking Enhanced SPARC + PRP performance for $feature_name in $env"
+#     
+#     # Track SPARC phases
+#     nu dev-env/nushell/scripts/performance-analytics.nu measure "sparc-specification" "$feature_name" "./claude-flow sparc run spec-pseudocode"
+#     nu dev-env/nushell/scripts/performance-analytics.nu measure "sparc-architecture" "$feature_name" "./claude-flow sparc run architect"
+#     nu dev-env/nushell/scripts/performance-analytics.nu measure "sparc-tdd" "$feature_name" "./claude-flow sparc tdd"
+#     
+#     # Track PRP integration
+#     nu dev-env/nushell/scripts/performance-analytics.nu measure "prp-generation" "$feature_name" "/generate-prp --include-dojo"
+#     nu dev-env/nushell/scripts/performance-analytics.nu measure "prp-execution" "$feature_name" "/execute-prp --validate"
+#     
+#     # Generate comprehensive report
+#     nu dev-env/nushell/scripts/performance-analytics.nu report --format table --filter "sparc-*|prp-*"
+#     echo "🎯 Enhanced SPARC + PRP workflow performance analysis completed"
+# }
+
+# Your enhanced SPARC + PRP performance tracking:
 ```
 
 ## Local Tools & Automation

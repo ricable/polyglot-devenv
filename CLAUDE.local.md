@@ -2,6 +2,21 @@
 
 **Personal Setup**: Individual development preferences extending CLAUDE.md project standards with productivity enhancements.
 
+## Configuration System Overview
+
+**Three-file approach** for optimal organization:
+- **[`CLAUDE.md`](CLAUDE.md)**: Project standards, architecture, core workflows (team-wide)
+- **`CLAUDE.local.md`** (this file): Personal productivity, individual preferences, local tools
+- **[`mcp/CLAUDE.md`](mcp/CLAUDE.md)**: MCP technical documentation, tool reference, development guidelines
+
+**Setup**: `cp CLAUDE.local.md.template CLAUDE.local.md` → customize for individual productivity  
+**Benefits**: Consistent onboarding, individual flexibility, reduced conflicts, maintainable standards
+
+**Navigation**:
+- 📋 **Project Essentials** → [`CLAUDE.md`](CLAUDE.md)
+- 🔧 **MCP Tools & Development** → [`mcp/CLAUDE.md`](mcp/CLAUDE.md)  
+- 👤 **Personal Workflows** → This file
+
 ## Quick Reference
 
 ### Language Standards
@@ -31,6 +46,24 @@ alias nudev="cd dev-env/nushell && devbox shell"
 alias root="cd /Users/cedric/dev/github.com/polyglot-devenv"
 alias setup-all="root && pydev && devbox run setup && root && tsdev && devbox run install && root && nudev && devbox run setup"
 
+# Claude-Flow SPARC Development
+alias sparc-init="./claude-flow init --sparc && echo '🚀 SPARC environment initialized'"
+alias sparc-modes="./claude-flow sparc modes"
+alias sparc-tdd="./claude-flow sparc tdd"
+alias sparc-arch="./claude-flow sparc run architect"
+alias sparc-code="./claude-flow sparc run code"
+alias sparc-debug="./claude-flow sparc run debug"
+alias sparc-security="./claude-flow sparc run security-review"
+alias sparc-docs="./claude-flow sparc run docs-writer"
+alias sparc-status="./claude-flow status && ./claude-flow memory stats"
+
+# Claude-Flow Agent Management
+alias cf-wizard="./claude-flow start --ui && ./claude-flow hive-mind wizard"
+alias cf-spawn="./claude-flow hive-mind spawn"
+alias cf-monitor="./claude-flow monitor"
+alias cf-logs="./claude-flow logs"
+alias cf-memory="./claude-flow memory"
+
 # Intelligence & Monitoring
 alias intel="nu dev-env/nushell/scripts/performance-analytics.nu dashboard"
 alias perf="nu dev-env/nushell/scripts/performance-analytics.nu report --days 7"
@@ -43,11 +76,15 @@ alias validate="nu scripts/validate-all.nu --parallel"
 alias quick-test="validate && echo '🎉 All environments validated successfully!'"
 alias full-check="intel && validate && perf"
 alias env-health="nu dev-env/nushell/scripts/validate-all.nu quick"
+alias sparc-test="sparc-tdd && validate && echo '✅ SPARC TDD cycle completed'"
+alias sparc-full="sparc-modes && sparc-status && validate"
 
 # Session Management
-alias morning-check="env-health && deps && security"
-alias pre-commit="validate && echo '✅ Ready to commit'"
-alias post-work="intel && resources"
+alias morning-check="env-health && deps && security && sparc-status"
+alias pre-commit="sparc-test && validate && echo '✅ Ready to commit'"
+alias post-work="intel && resources && cf-memory export session-backup.json"
+alias sparc-session="sparc-init && cf-wizard && echo '🎯 SPARC development session started'"
+alias sparc-save="cf-memory export project-$(date +%Y%m%d).json && echo '💾 SPARC session saved'"
 
 # IDE & Editor
 alias code-py="code dev-env/python/src"
@@ -146,16 +183,71 @@ cdclaude() {
     echo "🦀 Rust: cd dev-env/rust | 🐹 Go: cd dev-env/go | 🐚 Nushell: cd dev-env/nushell"
 }
 
-# Environment-aware prompt
+# Environment-aware prompt with SPARC status
 claude_env_info() {
+    local sparc_status=""
+    if [[ -f ".roomodes" ]]; then
+        sparc_status=" 🎯"
+    fi
     case $PWD in
-        *"dev-env/python"*) echo "🐍 PY" ;;
-        *"dev-env/typescript"*) echo "📘 TS" ;;
-        *"dev-env/rust"*) echo "🦀 RS" ;;
-        *"dev-env/go"*) echo "🐹 GO" ;;
-        *"dev-env/nushell"*) echo "🐚 NU" ;;
-        *"polyglot-devenv"*) echo "🤖 CLAUDE" ;;
+        *"dev-env/python"*) echo "🐍 PY$sparc_status" ;;
+        *"dev-env/typescript"*) echo "📘 TS$sparc_status" ;;
+        *"dev-env/rust"*) echo "🦀 RS$sparc_status" ;;
+        *"dev-env/go"*) echo "🐹 GO$sparc_status" ;;
+        *"dev-env/nushell"*) echo "🐚 NU$sparc_status" ;;
+        *"polyglot-devenv"*) echo "🤖 CLAUDE$sparc_status" ;;
     esac
+}
+
+# SPARC Development Workflow
+sparc_workflow() {
+    local feature_name=$1
+    local environment=${2:-python}
+    
+    echo "🎯 Starting SPARC workflow for $feature_name in $environment"
+    
+    # Phase 1: Specification
+    ./claude-flow sparc run spec-pseudocode "Define $feature_name requirements"
+    
+    # Phase 2: Architecture  
+    ./claude-flow sparc run architect "Design $feature_name architecture"
+    
+    # Phase 3: TDD Implementation
+    ./claude-flow sparc tdd "implement $feature_name"
+    
+    # Phase 4: Security Review
+    ./claude-flow sparc run security-review "$feature_name security analysis"
+    
+    # Phase 5: Integration
+    ./claude-flow sparc run integration "integrate $feature_name with system"
+    
+    # Save progress
+    ./claude-flow memory export "$feature_name-$(date +%Y%m%d).json"
+    
+    echo "✅ SPARC workflow completed for $feature_name"
+}
+
+# Quick SPARC mode shortcuts
+sparc_quick() {
+    local mode=$1
+    local task=${2:-"development task"}
+    ./claude-flow sparc run $mode "$task"
+}
+
+# SPARC session management
+sparc_resume() {
+    local project_name=${1:-"default"}
+    echo "🔄 Resuming SPARC session for $project_name"
+    
+    if [[ -f "memory/$project_name.json" ]]; then
+        ./claude-flow memory import "memory/$project_name.json"
+        echo "✅ SPARC session restored from memory/$project_name.json"
+    else
+        echo "⚠️  No saved session found for $project_name"
+        ./claude-flow init --sparc
+    fi
+    
+    ./claude-flow status
 }
 ```
 
@@ -286,33 +378,71 @@ alias devpod-status="nu host-tooling/devpod-management/manage-devpod.nu status"
 
 ### PRP Development Function
 ```bash
+# Enhanced PRP workflow with Claude-Flow SPARC integration
 personal-prp-workflow() {
     local feature=$1 env=${2:-python}
-    echo "🚀 Starting PRP workflow for $feature in $env"
+    echo "🚀 Starting Enhanced PRP + SPARC workflow for $feature in $env"
+    
+    # Phase 1: SPARC Specification + PRP Generation
+    ./claude-flow sparc run spec-pseudocode "Define $feature requirements"
+    ./claude-flow memory store "spec_$feature" "Requirements and constraints for $feature"
     
     cd context-engineering/workspace
-    /generate-prp features/$feature.md --env dev-env/$env
+    /generate-prp features/$feature.md --env dev-env/$env --include-dojo --verbose
     code context-engineering/workspace/PRPs/$feature-$env.md
     
-    # Use centralized DevPod management
+    # Phase 2: SPARC Architecture + DevPod Provisioning
+    ./claude-flow sparc run architect "Design $feature architecture"
+    
+    # Use centralized DevPod management with Claude-Flow
     case $env in
-        python) cd dev-env/python && devbox run devpod:provision && /execute-prp context-engineering/devpod/environments/python/PRPs/$feature-python.md ;;
-        typescript) cd dev-env/typescript && devbox run devpod:provision && /execute-prp context-engineering/devpod/environments/typescript/PRPs/$feature-typescript.md ;;
-        rust) cd dev-env/rust && devbox run devpod:provision && /execute-prp context-engineering/devpod/environments/rust/PRPs/$feature-rust.md ;;
-        go) cd dev-env/go && devbox run devpod:provision && /execute-prp context-engineering/devpod/environments/go/PRPs/$feature-go.md ;;
+        python) cd dev-env/python && devbox run devpod:provision && devbox run claude-flow:init && /execute-prp context-engineering/devpod/environments/python/PRPs/$feature-python.md ;;
+        typescript) cd dev-env/typescript && devbox run devpod:provision && devbox run claude-flow:init && /execute-prp context-engineering/devpod/environments/typescript/PRPs/$feature-typescript.md ;;
+        rust) cd dev-env/rust && devbox run devpod:provision && devbox run claude-flow:init && /execute-prp context-engineering/devpod/environments/rust/PRPs/$feature-rust.md ;;
+        go) cd dev-env/go && devbox run devpod:provision && devbox run claude-flow:init && /execute-prp context-engineering/devpod/environments/go/PRPs/$feature-go.md ;;
     esac
-    echo "✅ PRP workflow completed"
+    
+    # Phase 3: SPARC TDD + Validation
+    ./claude-flow sparc tdd "implement $feature with TDD"
+    ./claude-flow memory store "impl_$feature" "Implementation progress for $feature"
+    
+    echo "✅ Enhanced PRP + SPARC workflow completed for $feature"
+    ./claude-flow memory export "$feature-complete-$(date +%Y%m%d).json"
 }
 
-# Quick aliases
+# Quick aliases (Enhanced with SPARC)
 alias quick-py-prp="personal-prp-workflow"
 alias quick-ts-prp="personal-prp-workflow \$1 typescript"
 alias quick-rust-prp="personal-prp-workflow \$1 rust"
 alias quick-go-prp="personal-prp-workflow \$1 go"
+alias quick-sparc-py="sparc_workflow \$1 python"
+alias quick-sparc-ts="sparc_workflow \$1 typescript"
+alias quick-sparc-rust="sparc_workflow \$1 rust"
+alias quick-sparc-go="sparc_workflow \$1 go"
 ```
 
 ### PRP Performance Tracking
 ```bash
+# Enhanced PRP + SPARC Performance Tracking
+track-prp-sparc-performance() {
+    local feature_name=$1 env=$2
+    echo "📊 Tracking Enhanced PRP + SPARC performance for $feature_name in $env"
+    
+    # Track SPARC phases
+    nu dev-env/nushell/scripts/performance-analytics.nu measure "sparc-specification" "$feature_name" "./claude-flow sparc run spec-pseudocode \"$feature_name requirements\""
+    nu dev-env/nushell/scripts/performance-analytics.nu measure "sparc-architecture" "$feature_name" "./claude-flow sparc run architect \"$feature_name design\""
+    nu dev-env/nushell/scripts/performance-analytics.nu measure "sparc-tdd" "$feature_name" "./claude-flow sparc tdd \"$feature_name implementation\""
+    
+    # Track PRP integration
+    nu dev-env/nushell/scripts/performance-analytics.nu measure "prp-generation" "$feature_name" "/generate-prp features/$feature_name.md --env $env --include-dojo"
+    nu dev-env/nushell/scripts/performance-analytics.nu measure "prp-execution" "$feature_name" "/execute-prp $feature_name-$env.md --validate"
+    
+    # Generate comprehensive report
+    nu dev-env/nushell/scripts/performance-analytics.nu report --format table --filter "sparc-*|prp-*"
+    echo "🎯 SPARC + PRP workflow performance analysis completed"
+}
+
+# Legacy PRP tracking (maintained for compatibility)
 track-prp-performance() {
     local prp_file=$1 env=$2
     echo "📊 Tracking PRP performance for $prp_file in $env"
@@ -324,6 +454,9 @@ track-prp-performance() {
 alias prp-perf="track-prp-performance"
 alias prp-metrics="nu dev-env/nushell/scripts/performance-analytics.nu report --filter prp-*"
 alias prp-optimize="nu dev-env/nushell/scripts/performance-analytics.nu optimize --filter prp-*"
+alias sparc-perf="track-prp-sparc-performance"
+alias sparc-metrics="nu dev-env/nushell/scripts/performance-analytics.nu report --filter sparc-*"
+alias sparc-optimize="nu dev-env/nushell/scripts/performance-analytics.nu optimize --filter sparc-*"
 ```
 
 ## Local Tools & Scripts
@@ -611,6 +744,34 @@ debug-network() {
 | **Communities** | Python: r/Python, Discord • TypeScript: Discord, r/typescript • Rust: Forum, Discord • Go: Gophers Slack • Nushell: Discord |
 | **Help** | Stack Overflow, GitHub Issues, Discord/Slack, Official docs, Built-in intelligence systems |
 | **Learning Path** | Weekly: One language deep-dive • Monthly: Progress review • Quarterly: Tool updates • Continuous: Release notes |
+
+## Cross-Reference Guide
+
+### When to Use Each File
+
+| Need | File | Section |
+|------|------|----------|
+| **Project setup & architecture** | [`CLAUDE.md`](CLAUDE.md) | Environment Structure, Core Systems |
+| **MCP tool reference** | [`mcp/CLAUDE.md`](mcp/CLAUDE.md) | Complete MCP Tool Reference |
+| **Docker MCP setup** | [`mcp/CLAUDE.md`](mcp/CLAUDE.md) | Docker MCP Integration |
+| **AG-UI development** | [`mcp/CLAUDE.md`](mcp/CLAUDE.md) | AG-UI Protocol Integration |
+| **Claude-Flow usage** | [`mcp/CLAUDE.md`](mcp/CLAUDE.md) | Claude-Flow Integration Tools |
+| **Personal aliases** | This file | Personal Workflow |
+| **IDE configuration** | This file | IDE & Tools |
+| **Troubleshooting** | This file | Troubleshooting |
+| **Local scripts** | This file | Local Tools & Scripts |
+
+### Quick Navigation
+
+**From Project to Personal**:
+- Read [`CLAUDE.md`](CLAUDE.md) for project understanding
+- Use this file for personal productivity setup
+- Reference [`mcp/CLAUDE.md`](mcp/CLAUDE.md) for technical implementation
+
+**From Personal to Project**:
+- Contribute improvements back to [`CLAUDE.md`](CLAUDE.md)
+- Report MCP issues in [`mcp/CLAUDE.md`](mcp/CLAUDE.md)
+- Keep personal preferences in this file
 
 ## Testing Status ✅
 

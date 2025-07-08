@@ -1,11 +1,31 @@
 # Polyglot MCP Server - Development Guidelines
 
+## Documentation Navigation
+
+**🔧 This File (mcp/CLAUDE.md)**: Complete MCP tool reference, development guidelines, technical documentation  
+**📋 Project Overview**: [`../CLAUDE.md`](../CLAUDE.md) - Project standards, architecture, core workflows, setup instructions  
+**👤 Personal Workflows**: [`../CLAUDE.local.md`](../CLAUDE.local.md) - Individual aliases, IDE settings, local tools, troubleshooting
+
+**Quick Navigation**:
+- **New to the project?** Start with [`../CLAUDE.md`](../CLAUDE.md)
+- **Setting up personal tools?** See [`../CLAUDE.local.md`](../CLAUDE.local.md)  
+- **Developing with MCP?** You're in the right place!
+
 ## Build, Test & Run Commands
 - Build: `npm run build` - Compiles TypeScript to JavaScript
 - Watch mode: `npm run watch` - Watches for changes and rebuilds automatically
 - Run server: `npm run start` - Starts the MCP server using stdio transport
 - Run SSE server: `npm run start:sse` - Starts the MCP server with SSE transport
 - Prepare release: `npm run prepare` - Builds the project for publishing
+
+## Claude-Flow SPARC Integration Commands
+- Initialize SPARC: `npx claude-flow@latest init --sparc` - Creates SPARC development environment
+- Start orchestration: `./claude-flow start --ui` - Interactive process management UI
+- SPARC modes: `./claude-flow sparc modes` - List available development modes
+- SPARC TDD: `./claude-flow sparc tdd "feature"` - Run test-driven development
+- SPARC architecture: `./claude-flow sparc run architect "design"` - Design system architecture
+- Memory management: `./claude-flow memory store|query|export` - Persistent context storage
+- Agent coordination: `./claude-flow hive-mind spawn "task" --claude` - AI agent spawning
 
 ## Production Validation (January 8, 2025)
 **Comprehensive Implementation Complete**: All 112 MCP tools implemented across 15 categories with full Phase 2 & 3 completion
@@ -220,7 +240,7 @@ This integration brings the full power of the dojo app's AG-UI features into iso
 
 ## 🚀 Claude-Flow Integration Tools (10 Tools)
 
-**Complete AI agent orchestration with hive-mind coordination and automated task spawning**
+**Complete AI agent orchestration with hive-mind coordination, automated task spawning, and SPARC methodology integration**
 
 ### Core Claude-Flow Tools
 - **claude_flow_init**: Initialize Claude-Flow system in specified environment
@@ -267,6 +287,49 @@ This integration brings the full power of the dojo app's AG-UI features into iso
   ```json
   {"environment": "dev-env/go", "action": "create", "command": "go run main.go"}
   ```
+
+### SPARC Methodology Integration
+
+Claude-Flow integrates seamlessly with the SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology for systematic Test-Driven Development:
+
+#### SPARC Workflow with Claude-Flow MCP Tools
+```bash
+# Complete SPARC Development Workflow
+# 1. Specification Phase
+mcp tool claude_flow_spawn '{"environment": "dev-env/python", "task": "Define user authentication requirements using SPARC spec-pseudocode mode", "claude": true}'
+
+# 2. Architecture Phase  
+mcp tool claude_flow_spawn '{"environment": "dev-env/python", "task": "Design authentication service architecture using SPARC architect mode", "claude": true}'
+
+# 3. TDD Implementation Phase
+mcp tool claude_flow_spawn '{"environment": "dev-env/python", "task": "Implement user authentication with TDD using SPARC tdd mode", "claude": true}'
+
+# 4. Security Review Phase
+mcp tool claude_flow_spawn '{"environment": "dev-env/python", "task": "Security review of authentication implementation using SPARC security-review mode", "claude": true}'
+
+# 5. Integration Phase
+mcp tool claude_flow_spawn '{"environment": "dev-env/python", "task": "Integrate authentication with system using SPARC integration mode", "claude": true}'
+```
+
+#### SPARC Mode Examples with MCP Tools
+- **Specification**: Use `claude_flow_spawn` with `"task": "Run SPARC spec-pseudocode mode for [feature requirements]"`
+- **Architecture**: Use `claude_flow_spawn` with `"task": "Run SPARC architect mode for [system design]"`
+- **TDD**: Use `claude_flow_spawn` with `"task": "Run SPARC tdd mode for [feature implementation]"`
+- **Debug**: Use `claude_flow_spawn` with `"task": "Run SPARC debug mode for [issue analysis]"`
+- **Security**: Use `claude_flow_spawn` with `"task": "Run SPARC security-review mode for [security analysis]"`
+- **Documentation**: Use `claude_flow_spawn` with `"task": "Run SPARC docs-writer mode for [documentation]"`
+
+#### Memory Management for SPARC Workflows
+```bash
+# Store SPARC phase results
+mcp tool claude_flow_spawn '{"environment": "dev-env/python", "task": "Store specification phase results in Claude-Flow memory", "claude": true}'
+
+# Query previous SPARC work
+mcp tool claude_flow_spawn '{"environment": "dev-env/python", "task": "Query previous SPARC architecture decisions from memory", "claude": true}'
+
+# Export SPARC project progress
+mcp tool claude_flow_spawn '{"environment": "dev-env/python", "task": "Export complete SPARC workflow progress to JSON", "claude": true}'
+```
 
 ## 🚀 Enhanced AI Hooks Tools (8 Tools)
 
@@ -760,6 +823,46 @@ mcp tool host_credential '{"action": "rotate", "secure_store": true}'
 - Follow camelCase for variables/functions, PascalCase for types/classes, UPPER_CASE for constants
 - Handle errors with try/catch blocks and provide clear error messages
 - Use consistent indentation (2 spaces) and trailing commas in multi-line objects
+
+## SPARC Development Guidelines
+
+### SPARC Methodology Integration with MCP
+**Systematic Test-Driven Development** using Claude-Flow orchestration and MCP tools:
+
+#### SPARC Phase Implementation
+1. **Specification**: Use `claude_flow_spawn` with SPARC spec-pseudocode mode for requirements analysis
+2. **Pseudocode**: Break down complex logic with `claude_flow_spawn` architect mode 
+3. **Architecture**: Design system architecture using `claude_flow_spawn` architect mode
+4. **Refinement (TDD)**: Implement with Red-Green-Refactor using `claude_flow_spawn` tdd mode
+5. **Completion**: Integration testing using `claude_flow_spawn` integration mode
+
+#### SPARC + MCP Best Practices
+- **Memory Persistence**: Store each SPARC phase results using Claude-Flow memory tools
+- **Context Awareness**: Query previous decisions before starting new SPARC phases
+- **Cross-Environment**: Use SPARC modes across all 5 language environments (Python, TypeScript, Rust, Go, Nushell)
+- **Quality Gates**: Security review and documentation as standard SPARC completion steps
+- **Performance Tracking**: Monitor SPARC phase execution times with performance analytics tools
+
+#### SPARC Mode Mapping to MCP Tools
+```javascript
+// SPARC Mode to MCP Tool Integration
+const sparcModes = {
+  'spec-pseudocode': 'claude_flow_spawn with specification task',
+  'architect': 'claude_flow_spawn with architecture design task', 
+  'tdd': 'claude_flow_spawn with TDD implementation task',
+  'debug': 'claude_flow_spawn with debugging analysis task',
+  'security-review': 'claude_flow_spawn with security analysis task',
+  'integration': 'claude_flow_spawn with integration testing task',
+  'docs-writer': 'claude_flow_spawn with documentation task'
+};
+```
+
+#### Development Workflow with SPARC
+1. Initialize SPARC environment using `claude_flow_init`
+2. Run SPARC wizard using `claude_flow_wizard` for interactive setup
+3. Execute SPARC phases using `claude_flow_spawn` with appropriate modes
+4. Monitor progress using `claude_flow_monitor` and `claude_flow_logs`
+5. Store results using Claude-Flow memory management tools
 
 ## 🧪 MCP Testing Framework & Results
 

@@ -40,7 +40,7 @@ def "perf record" [
         timestamp: (date now),
         event_type: $event_type,
         environment: $environment,
-        duration_ms: (($duration | into int) / 1000000),  # Convert to milliseconds
+        duration_ms: ($duration / 1ms),  # Convert to milliseconds
         status: $status,
         details: $details,
         resource_usage: (sys | select host.memory host.cpu)
