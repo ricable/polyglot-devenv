@@ -1,0 +1,71 @@
+packages:
+  - 'packages/*'
+  - 'apps/*'
+  - 'tools/*'
+  - 'examples/*'
+  - 'claude-flow'
+  - 'mcp'
+  - 'dojo'
+  - 'dev-env/*'
+
+# Workspace configuration for Swarm Flow ecosystem
+catalog:
+  # Core packages
+  "@swarm-flow/coordination-enhanced": "workspace:*"
+  "@swarm-flow/web-ui-enhanced": "workspace:*"
+  "@swarm-flow/mcp-enhanced": "workspace:*"
+  "@swarm-flow/devpod-enhanced": "workspace:*"
+  "@swarm-flow/ai-enhanced": "workspace:*"
+  "@swarm-flow/wasm-integration": "workspace:*"
+  "@swarm-flow/enterprise-features": "workspace:*"
+  
+  # Shared dependencies
+  "typescript": "^5.3.0"
+  "jest": "^29.7.0"
+  "eslint": "^8.56.0"
+  "prettier": "^3.1.0"
+  "uuid": "^9.0.1"
+  "zod": "^3.22.4"
+  "ws": "^8.16.0"
+  "react": "^18.2.0"
+  "react-dom": "^18.2.0"
+  "@tensorflow/tfjs-node": "^4.14.0"
+  "@modelcontextprotocol/sdk": "^0.5.0"
+
+# Peer dependency rules
+peerDependencyRules:
+  ignoreMissing:
+    - "@types/react"
+    - "@types/react-dom"
+  allowedVersions:
+    "react": ">=18.0.0"
+    "typescript": ">=5.0.0"
+
+# Package manager settings
+packageManager: "pnpm@8.15.0"
+
+# Workspace settings
+workspaceSettings:
+  preferWorkspacePackages: true
+  linkWorkspacePackages: true
+  enablePnpMode: false
+  
+# Scripts that run across the workspace
+scripts:
+  build: "pnpm -r --filter=!examples build"
+  test: "pnpm -r --filter=!examples test"
+  lint: "pnpm -r --filter=!examples lint"
+  format: "pnpm -r --filter=!examples format"
+  typecheck: "pnpm -r --filter=!examples typecheck"
+  clean: "pnpm -r --filter=!examples clean"
+  
+# Development scripts
+devScripts:
+  dev: "pnpm -r --parallel --filter=!examples dev"
+  watch: "pnpm -r --parallel --filter=!examples watch"
+  
+# Build optimization
+buildSettings:
+  parallelBuilds: true
+  maxConcurrency: 4
+  cacheStrategy: "aggressive"

@@ -1,0 +1,40 @@
+{
+  "name": "@swarm-flow/devpod-enhanced",
+  "version": "1.0.0",
+  "description": "Enhanced DevPod management with intelligent resource optimization and AI-powered provisioning",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "dev": "tsc --watch",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts"
+  },
+  "keywords": [
+    "devpod",
+    "containers",
+    "resource-optimization",
+    "ai-provisioning",
+    "orchestration"
+  ],
+  "author": "Swarm Flow Team",
+  "license": "MIT",
+  "dependencies": {
+    "node-cron": "^3.0.0",
+    "winston": "^3.11.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/node-cron": "^3.0.0",
+    "@types/winston": "^2.4.4",
+    "@types/uuid": "^9.0.0",
+    "typescript": "^5.0.0",
+    "jest": "^29.0.0",
+    "@types/jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  }
+}

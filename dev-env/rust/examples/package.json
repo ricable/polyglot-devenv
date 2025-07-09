@@ -1,0 +1,13 @@
+{
+  "name": "wasm-swarm-coordinator-examples",
+  "version": "1.0.0",
+  "description": "Examples for WebAssembly Swarm Coordinator",
+  "main": "nodejs-example.js",
+  "scripts": {
+    "start": "node nodejs-example.js",
+    "serve": "python3 -m http.server 8080"
+  },
+  "dependencies": {
+    "wasm-swarm-coordinator": "file:../pkg/nodejs"
+  }
+}

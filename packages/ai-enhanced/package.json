@@ -1,0 +1,45 @@
+{
+  "name": "@swarm-flow/ai-enhanced",
+  "version": "1.0.0",
+  "description": "AI-enhanced package with intelligent orchestration, predictive scaling, and automated optimization",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "dev": "tsc --watch",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts"
+  },
+  "keywords": [
+    "ai",
+    "machine-learning",
+    "orchestration",
+    "optimization",
+    "predictive-scaling",
+    "intelligent-automation"
+  ],
+  "author": "Swarm Flow Team",
+  "license": "MIT",
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.14.0",
+    "@tensorflow/tfjs-node": "^4.14.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.0",
+    "natural": "^6.5.0",
+    "simple-statistics": "^7.8.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.0",
+    "@types/lodash": "^4.14.0",
+    "@types/natural": "^5.1.0",
+    "@types/node": "^20.0.0",
+    "@types/uuid": "^9.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "prettier": "^3.0.0",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.0.0"
+  }
+}

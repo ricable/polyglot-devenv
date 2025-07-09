@@ -1,0 +1,44 @@
+{
+  "name": "@swarm-flow/coordination-enhanced",
+  "version": "1.0.0",
+  "description": "Enhanced coordination system with WASM integration and AI optimization",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:wasm": "cd ../wasm-integration && npm run build",
+    "test": "jest",
+    "dev": "tsc --watch",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts"
+  },
+  "keywords": [
+    "coordination",
+    "swarm",
+    "agents",
+    "wasm",
+    "ai",
+    "orchestration"
+  ],
+  "author": "Swarm Flow Team",
+  "license": "MIT",
+  "dependencies": {
+    "eventemitter3": "^5.0.0",
+    "uuid": "^9.0.0",
+    "ws": "^8.14.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.0",
+    "@types/node": "^20.0.0",
+    "@types/uuid": "^9.0.0",
+    "@types/ws": "^8.5.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "prettier": "^3.0.0",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

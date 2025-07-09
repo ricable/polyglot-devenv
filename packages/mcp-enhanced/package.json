@@ -1,0 +1,46 @@
+{
+  "name": "@swarm-flow/mcp-enhanced",
+  "version": "1.0.0",
+  "description": "Enhanced MCP integration with WASM bridge, AI tools, and advanced security",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:wasm": "cd wasm-bridge && wasm-pack build --target nodejs",
+    "test": "jest",
+    "dev": "tsc --watch",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "wasm",
+    "ai-tools",
+    "security",
+    "polyglot"
+  ],
+  "author": "Swarm Flow Team",
+  "license": "MIT",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.0",
+    "rate-limiter-flexible": "^3.0.0",
+    "uuid": "^9.0.0",
+    "ws": "^8.14.0",
+    "zod": "^3.22.0",
+    "zod-to-json-schema": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.0",
+    "@types/jsonwebtoken": "^9.0.0",
+    "@types/node": "^20.0.0",
+    "@types/uuid": "^9.0.0",
+    "@types/ws": "^8.5.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "prettier": "^3.0.0",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.0.0",
+    "wasm-pack": "^0.12.0"
+  }
+}

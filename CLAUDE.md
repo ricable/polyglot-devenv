@@ -834,7 +834,3 @@ Use descriptive names and clear context • Include concrete examples and anti-p
 **Integration**: STDIO for Claude Code • HTTP for web clients • SSE for real-time apps  
 
 **📖 Advanced Practices**: See [`mcp/CLAUDE.md`](mcp/CLAUDE.md) for comprehensive development guidelines and optimization techniques.
-
----
-
-*Polyglot development environment with **fully tested** intelligent automation, Claude-Flow AI orchestration, DevPod .claude/ auto-installation, containerized workflows, Docker MCP integration, Advanced Multi-Agent Coding System, and AI-optimized practices*

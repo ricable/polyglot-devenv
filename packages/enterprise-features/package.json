@@ -1,0 +1,54 @@
+{
+  "name": "@swarm-flow/enterprise-features",
+  "version": "1.0.0",
+  "description": "Enterprise-grade security, compliance, and monitoring features for Swarm Flow",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "dev": "tsc --watch",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts",
+    "security-scan": "npm audit && snyk test",
+    "compliance-check": "npm run lint && npm run test && npm run security-scan"
+  },
+  "keywords": [
+    "enterprise",
+    "security",
+    "compliance",
+    "monitoring",
+    "audit",
+    "rbac",
+    "soc2",
+    "multi-tenancy"
+  ],
+  "author": "Swarm Flow Team",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "moment": "^2.30.1",
+    "uuid": "^9.0.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jest": "^29.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/lodash": "^4.14.0",
+    "@types/node": "^20.0.0",
+    "@types/uuid": "^9.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "prettier": "^3.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "express": "^4.18.0"
+  }
+}

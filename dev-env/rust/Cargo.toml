@@ -1,14 +1,54 @@
 [package]
-name = "polyglot-rust"
+name = "wasm-swarm-coordinator"
 version = "0.1.0"
 edition = "2021"
-description = "Rust component of polyglot development environment"
+description = "WebAssembly-compiled swarm coordinator for distributed agent management"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-tokio = { version = "1.0", features = ["full"] }
+# Core async runtime
+tokio = { version = "1.0", features = ["macros", "rt", "time", "sync"], default-features = false }
+# WebAssembly support
+wasm-bindgen = "0.2"
+js-sys = "0.3"
+# Serialization
 serde = { version = "1.0", features = ["derive"] }
-reqwest = { version = "0.11", features = ["json"] }
+serde_json = "1.0"
+# Utilities
 anyhow = "1.0"
+uuid = { version = "1.0", features = ["v4", "serde", "js"] }
+# Async channels
+async-channel = "2.0"
+# Time utilities
+chrono = { version = "0.4", features = ["serde"] }
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+  "console",
+  "Performance",
+  "Window",
+  "Document",
+]
 
 [dev-dependencies]
 tokio-test = "0.4"
+wasm-bindgen-test = "0.3"
+
+# WebAssembly optimization
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+
+# WASM-specific features
+[features]
+default = ["console_error_panic_hook"]
+console_error_panic_hook = ["dep:console_error_panic_hook"]
+
+[dependencies.console_error_panic_hook]
+version = "0.1"
+optional = true

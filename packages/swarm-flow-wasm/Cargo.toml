@@ -1,0 +1,51 @@
+[package]
+name = "swarm-flow-wasm"
+version = "0.1.0"
+edition = "2021"
+description = "WASM-first AI agent swarm orchestration system"
+authors = ["Polyglot Development Environment"]
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+serde-wasm-bindgen = "0.6"
+uuid = { version = "1.0", features = ["v4", "wasm-bindgen"] }
+tokio = { version = "1.0", features = ["sync", "time"], default-features = false }
+web-sys = "0.3"
+
+[dependencies.wasm-bindgen]
+version = "0.2"
+features = [
+  "serde-serialize",
+]
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+  "console",
+  "Window",
+  "Document",
+  "Element",
+  "HtmlElement",
+  "MessageEvent",
+  "WebSocket",
+  "BinaryType",
+  "Blob",
+  "ErrorEvent",
+  "Event",
+  "EventTarget",
+  "FileReader",
+  "ProgressEvent",
+]
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
